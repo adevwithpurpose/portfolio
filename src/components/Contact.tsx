@@ -76,9 +76,13 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
           Tell me what's slow or broken. I'll tell you if I can fix it.
         </p>
 
-        <p className="reveal-item mx-auto mb-10 max-w-xl text-base text-zinc-500">
+        <p className="reveal-item mx-auto mb-4 max-w-xl text-lg leading-relaxed text-zinc-400">
           Book a free 15-minute call. No pitch, no pressure — just honest advice
           about your situation.
+        </p>
+        <p className="reveal-item mx-auto mb-12 max-w-2xl text-sm leading-relaxed text-zinc-500">
+          First Project Pilot: a reduced-scope starter build for new clients who
+          want to test the workflow before committing to a larger engagement.
         </p>
 
         {/* Project estimates — reduces friction before booking */}
@@ -96,10 +100,10 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
                 From $750
               </span>
               <span className="ml-1 text-[10px] text-blue-400/60">
-                starter build
+                first pilot
               </span>
             </div>
-            <p className="mt-2 text-[10px] text-zinc-600">Scope agreed before build</p>
+            <p className="mt-2 text-[10px] text-zinc-600">Reduced scope, clearly agreed before build</p>
           </div>
 
           <div className="group rounded-xl border border-white/[0.06] bg-white/[0.03] p-5 text-center backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/25 hover:bg-white/[0.05]">
@@ -115,10 +119,10 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
                 From $500
               </span>
               <span className="ml-1 text-[10px] text-cyan-400/60">
-                starter workflow
+                first pilot
               </span>
             </div>
-            <p className="mt-2 text-[10px] text-zinc-600">1-2 focused integrations</p>
+            <p className="mt-2 text-[10px] text-zinc-600">1-2 focused integrations, fixed scope</p>
           </div>
 
           <div className="group rounded-xl border border-white/[0.06] bg-white/[0.03] p-5 text-center backdrop-blur-sm transition-all duration-300 hover:border-violet-500/25 hover:bg-white/[0.05]">
@@ -134,10 +138,10 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
                 From $900
               </span>
               <span className="ml-1 text-[10px] text-violet-400/60">
-                starter assistant
+                first pilot
               </span>
             </div>
-            <p className="mt-2 text-[10px] text-zinc-600">Triage, drafts, and routing</p>
+            <p className="mt-2 text-[10px] text-zinc-600">Triage, drafts, routing, fixed scope</p>
           </div>
         </div>
 

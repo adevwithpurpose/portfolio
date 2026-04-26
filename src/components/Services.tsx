@@ -133,7 +133,7 @@ function ServiceSection({
           >
             <div className="flex items-baseline gap-3 mb-1.5">
               <span className="text-[10px] text-zinc-500 uppercase tracking-wider">
-                Typical package
+                First Project Pilot
               </span>
               <span className="text-sm text-zinc-500">
                 {regularPrice}
@@ -144,11 +144,11 @@ function ServiceSection({
                 {introPrice}
               </span>
               <span className="rounded-full bg-green-500/10 border border-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-400/80 uppercase tracking-wider">
-Fixed scope
+New clients
               </span>
             </div>
             <p className="mt-2 text-xs text-zinc-500">
-Clear scope, fixed deliverables, no surprise hourly billing
+A reduced-scope starter build to test fit before a larger engagement
             </p>
           </motion.div>
           <motion.ul
