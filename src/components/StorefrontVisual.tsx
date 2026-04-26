@@ -250,7 +250,7 @@ export default function StorefrontVisual() {
             <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
             Live & optimized
           </span>
-          <span>Next.js + Shopify</span>
+          <span>Next.js + APIs</span>
         </div>
       </div>
     </div>

@@ -93,13 +93,13 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
             </p>
             <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 px-3 py-2">
               <span className="text-lg font-black text-blue-400">
-                $360–$450
+                From $750
               </span>
               <span className="ml-1 text-[10px] text-blue-400/60">
-                first project
+                starter build
               </span>
             </div>
-            <p className="mt-2 text-[10px] text-zinc-600">20-25 hrs × $18/hr</p>
+            <p className="mt-2 text-[10px] text-zinc-600">Scope agreed before build</p>
           </div>
 
           <div className="group rounded-xl border border-white/[0.06] bg-white/[0.03] p-5 text-center backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/25 hover:bg-white/[0.05]">
@@ -112,13 +112,13 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
             </p>
             <div className="rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-3 py-2">
               <span className="text-lg font-black text-cyan-400">
-                $200–$300
+                From $500
               </span>
               <span className="ml-1 text-[10px] text-cyan-400/60">
-                first project
+                starter workflow
               </span>
             </div>
-            <p className="mt-2 text-[10px] text-zinc-600">10-15 hrs × $20/hr</p>
+            <p className="mt-2 text-[10px] text-zinc-600">1-2 focused integrations</p>
           </div>
 
           <div className="group rounded-xl border border-white/[0.06] bg-white/[0.03] p-5 text-center backdrop-blur-sm transition-all duration-300 hover:border-violet-500/25 hover:bg-white/[0.05]">
@@ -131,13 +131,13 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
             </p>
             <div className="rounded-lg bg-violet-500/10 border border-violet-500/20 px-3 py-2">
               <span className="text-lg font-black text-violet-400">
-                $375–$500
+                From $900
               </span>
               <span className="ml-1 text-[10px] text-violet-400/60">
-                first project
+                starter assistant
               </span>
             </div>
-            <p className="mt-2 text-[10px] text-zinc-600">15-20 hrs × $25/hr</p>
+            <p className="mt-2 text-[10px] text-zinc-600">Triage, drafts, and routing</p>
           </div>
         </div>
 

@@ -133,9 +133,9 @@ function ServiceSection({
           >
             <div className="flex items-baseline gap-3 mb-1.5">
               <span className="text-[10px] text-zinc-500 uppercase tracking-wider">
-                Standard rate
+                Typical package
               </span>
-              <span className="text-sm line-through text-zinc-600">
+              <span className="text-sm text-zinc-500">
                 {regularPrice}
               </span>
             </div>
@@ -144,11 +144,11 @@ function ServiceSection({
                 {introPrice}
               </span>
               <span className="rounded-full bg-green-500/10 border border-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-400/80 uppercase tracking-wider">
-                First project
+Fixed scope
               </span>
             </div>
             <p className="mt-2 text-xs text-zinc-500">
-              AI-powered workflows — faster delivery, lower cost
+Clear scope, fixed deliverables, no surprise hourly billing
             </p>
           </motion.div>
           <motion.ul
@@ -207,14 +207,14 @@ export default function Services({
       id: "service-1",
       tagline: "Web Development",
       title: "Custom Web Development",
-      regularPrice: "$30/hr",
-      introPrice: "$18/hr",
+      regularPrice: "Starter website",
+      introPrice: "From $750",
       description:
-        "Bespoke web applications built to scale. Custom storefronts, full-stack platforms, modern stacks that grow with your business.",
+        "Clean landing pages, web apps, and internal tools built around the way your business actually works.",
       bullets: [
         "Custom storefronts, headless builds, and web apps",
         "Performance-first architecture that converts",
-        "Full-stack solutions in React, Next.js, Shopify, and more",
+        "Full-stack solutions in React, Next.js, APIs, and modern web platforms",
       ],
       visual: <StorefrontVisual />,
       accentColor: "bg-blue-600/10",
@@ -225,13 +225,13 @@ export default function Services({
       id: "service-2",
       tagline: "Automation",
       title: "Intelligent Automation",
-      regularPrice: "$45/hr",
-      introPrice: "$20/hr",
+      regularPrice: "Starter automation",
+      introPrice: "From $500",
       description:
-        "Replace manual grunt with 24/7 automation. Orders, inventory, emails — all on autopilot. n8n, custom integrations, any API.",
+        "Replace repetitive manual work with reliable workflows, alerts, integrations, and operational visibility.",
       bullets: [
         "Replace hours of manual work with automated workflows",
-        "Connect your tools — Shopify, Slack, Airtable, WhatsApp, any API",
+        "Connect your tools — CRM, email, Slack, Airtable, WhatsApp, any API",
         "Monitor, maintain, and iterate — always improving",
       ],
       visual: <WorkflowVisual />,
@@ -243,10 +243,10 @@ export default function Services({
       id: "service-3",
       tagline: "AI Agents",
       title: "AI Agents & Intelligent Systems",
-      regularPrice: "$55/hr",
-      introPrice: "$25/hr",
+      regularPrice: "Starter assistant",
+      introPrice: "From $900",
       description:
-        "AI that handles real-world operations 24/7. Classifies, decides, acts — no human needed. Built, deployed, and maintained by me.",
+        "AI assistants that classify, draft, route, and support real business workflows with human review where it matters.",
       bullets: [
         "Custom AI agents for customer ops, triage, and workflows",
         "Multi-agent systems that coordinate autonomously",

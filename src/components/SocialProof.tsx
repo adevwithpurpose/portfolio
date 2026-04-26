@@ -11,26 +11,26 @@ import SectionWrapper from "@/components/SectionWrapper";
 const testimonials = [
   {
     quote:
-      "We replaced 12 hours of weekly manual work with a workflow that runs itself. Safeer built it in 2 weeks — our agency quoted $15K and 6 weeks.",
-    attribution: "Ops Manager",
-    company: "DTC Supplements Brand ($800K ARR)",
-    metric: "8 hrs/wk saved",
+      "Safeer mapped the workflow quickly, cut the manual steps, and gave us a system we could actually understand and maintain.",
+    attribution: "Operations Lead",
+    company: "Growing E-Commerce Team",
+    metric: "Manual work reduced",
     avatar: "",
   },
   {
     quote:
-      "The AI agent handles 89% of customer inquiries without any human input. Response time went from 14 hours to under 2 minutes. It's like hiring a full-time support rep for a fraction of the cost.",
+      "The assistant now handles the first pass on customer questions and routes the important ones to us. It feels like our support process finally has structure.",
     attribution: "Founder",
-    company: "Streetwear E-Commerce ($180K ARR)",
-    metric: "89% automated",
+    company: "Direct-to-Consumer Brand",
+    metric: "Faster first response",
     avatar: "👕",
   },
   {
     quote:
-      "Working directly with a senior engineer instead of an agency saved us months of back-and-forth. He understood our stack and shipped fast. The ROI was visible within the first week.",
-    attribution: "CTO",
-    company: "Shopify Plus Retailer",
-    metric: "2-week delivery",
+      "Working directly with Safeer kept the project moving. No layers, no vague handoffs — just clear decisions and steady progress.",
+    attribution: "Technical Lead",
+    company: "Service Business",
+    metric: "Direct execution",
     avatar: "🛍️",
   },
 ];
@@ -89,8 +89,8 @@ export default function SocialProof({ onEnter }: SocialProofProps) {
           <div className="mt-4 flex items-center justify-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
             <span className="text-[11px] text-zinc-500">
-              <span className="text-white/50 font-medium">3 new projects</span>{" "}
-              delivered this week
+              <span className="text-white/50 font-medium">Available for</span>{" "}
+              selected new projects
             </span>
           </div>
         </div>

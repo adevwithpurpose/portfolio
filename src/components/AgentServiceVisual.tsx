@@ -325,7 +325,7 @@ export default function AgentServiceVisual() {
                 label: "Auto-resolved",
                 color: "text-violet-400",
               },
-              { value: "$47K", label: "Revenue today", color: "text-blue-400" },
+              { value: "Live", label: "Ops visibility", color: "text-blue-400" },
             ].map((m) => (
               <div
                 key={m.label}

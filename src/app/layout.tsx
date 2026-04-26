@@ -17,33 +17,33 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-flame-psi-75.vercel.app"),
   title: {
-    default: "Safeer — Shopify Automation & Development",
+    default: "Safeer — Automation & Web Development",
     template: "%s | Safeer",
   },
   description:
-    "I help Shopify brands automate operations with n8n workflows, custom apps, and AI agents. Custom web solutions, intelligent automation, and AI systems that run 24/7.",
+    "I build clean websites, workflow automations, AI assistants, and internal tools that remove operational friction for growing businesses.",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://safeer.dev",
+    url: "https://portfolio-flame-psi-75.vercel.app",
     siteName: "Safeer — Portfolio",
-    title: "Safeer — Shopify Automation & Development",
+    title: "Safeer — Automation & Web Development",
     description:
-      "Custom web solutions, intelligent automation, and AI systems that run 24/7.",
+      "Clean websites, workflow automations, AI assistants, and internal tools for growing businesses.",
     images: [
       {
         url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Safeer — Systems That Work While You Sleep",
+        alt: "Safeer — Automation & Web Development",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Safeer — Shopify Automation & Development",
+    title: "Safeer — Automation & Web Development",
     description:
-      "Custom web solutions, intelligent automation, and AI systems that run 24/7.",
+      "Clean websites, workflow automations, AI assistants, and internal tools for growing businesses.",
     images: ["/og-image.svg"],
   },
   robots: {

@@ -3,7 +3,7 @@ import PricingPage from "@/components/PricingPage";
 
 export const metadata: Metadata = {
   title: "Investment Tiers — Safeer",
-  description: "Transparent pricing for Shopify automation and AI agent services.",
+  description: "Transparent pricing for automation, web development, and AI assistant services.",
 };
 
 // Prevent search engine indexing for private page

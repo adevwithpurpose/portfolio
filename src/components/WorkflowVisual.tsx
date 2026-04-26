@@ -7,7 +7,7 @@ import gsap from "gsap";
  * WorkflowVisual — Service 2: Intelligent Automation
  *
  * WOW FACTOR: Animated data packets flow through the pipeline lines,
- * and the n8n node pulses with a "processing" ripple effect.
+ * and the automation node pulses with a "processing" ripple effect.
  */
 export default function WorkflowVisual() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -185,7 +185,7 @@ export default function WorkflowVisual() {
             <div className="h-3 w-3 rounded-full bg-green-500/60" />
           </div>
           <div className="ml-3 flex-1 rounded bg-white/5 px-2.5 py-1 text-xs text-white/25 font-mono">
-            n8n — Order Processing
+            Workflow — Request Processing
           </div>
         </div>
 
@@ -253,7 +253,7 @@ export default function WorkflowVisual() {
             >
               <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-xs font-mono text-green-300/80">
-                Shopify Order #4821
+                New Request #4821
               </span>
             </div>
           </div>
@@ -290,7 +290,7 @@ export default function WorkflowVisual() {
                     Auto-Process
                   </span>
                   <span className="text-[10px] text-cyan-400/50">
-                    n8n workflow
+                    automation workflow
                   </span>
                 </div>
               </div>
@@ -318,7 +318,7 @@ export default function WorkflowVisual() {
                     <line x1="12" y1="22.08" x2="12" y2="12" />
                   </svg>
                   <span className="text-[10px] font-medium text-green-300/70">
-                    Inventory
+                    Status
                   </span>
                   <span className="text-[9px] text-white/30 block">
                     Updated
@@ -401,7 +401,7 @@ export default function WorkflowVisual() {
             >
               <div className="flex items-center gap-2 text-white/20">
                 <span className="text-green-400/50">[OK]</span>
-                <span>Inventory synced — SKU-4821</span>
+                <span>Status synced — SKU-4821</span>
               </div>
               <div className="flex items-center gap-2 text-white/20">
                 <span className="text-blue-400/50">[→]</span>
@@ -414,7 +414,7 @@ export default function WorkflowVisual() {
         <div className="flex items-center justify-between border-t border-white/5 px-5 py-2 text-[10px] text-white/20">
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-            n8n automation
+            workflow automation
           </span>
           <span>runs 24/7</span>
         </div>

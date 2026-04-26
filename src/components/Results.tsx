@@ -13,14 +13,14 @@ const results = [
     metric: "10,000+",
     unit: "tasks/day",
     description:
-      "Automated order processing and inventory sync for a growing Shopify brand.",
-    category: "E-commerce Automation",
+      "Automated request processing and status sync for a growing operations team.",
+    category: "Workflow Automation",
   },
   {
     metric: "40%",
     unit: "faster load",
-    description: "Headless Shopify build with real-time sync and edge caching.",
-    category: "Custom Theme",
+    description: "Modern web build with real-time sync and edge caching.",
+    category: "Web Platform",
   },
   {
     metric: "24/7",

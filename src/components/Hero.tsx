@@ -163,8 +163,8 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
           ref={subtitleRef}
           className="mx-auto mb-6 max-w-3xl text-lg font-medium text-zinc-300 sm:text-xl md:text-2xl"
         >
-          Shopify Development &middot; n8n Automation &middot; AI Agents
-          &middot; Web Apps
+          Web Development &middot; Workflow Automation &middot; AI Assistants
+          &middot; Internal Tools
         </p>
 
         {/* Professional Headshot — integrated into hero for instant trust */}
@@ -173,7 +173,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
             <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 opacity-30 blur-lg transition-opacity duration-300 group-hover:opacity-60" />
             <img
               src="/safeer.webp"
-              alt="Safeer — Shopify Automation Expert"
+              alt="Safeer — Automation and Web Development Partner"
               className="relative h-20 w-20 rounded-full border-2 border-white/20 object-cover shadow-xl sm:h-24 sm:w-24"
             />
             <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-[3px] border-[#09090b] bg-green-500 shadow-lg">
@@ -269,8 +269,8 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
           <div className="flex items-center gap-2 rounded-full border border-white/5 bg-white/[0.02] px-4 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
             <span className="text-[11px] text-zinc-500">
-              <span className="font-semibold text-white/60">12,847</span> hours
-              saved for clients this year
+              Workflow teardowns, websites, and automations built for real
+              business operations
             </span>
           </div>
         </div>
@@ -281,9 +281,9 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
             Perfect for:
           </span>
           {[
-            "Shopify Brands $100K–$2M",
-            "Founders Tired of Manual Ops",
-            "Teams Outgrowing Their Stack",
+            "Founder-Led Businesses",
+            "Teams Tired of Manual Ops",
+            "Websites and Workflows That Need Cleanup",
           ].map((tag) => (
             <span
               key={tag}

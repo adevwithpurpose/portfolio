@@ -17,16 +17,16 @@ export default function Footer() {
         {/* Social Links */}
         <div className="flex items-center gap-4">
           <a
-            href="https://linkedin.com/in/your-profile"
+            href="https://wa.me/923327457257?text=Hi%20Safeer%2C%20I%20found%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project."
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-zinc-500 transition-colors hover:text-white"
-            aria-label="LinkedIn Profile"
+            aria-label="WhatsApp Safeer"
           >
-            LinkedIn
+            WhatsApp
           </a>
           <a
-            href="https://github.com/your-profile"
+            href="https://github.com/adevwithpurpose"
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-zinc-500 transition-colors hover:text-white"

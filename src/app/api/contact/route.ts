@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
  * Current behavior: Validates input and logs to console (dev mode).
  *
  * Production options (pick one):
- * 1. n8n webhook — POST to your n8n endpoint
+ * 1. automation webhook — POST to your n8n endpoint
  *    const res = await fetch(process.env.N8N_CONTACT_WEBHOOK_URL!, { ... })
  *
  * 2. Resend email API — send email directly
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     rateLimitStore.set(ip, now);
 
-    // TODO: Replace with real delivery (n8n webhook, email, database, etc.)
+    // TODO: Replace with real delivery (automation webhook, email, database, etc.)
     if (process.env.NODE_ENV !== "production") {
       console.log("[Contact Form Submission]", { name, email, brief });
     }
