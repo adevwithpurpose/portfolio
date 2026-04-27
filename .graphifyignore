@@ -1,0 +1,15 @@
+.git/
+node_modules/
+.venv/
+venv/
+dist/
+build/
+.next/
+.cache/
+graphify-out/
+.env
+.env.*
+*.pem
+*.key
+AGENTS.md
+CLAUDE.md
