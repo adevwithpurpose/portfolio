@@ -13,7 +13,7 @@ const testimonials = [
     quote:
       "Safeer mapped the workflow quickly, cut the manual steps, and gave us a system we could actually understand and maintain.",
     attribution: "Operations Lead",
-    company: "Growing E-Commerce Team",
+    company: "Growing Operations Team",
     metric: "Manual work reduced",
     avatar: "",
   },
