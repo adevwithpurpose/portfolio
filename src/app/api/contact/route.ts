@@ -8,8 +8,8 @@ import { NextRequest, NextResponse } from "next/server";
  * Current behavior: Validates input and logs to console (dev mode).
  *
  * Production options (pick one):
- * 1. automation webhook — POST to your n8n endpoint
- *    const res = await fetch(process.env.N8N_CONTACT_WEBHOOK_URL!, { ... })
+ * 1. automation webhook — POST to your contact/intake workflow endpoint
+ *    const res = await fetch(process.env.CONTACT_WEBHOOK_URL!, { ... })
  *
  * 2. Resend email API — send email directly
  *    import { Resend } from "resend";
@@ -64,10 +64,11 @@ export async function POST(request: NextRequest) {
       console.log("[Contact Form Submission]", { name, email, brief });
     }
 
-    // If N8N webhook URL is configured, forward the submission
-    if (process.env.N8N_CONTACT_WEBHOOK_URL) {
+    // If webhook URL is configured, forward the submission
+    const contactWebhookUrl = process.env.CONTACT_WEBHOOK_URL;
+    if (contactWebhookUrl) {
       try {
-        await fetch(process.env.N8N_CONTACT_WEBHOOK_URL, {
+        await fetch(contactWebhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, brief, timestamp: new Date().toISOString() }),

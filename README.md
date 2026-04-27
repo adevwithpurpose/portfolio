@@ -1,279 +1,158 @@
-# Safeer — Portfolio Website
+# safeer.dev — Portfolio + Client Acquisition + Deployment
 
-> **Personal Brand Portfolio** for Safeer — Shopify Automation & AI Systems Engineer
-> **Built with:** Next.js 16, Tailwind CSS v4, GSAP 3, Framer Motion
+> Personal brand platform for Safeer — automation, AI systems, and web development.
+> Live: https://safeer.dev
+> Built with: Next.js 16, React 19, Tailwind CSS v4, GSAP, Framer Motion.
 
 ---
 
-## Quick Start
+## Source of truth
+
+- Agent/project rules: `AGENTS.md`
+- Claude-compatible pointer: `CLAUDE.md` imports `AGENTS.md`; do not duplicate rules there.
+- Website source: `src/`
+- Portfolio/client-acquisition docs: `docs/`
+- Deployment notes: `deploy/`
+
+If rules conflict, follow `AGENTS.md` first.
+
+---
+
+## Current positioning
+
+The main public site should stay broad but premium:
+
+- custom AI agents
+- automation systems
+- web systems / platforms
+- workflow cleanup
+- internal tools and operational visibility
+
+Do not make the main site a Shopify/n8n/tool-specific offer unless Safeer explicitly asks for a niche landing page or campaign.
+
+---
+
+## Quick start
 
 ```bash
-cd D:\antigravity\Portfolio_Building\portfolio
-
-# Install dependencies
+cd /home/saf08/sync/G5\ Vault/Gem/knowledge-base/portfolio
 npm install
-
-# Start dev server (default port: 3077)
-node node_modules/next/dist/bin/next dev -p 3077
-
-# Build for production
+npm run dev
+npm run lint
 npm run build
+```
 
-# Start production server
-npm run start
+Deploy is handled by Vercel on push to `main` when changes are ready for production.
+
+---
+
+## Project structure
+
+```text
+portfolio/
+├── src/                    # Next.js portfolio site
+│   ├── app/                # App Router pages + API routes
+│   ├── components/         # UI sections/components
+│   └── lib/                # analytics/utilities
+├── public/                 # static assets
+├── docs/                   # strategy, offers, outreach, proof assets, playbooks
+├── deploy/                 # Doha/server/deployment notes
+├── AGENTS.md               # project agent guide and rules source of truth
+├── CLAUDE.md               # thin pointer to AGENTS.md
+├── RESOLVER.md             # routing map for docs/workflows
+└── llms.txt                # compact doc map for agents
 ```
 
 ---
 
-## Architecture Overview
+## Tech stack
 
-### Tech Stack
 | Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 (App Router, Turbopack) |
+|---|---|
+| Framework | Next.js 16 App Router |
+| UI | React 19 |
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS v4 |
-| Animation | GSAP 3 + ScrollTrigger, Framer Motion |
-| Fonts | Inter (Google Fonts via next/font) |
-| Deployment | Vercel (project ID: `prj_pDLXesIpfP8iwOM6owknU5EDRRzy`) |
+| Animation | GSAP + Framer Motion |
+| Deployment | Vercel |
 
-### Scroll Architecture
-- **CSS Scroll-Snap** handles desktop full-screen section snapping (`globals.css`)
-- **IntersectionObserver** in `SectionWrapper` detects active sections
-- **Lenis removed** — native smooth scroll with CSS snap is faster and more reliable
-- **Prefers-reduced-motion** respected throughout
+Important: this project uses Next.js 16.2.2. Read the relevant `node_modules/next/dist/docs/` guide before writing Next.js code.
 
 ---
 
-## Page Structure (10 Sections)
+## Homepage structure
 
-```
-0. Hero             → Problem-focused headline + photo + CTAs
-1. Social Proof     → 3 realistic testimonials + live activity ticker
-2. Service 1        → Custom Web Development ($18/hr → $30/hr)
-3. Service 2        → Intelligent Automation ($20/hr → $45/hr)
-4. Service 3        → AI Agents ($25/hr → $55/hr)
-5. Process          → "Three Steps. Zero Headaches."
-6. Case Studies     → 2 anonymized case studies with metrics
-7. Why Me vs Agency → Comparison table + savings calculator
-8. FAQ              → 5 common questions (accordion)
-9. Contact          → Project estimates + Calendly + WhatsApp + Email
-Footer              → Social links, copyright, quick nav
-```
-
-### Section Registry (page.tsx)
-```ts
-const SECTION_IDS = [
-  "hero", "social-proof", "service-1", "service-2", "service-3",
-  "process", "case-studies", "why-me", "faq", "contact"
-] as const;
-```
+1. Hero — positioning, proof, CTA
+2. Social proof — testimonials/activity/proof cues
+3. Service 1 — web systems
+4. Service 2 — automation systems
+5. Service 3 — AI assistants / internal tools
+6. Process — how projects run
+7. Case studies — anonymized outcomes and proof
+8. Why Me — comparison and decision support
+9. FAQ
+10. Contact — project inquiry and booking path
 
 ---
 
-## Pricing Strategy
+## Service packaging
 
-| Service | First Project | Standard Rate |
-|---------|--------------|---------------|
-| Custom Web Development | $18/hr | $30/hr |
-| Intelligent Automation | $20/hr | $45/hr |
-| AI Agents & Systems | $25/hr | $55/hr |
+Use package/value framing, not cheap hourly positioning:
 
-**Project Estimates (shown in Contact section):**
-- Simple Website: **$360–$450** (20-25 hrs × $18/hr)
-- Simple Automation: **$200–$300** (10-15 hrs × $20/hr)
-- Simple AI Agent: **$375–$500** (15-20 hrs × $25/hr)
+| Offer | Public framing |
+|---|---|
+| Website / landing page build | From $750 |
+| Automation system build | From $500 |
+| AI assistant / internal tool | From $900 |
 
-**Hidden Full Pricing:** Available at `/private/pricing` (not linked publicly).
+Pricing should be scoped before build. Avoid `$18/hr`, `$20/hr`, `$25/hr`, or other low-cost-first framing in public copy.
 
 ---
 
-## Component Inventory
+## Environment variables
 
-| Component | Purpose |
-|-----------|---------|
-| `Hero.tsx` | Main headline, headshot photo, CTAs, "Perfect For" tags, live counter |
-| `SocialProof.tsx` | 3 realistic testimonials + activity ticker |
-| `Services.tsx` | 3 service sections with visuals, pricing, bullets |
-| `ProcessSection.tsx` | 3-step process with animated connectors |
-| `CaseStudies.tsx` | 2 anonymized case studies with metrics |
-| `WhyMeSection.tsx` | Agency comparison table + savings calculator |
-| `FAQSection.tsx` | 5 expandable FAQ items |
-| `Contact.tsx` | Project estimate cards, Calendly, WhatsApp, Email |
-| `Footer.tsx` | Social links, copyright, quick nav |
-| `NavigationDots.tsx` | Fixed right-side nav with 10 dots + labels |
-| `FloatingWhatsAppButton.tsx` | Fixed bottom-right with hover tooltip |
-| `StorefrontVisual.tsx` | Service 1: Live storefront builder animation |
-| `WorkflowVisual.tsx` | Service 2: n8n workflow with data packets |
-| `AgentServiceVisual.tsx` | Service 3: Live ops dashboard |
-| `SectionWrapper.tsx` | Shared wrapper + IntersectionObserver |
-| `AnimatedGridBackground.tsx` | Subtle grid overlay |
-| `FloatingNodes.tsx` | Canvas-based floating particles |
-| `ScanLine.tsx` | Nav dot click effect |
-| `StatsBanner.tsx` | Deprecated (replaced by live counters) |
-| `LenisProvider.tsx` | Deprecated (replaced by CSS scroll-snap) |
-
----
-
-## Wow Factors & Conversion Elements
-
-| Element | Location | Purpose |
-|---------|----------|---------|
-| Fixed Header | Top of page | "Safeer." logo + "Book a Call" button always visible |
-| Scroll Progress Bar | Top edge | Blue gradient bar showing scroll depth |
-| Live Hours Counter | Hero | "12,847 hours saved for clients this year" |
-| "Perfect For" Tags | Hero | "Shopify Brands $100K–$2M" etc. |
-| Professional Headshot | Hero | Photo with gradient ring + green verification badge |
-| Live Activity Ticker | Social Proof | "3 new projects delivered this week" |
-| Animated Data Packets | Service 2 | Cyan dots flowing through workflow lines |
-| Live Ops Dashboard | Service 3 | Real-time inquiry processing visualization |
-| Process Connectors | Process Section | Animated flow line + arrow between steps |
-| Savings Calculator | Why Me | "$15,000 → $2,100 (86% less)" |
-| FAQ Accordion | FAQ Section | 5 questions with smooth expand/collapse |
-| Project Estimates | Contact | 3 cards showing exact first-project costs |
-| Risk Reversal Badge | Contact | "Satisfaction guaranteed — refund if not happy" |
-| WhatsApp Tooltip | Floating button | "Prefer WhatsApp? Just say hi 👋" |
-
----
-
-## Customization Guide
-
-### Colors
-Edit `globals.css` `:root`:
-```css
-:root {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --blue-500: #2563eb;
-  --blue-600: #1d4ed8;
-  --blue-400: #3b82f6;
-  --cyan-500: #06b6d4;
-}
-```
-
-### Adding a New Section
-1. Add its ID to `SECTION_IDS` in `page.tsx`
-2. Add a label to `labels` in `NavigationDots.tsx`
-3. Render the component with an `onEnter` callback
-4. Ensure the section has `id="your-id"` and `snap-section` class
-
-### Updating Service Pricing
-Edit the `services` array in `Services.tsx`:
-```ts
-{
-  regularPrice: "$30/hr",
-  introPrice: "$18/hr",
-  // ...
-}
-```
-
-### Replacing Testimonials
-Edit the `testimonials` array in `SocialProof.tsx`. Keep metrics specific for credibility.
-
-### Adding a New FAQ
-Edit the `faqs` array in `FAQSection.tsx`:
-```ts
-{ q: "Your question?", a: "Your answer." }
-```
-
----
-
-## Deployment
-
-### Vercel
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-cd D:\antigravity\Portfolio_Building\portfolio
-vercel --prod
-```
-
-### Environment Variables
 | Variable | Purpose | Required |
-|----------|---------|----------|
-| `N8N_CONTACT_WEBHOOK_URL` | Forward contact form to n8n | No |
+|---|---|---|
+| `CONTACT_WEBHOOK_URL` | Optional generic contact-form webhook forwarding | No |
+| `RESEND_API_KEY` | Optional direct email delivery | No |
 
-### Custom Domain
-1. Add domain in Vercel dashboard → Project → Domains
-2. Update `url` in `layout.tsx` `openGraph` config
-3. Add DNS records per Vercel's instructions
+The contact route currently validates submissions, logs in development, and can forward to a generic webhook if configured.
 
 ---
 
-## Performance & Accessibility
+## Documentation map
 
-### Optimizations
-- CSS scroll-snap (no JS wheel interception)
-- `IntersectionObserver` for section detection (no scroll polling)
-- `requestAnimationFrame` for canvas animations
-- `prefers-reduced-motion` respected
-- High-DPI canvas (`devicePixelRatio`)
-- `will-change` hints on animated elements
-- `React.lazy` + `Suspense` for below-fold sections
+- `docs/README.md` — docs index and current direction
+- `docs/00-admin/USER.md` — Safeer profile and operating preferences
+- `docs/01-strategy/channel-action-plans.md` — current broad acquisition plan
+- `docs/03-offers/client-onboarding-playbook.md` — onboarding and delivery notes
+- `docs/04-outreach/` — outreach templates
+- `docs/05-linkedin-presence/` — LinkedIn/profile/proof assets
+- `docs/06-progress/tracker.md` — progress tracking
+- `docs/07-playbooks/` — repeatable workflows
+- `docs/AUDIT.md` / `docs/RESEARCH-QUEUE.md` / `docs/RESTRUCTURE-LOG.md` — audit/control docs
 
-### Accessibility
-- All interactive elements have `aria-label`
-- Keyboard navigation for FAQ accordion
-- Focus states on all buttons
-- Semantic HTML (`<header>`, `<main>`, `<footer>`, `<section>`)
-- `prefers-reduced-motion` disables animations
-
-### Lighthouse Targets
-| Metric | Target |
-|--------|--------|
-| Performance | 90+ |
-| Accessibility | 95+ |
-| Best Practices | 95+ |
-| SEO | 100 |
+Files prefixed with `legacy-` are preserved source material, not current public positioning.
 
 ---
 
-## File Structure
-```
-portfolio/
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx          # Metadata, OG tags, viewport, font
-│   │   ├── page.tsx            # Main page: section registry, analytics
-│   │   ├── globals.css         # Tailwind, scroll-snap, animations
-│   │   ├── api/contact/route.ts # Contact form API
-│   │   └── private/pricing/    # Hidden pricing page
-│   ├── components/             # All UI components
-│   └── lib/                    # Utilities (analytics hook)
-├── public/
-│   ├── safeer.webp             # Professional headshot
-│   └── og-image.svg            # Open Graph image
-├── package.json
-├── next.config.ts
-└── tsconfig.json
+## Verification before deploy
+
+```bash
+npm run lint
+npm run build
 ```
 
----
+Also search public source for stale/risky positioning before deployment:
 
-## Known Limitations
-1. GSAP ScrollTrigger + CSS Snap may fire slightly late on snap transitions (cosmetic only)
-2. Contact form rate limiting is in-memory only (use Redis for production multi-instance)
-3. Canvas layers (grid + nodes) run simultaneously; reduce `count` on low-end devices
-4. Email capture form not implemented (requires backend)
+```bash
+rg -n "Shopify|n8n|e-?commerce|\$18/hr|\$20/hr|\$25/hr|your-profile|12,847" src README.md AGENTS.md llms.txt
+```
 
----
-
-## Changelog
-
-| Date | Change |
-|------|--------|
-| 2026-04-06 | Full conversion audit: hero rewrite, service rename, process section, agency comparison, baseline pricing, social proof, contact simplification, section restructuring |
-| 2026-04-06 | Service visuals redesigned: Storefront, Workflow, Agent Dashboard |
-| 2026-04-06 | Pricing updated: $18/$30, $20/$45, $25/$55 with project estimates |
-| 2026-04-06 | Wow factors added: live counters, savings calculator, scroll progress, headshot |
-| 2026-04-06 | FAQ section, Footer, Risk Reversal, WhatsApp tooltip added |
-| 2026-04-06 | Lenis removed, CSS scroll-snap implemented, IntersectionObserver for sections |
-| 2026-04-06 | High-DPI canvas support, reduced-motion support, accessibility improvements |
-| 2026-04-04 | Initial project setup, component creation |
+Expected result: no main-site identity/tool-specific positioning. Guardrail mentions in docs/rules are okay when they explicitly say not to use those terms as the main public position.
 
 ---
 
 ## License
+
 Private — All rights reserved to Safeer.

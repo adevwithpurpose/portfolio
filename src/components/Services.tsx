@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, ReactNode } from "react";
+import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import gsap from "gsap";
 import SectionWrapper from "@/components/SectionWrapper";
 import StorefrontVisual from "@/components/StorefrontVisual";
 import WorkflowVisual from "@/components/WorkflowVisual";

@@ -1,0 +1,49 @@
+# safeer.dev / Hermes Workspace — Agent Doc Map
+
+This file maps the important docs for agents. Start here, then follow `RESOLVER.md`.
+
+## Operating rules
+
+- `RESOLVER.md` — task routing and file destination rules
+- `AGENTS.md` — project-specific agent guide
+- `docs/00-admin/START-HERE.md` — short onboarding path
+- `docs/00-admin/ANTI-PATTERNS.md` — things to avoid
+- `docs/00-admin/HERMES-SKILL-INVENTORY.md` — active/candidate skills and workflows
+
+## Portfolio strategy
+
+- `docs/README.md` — portfolio docs index
+- `docs/AUDIT.md` — audit findings and copy direction
+- `docs/RESEARCH-QUEUE.md` — claims/topics needing verification
+- `docs/01-strategy/channel-action-plans.md` — acquisition channel strategy
+- `docs/03-offers/client-onboarding-playbook.md` — onboarding and offer material
+
+## Outreach and proof
+
+- `docs/04-outreach/` — outreach templates and scripts
+- `docs/05-linkedin-presence/` — LinkedIn/profile/proof assets
+- `docs/06-progress/tracker.md` — progress tracking
+- `docs/07-playbooks/` — repeatable execution workflows
+
+## Website code
+
+- `src/app/page.tsx` — homepage
+- `src/components/` — UI sections/components
+- `src/app/api/contact/` — contact route
+- `src/app/private/pricing/` — private pricing route
+- `package.json` — scripts/dependencies
+- `next.config.ts` — Next config
+
+## Hermes reports
+
+- `/home/saf08/sync/G5 Vault/Gem/3. Hermes/Reports/2026-04-26 - Feature Mining from External Hermes Repos.md` — repo feature audit and adoption plan
+
+## Public positioning reminder
+
+Use generic positioning on the main site:
+
+- Automation & Web Development
+- AI workflow architecture
+- internal tools and operational systems
+
+Avoid making the main public site explicitly Shopify/n8n-focused unless requested.

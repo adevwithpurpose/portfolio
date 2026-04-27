@@ -149,7 +149,7 @@ export default function Results({ onEnter }: { onEnter?: () => void }) {
             Results
           </span>
           <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-black leading-[1.1] tracking-tight text-white">
-            What I've Built
+            What I&apos;ve Built
           </h2>
         </div>
 

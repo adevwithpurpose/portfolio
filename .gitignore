@@ -44,3 +44,17 @@ coverage/
 
 # Misc
 .cache/
+
+.vercel
+
+# Deploy - SSH keys (if copied here)
+deploy/*.pem
+deploy/*-key
+deploy/*.key
+
+# Temp
+tmp/
+*.tmp
+
+# Private/local deployment notes - do not publish server audits or credentials
+deploy/

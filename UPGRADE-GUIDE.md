@@ -90,7 +90,7 @@ git push
 
 1. Add to `.env.local` for local dev:
 ```bash
-N8N_CONTACT_WEBHOOK_URL=https://your-n8n-instance/webhook/xxx
+CONTACT_WEBHOOK_URL=https://your-contact-workflow.example/webhook
 ```
 
 2. Add to Vercel dashboard → Project → Settings → Environment Variables:

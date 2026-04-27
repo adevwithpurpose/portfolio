@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Link from "next/link";
 import AnimatedGridBackground from "@/components/AnimatedGridBackground";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -125,7 +126,7 @@ export default function PricingPage() {
 
       {/* Back link */}
       <div className="relative z-10 px-6 pt-10">
-        <a
+        <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-white"
         >
@@ -133,7 +134,7 @@ export default function PricingPage() {
             <path d="m15 18-6-6 6-6" />
           </svg>
           Back to Portfolio
-        </a>
+        </Link>
       </div>
 
       {/* Content */}

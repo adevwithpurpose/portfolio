@@ -136,7 +136,7 @@ export default function ProcessSection({ onEnter }: ProcessSectionProps) {
             Three Steps. Zero Headaches.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-base text-zinc-400">
-            From first call to full deployment — here's exactly what happens
+            From first call to full deployment — here&apos;s exactly what happens
             when we work together.
           </p>
         </div>

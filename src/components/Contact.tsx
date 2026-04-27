@@ -53,7 +53,7 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
         className="relative z-10 mx-auto max-w-4xl px-6 text-center"
       >
         <span className="reveal-item mb-6 block text-sm font-medium uppercase tracking-[0.3em] text-white/40">
-          Let's Talk
+          Let&apos;s Talk
         </span>
 
         <h2 className="reveal-item mb-4 text-[clamp(2.5rem,7vw,5rem)] font-black leading-[1.1] tracking-tight">
@@ -73,7 +73,7 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
         </h2>
 
         <p className="reveal-item mb-6 text-xl font-medium text-zinc-400 sm:text-2xl">
-          Tell me what's slow or broken. I'll tell you if I can fix it.
+          Tell me what&apos;s slow or broken. I&apos;ll tell you if I can fix it.
         </p>
 
         <p className="reveal-item mx-auto mb-4 max-w-xl text-lg leading-relaxed text-zinc-400">
