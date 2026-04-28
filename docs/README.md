@@ -49,12 +49,16 @@ Track weekly activity, active leads, decisions, and revenue/proof progress.
    - Website / landing page build
    - Automation system build
    - AI assistant / internal tool build
-4. Use `docs/01-strategy/channel-action-plans.md` as the current broad acquisition plan.
-5. Verify vague market/channel claims before using them in public sales copy.
+4. Use `docs/01-strategy/channel-action-plans.md` as the broad acquisition baseline.
+5. Use `docs/01-strategy/intent-signal-acquisition-os-gsd-plan.md` for the no-cold-email acquisition system plan.
+6. Verify vague market/channel claims before using them in public sales copy.
 
 ## Important docs
 
 - `01-strategy/channel-action-plans.md`
+- `01-strategy/intent-signal-acquisition-os-gsd-plan.md`
+- `02-research/intent-signal-acquisition-research-2026-04-28.md`
+- `02-research/intent-signal-source-map.md`
 - `03-offers/client-onboarding-playbook.md`
 - `05-linkedin-presence/assets/flagship-proof-asset-public-posting-version.md`
 - `06-progress/tracker.md`
