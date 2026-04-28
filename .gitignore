@@ -42,6 +42,13 @@ Thumbs.db
 # Testing
 coverage/
 
+# Python
+__pycache__/
+*.py[cod]
+
+# Local generated acquisition data
+data/
+
 # Misc
 .cache/
 
