@@ -6,6 +6,7 @@ import SocialProof from "@/components/SocialProof";
 import Services from "@/components/Services";
 import ProcessSection from "@/components/ProcessSection";
 import CaseStudies from "@/components/CaseStudies";
+import HowIWork from "@/components/HowIWork";
 import WhyMeSection from "@/components/WhyMeSection";
 import FAQSection from "@/components/FAQSection";
 import Contact from "@/components/Contact";
@@ -26,6 +27,7 @@ const SECTION_IDS = [
   "service-3",
   "process",
   "case-studies",
+  "how-i-work",
   "why-me",
   "faq",
   "contact",
@@ -171,9 +173,10 @@ export default function Home() {
       <Services onEnter={(i) => handleSectionEnter(i + 2)} />
       <ProcessSection onEnter={() => handleSectionEnter(5)} />
       <CaseStudies onEnter={() => handleSectionEnter(6)} />
-      <WhyMeSection onEnter={() => handleSectionEnter(7)} />
-      <FAQSection onEnter={() => handleSectionEnter(8)} />
-      <Contact onEnter={() => handleSectionEnter(9)} />
+      <HowIWork onEnter={() => handleSectionEnter(7)} />
+      <WhyMeSection onEnter={() => handleSectionEnter(8)} />
+      <FAQSection onEnter={() => handleSectionEnter(9)} />
+      <Contact onEnter={() => handleSectionEnter(10)} />
       {/* Footer snap section */}
       <section className="snap-section flex min-h-[50vh] items-center justify-center">
         <Footer />
