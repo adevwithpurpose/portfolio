@@ -121,7 +121,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         {/* Eyebrow tag — urgency + scarcity */}
         <div className="hero-eyebrow mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-blue-400/70 backdrop-blur-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
-          Available — Accepting 2 New Clients
+          Available — Open for 2 New Clients
         </div>
 
         {/* Main Title — problem-focused, hooks in 3 seconds */}
