@@ -3,7 +3,9 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import SectionWrapper from "@/components/SectionWrapper";
-import OpsTheaterVisual from "@/components/OpsTheaterVisual";
+import StorefrontVisual from "@/components/StorefrontVisual";
+import WorkflowVisual from "@/components/WorkflowVisual";
+import AgentServiceVisual from "@/components/AgentServiceVisual";
 
 // ─── Service Section ───
 interface ServiceSectionProps {
@@ -213,7 +215,7 @@ export default function Services({
         "Performance-first architecture that converts",
         "Full-stack solutions in React, Next.js, APIs, and modern web platforms",
       ],
-      visual: <OpsTheaterVisual variant="web" />,
+      visual: <StorefrontVisual />,
       accentColor: "bg-blue-600/10",
       bulletColor: "bg-blue-500",
       cardVariant: "web" as const,
@@ -231,7 +233,7 @@ export default function Services({
         "Connect your tools — CRM, email, Slack, Airtable, WhatsApp, any API",
         "Monitor, maintain, and iterate — always improving",
       ],
-      visual: <OpsTheaterVisual variant="automation" />,
+      visual: <WorkflowVisual />,
       accentColor: "bg-cyan-500/15",
       bulletColor: "bg-cyan-500",
       cardVariant: "automation" as const,
@@ -249,7 +251,7 @@ export default function Services({
         "Multi-agent systems that coordinate autonomously",
         "Built, deployed, and maintained end-to-end",
       ],
-      visual: <OpsTheaterVisual variant="agent" />,
+      visual: <AgentServiceVisual />,
       accentColor: "bg-violet-600/15",
       bulletColor: "bg-violet-400",
       cardVariant: "agent" as const,
