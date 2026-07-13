@@ -4,15 +4,15 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 /**
- * AgentServiceVisual — Service 3: AI Agents & Intelligent Systems
- *
- * WOW: inquiry materializes, confidence + progress tick live, decision snap,
- * action cascade with completion flashes, metrics punch, alive hold pulse.
+ * AgentServiceVisual — Service 3
+ * Typewriter inquiry → live confidence → decision → action cascade → soft loop.
+ * Pause off-screen. Reduced-motion = finished frame.
  */
 export default function AgentServiceVisual() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const inquiryRef = useRef<HTMLDivElement>(null);
   const inquiryTextRef = useRef<HTMLParagraphElement>(null);
   const processRef = useRef<HTMLDivElement>(null);
@@ -31,14 +31,21 @@ export default function AgentServiceVisual() {
     "Hi, do you ship to Europe? I need 500 units of the premium pack.";
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const actions = [
-        action1Ref.current,
-        action2Ref.current,
-        action3Ref.current,
-      ];
-      const metricEls = gsap.utils.toArray<HTMLElement>(".ag-metric-value");
+    const root = containerRef.current;
+    if (!root) return;
 
+    const actions = [
+      action1Ref.current,
+      action2Ref.current,
+      action3Ref.current,
+    ];
+    const metricEls = gsap.utils.toArray<HTMLElement>(
+      root.querySelectorAll(".ag-metric-value"),
+    );
+
+    const showFinished = () => {
+      gsap.set(cardRef.current, { opacity: 1, scale: 1, y: 0, boxShadow: "none" });
+      gsap.set(stageRef.current, { opacity: 1 });
       gsap.set(
         [
           inquiryRef.current,
@@ -49,204 +56,273 @@ export default function AgentServiceVisual() {
           metricsRef.current,
           statusLineRef.current,
         ],
-        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, scale: 1 },
       );
+      gsap.set(highlightRef.current, {
+        scaleX: 1,
+        transformOrigin: "left center",
+      });
+      gsap.set(cursorRef.current, { opacity: 0 });
+      gsap.set(glowRef.current, { opacity: 0.35 });
+      if (inquiryTextRef.current)
+        inquiryTextRef.current.textContent = fullInquiry;
+      if (confidenceRef.current)
+        confidenceRef.current.textContent = "97% confidence";
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      showFinished();
+      return;
+    }
+
+    const conf = { v: 0 };
+    const typeState = { i: 0 };
+
+    const resetStage = () => {
+      conf.v = 0;
+      typeState.i = 0;
+      if (inquiryTextRef.current) inquiryTextRef.current.textContent = "";
+      if (confidenceRef.current)
+        confidenceRef.current.textContent = "0% confidence";
+      gsap.set(cursorRef.current, { opacity: 0 });
       gsap.set(highlightRef.current, {
         scaleX: 0,
         transformOrigin: "left center",
       });
-      gsap.set(cursorRef.current, { opacity: 0 });
-      if (inquiryTextRef.current) inquiryTextRef.current.textContent = "";
-      if (confidenceRef.current) confidenceRef.current.textContent = "0% confidence";
-
-      gsap.fromTo(
-        cardRef.current,
-        { opacity: 0, scale: 0.97, y: 10 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "power3.out" },
+      gsap.set(
+        [
+          inquiryRef.current,
+          processRef.current,
+          decisionRef.current,
+          actionRowRef.current,
+          ...actions,
+          metricsRef.current,
+          statusLineRef.current,
+        ],
+        { opacity: 0, y: 12, scale: 1 },
       );
+      gsap.set(decisionRef.current, { boxShadow: "none" });
+      gsap.set(metricEls, { scale: 1, opacity: 1 });
+      gsap.set(glowRef.current, { opacity: 0.18 });
+    };
 
-      const conf = { v: 0 };
-      const typeState = { i: 0 };
+    const ctx = gsap.context(() => {
+      gsap.set(cardRef.current, { opacity: 0, scale: 0.97, y: 12 });
+      gsap.set(stageRef.current, { opacity: 1 });
+      resetStage();
 
-      const tl = gsap.timeline({ delay: 0.3, repeat: -1, repeatDelay: 0.35 });
+      const addRun = (t: gsap.core.Timeline, withTypewriter: boolean) => {
+        t.to(inquiryRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.26,
+          ease: "power3.out",
+        });
 
-      // 1) Inquiry shell + typewriter
-      tl.to(inquiryRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.25,
-        ease: "power3.out",
-      })
-        .to(cursorRef.current, { opacity: 1, duration: 0.1 })
-        .to(typeState, {
-          i: fullInquiry.length,
-          duration: 1.15,
-          ease: "none",
-          onUpdate: () => {
-            if (inquiryTextRef.current) {
-              inquiryTextRef.current.textContent = fullInquiry.slice(
-                0,
-                Math.round(typeState.i),
-              );
-            }
-          },
-        })
-        .to(cursorRef.current, {
-          opacity: 0,
-          duration: 0.35,
-          repeat: 1,
-          yoyo: true,
-        })
-        // 2) Processing + confidence
-        .to(processRef.current, {
+        if (withTypewriter) {
+          t.to(cursorRef.current, { opacity: 1, duration: 0.08 })
+            .to(typeState, {
+              i: fullInquiry.length,
+              duration: 1.2,
+              ease: "none",
+              onUpdate: () => {
+                if (inquiryTextRef.current) {
+                  inquiryTextRef.current.textContent = fullInquiry.slice(
+                    0,
+                    Math.round(typeState.i),
+                  );
+                }
+              },
+            })
+            .to(cursorRef.current, {
+              opacity: 0,
+              duration: 0.28,
+              repeat: 1,
+              yoyo: true,
+            });
+        } else {
+          // Soft rebuild: snap full inquiry without re-typing every cycle
+          t.add(() => {
+            if (inquiryTextRef.current)
+              inquiryTextRef.current.textContent = fullInquiry;
+          }).to({}, { duration: 0.12 });
+        }
+
+        t.to(processRef.current, {
           opacity: 1,
           y: 0,
           duration: 0.2,
           ease: "power2.out",
         })
-        .to(
-          highlightRef.current,
-          { scaleX: 1, duration: 0.95, ease: "power2.inOut" },
-          "-=0.05",
-        )
-        .to(
-          conf,
-          {
-            v: 97,
-            duration: 0.95,
-            ease: "power2.inOut",
-            onUpdate: () => {
-              if (confidenceRef.current) {
-                confidenceRef.current.textContent = `${Math.round(conf.v)}% confidence`;
-              }
+          .to(
+            highlightRef.current,
+            { scaleX: 1, duration: 1.0, ease: "power2.inOut" },
+            "-=0.05",
+          )
+          .to(
+            conf,
+            {
+              v: 97,
+              duration: 1.0,
+              ease: "power2.inOut",
+              onUpdate: () => {
+                if (confidenceRef.current) {
+                  confidenceRef.current.textContent = `${Math.round(conf.v)}% confidence`;
+                }
+              },
             },
-          },
-          "<",
-        )
-        // 3) Decision snap
-        .fromTo(
-          decisionRef.current,
-          { opacity: 0, y: 12, scale: 0.96 },
-          {
+            "<",
+          )
+          .fromTo(
+            decisionRef.current,
+            { opacity: 0, y: 12, scale: 0.96 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.3,
+              ease: "back.out(1.55)",
+            },
+            "-=0.28",
+          )
+          .to(
+            decisionRef.current,
+            {
+              boxShadow: "0 0 22px rgba(139,92,246,0.3)",
+              duration: 0.28,
+              yoyo: true,
+              repeat: 1,
+            },
+            "-=0.05",
+          )
+          .to(actionRowRef.current, {
             opacity: 1,
             y: 0,
-            scale: 1,
-            duration: 0.28,
-            ease: "back.out(1.6)",
-          },
-          "-=0.25",
-        )
-        .to(
-          decisionRef.current,
-          {
-            boxShadow: "0 0 22px rgba(139,92,246,0.28)",
-            duration: 0.25,
-            yoyo: true,
-            repeat: 1,
-          },
-          "-=0.05",
-        )
-        // 4) Actions cascade
-        .to(actionRowRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.15,
-          ease: "power2.out",
-        })
-        .to(actions, {
-          opacity: 1,
-          y: 0,
-          duration: 0.22,
-          ease: "back.out(1.7)",
-          stagger: 0.12,
-        })
-        .to(
-          actions,
-          {
-            scale: 1.04,
-            duration: 0.15,
-            stagger: 0.08,
-            yoyo: true,
-            repeat: 1,
+            duration: 0.16,
             ease: "power2.out",
-          },
-          "-=0.15",
-        )
-        // 5) Metrics punch
-        .to(
-          metricsRef.current,
-          { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" },
-          "-=0.05",
-        )
-        .fromTo(
-          metricEls,
-          { scale: 0.75, opacity: 0.4 },
-          {
-            scale: 1,
+          })
+          .to(actions, {
             opacity: 1,
-            duration: 0.3,
-            ease: "back.out(1.8)",
-            stagger: 0.07,
-          },
-          "-=0.12",
-        )
-        .to(statusLineRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.18,
-          ease: "power2.out",
-        })
-        // Alive hold
-        .to(glowRef.current, {
-          opacity: 0.5,
-          duration: 0.35,
-          ease: "power2.out",
-        })
-        .to(
-          cardRef.current,
-          {
-            boxShadow: "0 0 40px rgba(139,92,246,0.12)",
-            duration: 0.5,
-            yoyo: true,
-            repeat: 2,
-            ease: "sine.inOut",
-          },
-          "-=0.1",
-        )
-        .to({}, { duration: 0.7 })
-        // Soft reset
-        .to(
-          [
-            inquiryRef.current,
-            processRef.current,
-            decisionRef.current,
-            actionRowRef.current,
-            ...actions,
+            y: 0,
+            duration: 0.24,
+            ease: "back.out(1.65)",
+            stagger: 0.11,
+          })
+          .to(
+            actions,
+            {
+              scale: 1.04,
+              duration: 0.14,
+              stagger: 0.07,
+              yoyo: true,
+              repeat: 1,
+              ease: "power2.out",
+            },
+            "-=0.12",
+          )
+          .to(
             metricsRef.current,
-            statusLineRef.current,
-          ],
-          {
-            opacity: 0,
-            y: -10,
+            { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" },
+            "-=0.05",
+          )
+          .fromTo(
+            metricEls,
+            { scale: 0.78, opacity: 0.4 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.32,
+              ease: "back.out(1.7)",
+              stagger: 0.07,
+            },
+            "-=0.12",
+          )
+          .to(statusLineRef.current, {
+            opacity: 1,
+            y: 0,
             duration: 0.18,
-            ease: "power2.in",
-            stagger: 0.02,
-          },
-        )
-        .to(highlightRef.current, { scaleX: 0, duration: 0.12 }, "-=0.08")
-        .to(glowRef.current, { opacity: 0.2, duration: 0.2 })
+            ease: "power2.out",
+          })
+          .to(glowRef.current, {
+            opacity: 0.46,
+            duration: 0.35,
+            ease: "power2.out",
+          })
+          .to(
+            cardRef.current,
+            {
+              boxShadow: "0 0 36px rgba(139,92,246,0.14)",
+              duration: 0.55,
+              yoyo: true,
+              repeat: 2,
+              ease: "sine.inOut",
+            },
+            "-=0.1",
+          )
+          // Long hold on finished ops frame
+          .to({}, { duration: 2.4 });
+      };
+
+      const loop = gsap.timeline({ paused: true, repeat: -1 });
+      // First segment with typewriter, second without (less fatigue)
+      addRun(loop, true);
+      loop
+        .to(stageRef.current, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        })
+        .add(resetStage)
+        .set(stageRef.current, { opacity: 1 })
+        .set(cardRef.current, { boxShadow: "none" });
+      addRun(loop, false);
+      loop
+        .to(stageRef.current, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        })
+        .add(resetStage)
+        .set(stageRef.current, { opacity: 1 })
+        .set(cardRef.current, { boxShadow: "none" });
+
+      const intro = gsap.timeline({ paused: true });
+      intro
+        .to(cardRef.current, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power3.out",
+        })
         .add(() => {
-          conf.v = 0;
-          typeState.i = 0;
-          if (inquiryTextRef.current) inquiryTextRef.current.textContent = "";
-          if (confidenceRef.current) {
-            confidenceRef.current.textContent = "0% confidence";
-          }
-          gsap.set(cursorRef.current, { opacity: 0 });
-          gsap.set(decisionRef.current, { boxShadow: "none" });
-          gsap.set(cardRef.current, { boxShadow: "none" });
+          loop.restart();
         });
-    }, containerRef);
+
+      let started = false;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          const on = entry.isIntersecting && entry.intersectionRatio >= 0.28;
+          if (on) {
+            if (!started) {
+              started = true;
+              intro.play(0);
+            } else if (loop.paused()) loop.play();
+          } else {
+            loop.pause();
+            intro.pause();
+          }
+        },
+        { threshold: [0, 0.28, 0.55] },
+      );
+      io.observe(root);
+
+      return () => {
+        io.disconnect();
+        intro.kill();
+        loop.kill();
+      };
+    }, root);
 
     return () => ctx.revert();
   }, []);
@@ -259,7 +335,7 @@ export default function AgentServiceVisual() {
       <div
         ref={glowRef}
         className="absolute -inset-8 rounded-2xl bg-violet-600/20 blur-3xl"
-        style={{ opacity: 0.2 }}
+        style={{ opacity: 0.18 }}
       />
 
       <div
@@ -284,7 +360,7 @@ export default function AgentServiceVisual() {
           </div>
         </div>
 
-        <div className="space-y-4 p-5">
+        <div ref={stageRef} className="space-y-4 p-5">
           <div
             ref={inquiryRef}
             className="rounded-lg border border-white/5 bg-white/[0.03] p-3"
@@ -322,7 +398,7 @@ export default function AgentServiceVisual() {
               <div
                 ref={highlightRef}
                 className="h-full rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-400 to-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.55)]"
-                style={{ transformOrigin: "left center" }}
+                style={{ transformOrigin: "left center", transform: "scaleX(0)" }}
               />
             </div>
           </div>

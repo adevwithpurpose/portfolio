@@ -4,15 +4,15 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 /**
- * WorkflowVisual — Service 2: Intelligent Automation
- *
- * WOW: multi-packet data flow, process-node energy ring, cascading output
- * unlocks with check flashes, sequential log lines, continuous "alive" hold.
+ * WorkflowVisual — Service 2
+ * Multi-packet pipeline with energy rings, cascading unlocks, soft crossfade loop.
+ * Pause off-screen. Reduced-motion = finished frame.
  */
 export default function WorkflowVisual() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const flowLine1Ref = useRef<SVGLineElement>(null);
   const processRef = useRef<HTMLDivElement>(null);
@@ -30,13 +30,18 @@ export default function WorkflowVisual() {
   const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const outputs = [
-        output1Ref.current,
-        output2Ref.current,
-        output3Ref.current,
-      ];
+    const root = containerRef.current;
+    if (!root) return;
 
+    const outputs = [
+      output1Ref.current,
+      output2Ref.current,
+      output3Ref.current,
+    ];
+
+    const showFinished = () => {
+      gsap.set(cardRef.current, { opacity: 1, scale: 1, y: 0 });
+      gsap.set(stageRef.current, { opacity: 1 });
       gsap.set(
         [
           triggerRef.current,
@@ -46,7 +51,34 @@ export default function WorkflowVisual() {
           log1Ref.current,
           log2Ref.current,
         ],
-        { opacity: 0, scale: 0.88 },
+        { opacity: 1, scale: 1, x: 0 },
+      );
+      gsap.set([flowLine1Ref.current, flowLine2Ref.current], {
+        strokeDashoffset: 0,
+      });
+      gsap.set(packet1Ref.current, { cy: "30%", opacity: 0.85 });
+      gsap.set(packet2Ref.current, { cy: "54%", opacity: 0.85 });
+      gsap.set(packet3Ref.current, { opacity: 0 });
+      gsap.set([rippleRef.current, ringRef.current], { opacity: 0 });
+      gsap.set(glowRef.current, { opacity: 0.35 });
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      showFinished();
+      return;
+    }
+
+    const resetStage = () => {
+      gsap.set(
+        [
+          triggerRef.current,
+          processRef.current,
+          ...outputs,
+          statusRef.current,
+          log1Ref.current,
+          log2Ref.current,
+        ],
+        { opacity: 0, scale: 0.9, x: 0 },
       );
       gsap.set([flowLine1Ref.current, flowLine2Ref.current], {
         strokeDasharray: 100,
@@ -56,165 +88,201 @@ export default function WorkflowVisual() {
         [packet1Ref.current, packet2Ref.current, packet3Ref.current],
         { opacity: 0 },
       );
+      gsap.set(packet1Ref.current, { cy: "10%" });
+      gsap.set(packet2Ref.current, { cy: "40%" });
+      gsap.set(packet3Ref.current, { cy: "12%" });
       gsap.set([rippleRef.current, ringRef.current], {
-        scale: 0.6,
+        scale: 0.7,
         opacity: 0,
       });
+      gsap.set(glowRef.current, { opacity: 0.18 });
+    };
 
-      gsap.fromTo(
-        cardRef.current,
-        { opacity: 0, scale: 0.96, y: 10 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "power3.out" },
-      );
+    const ctx = gsap.context(() => {
+      gsap.set(cardRef.current, { opacity: 0, scale: 0.97, y: 12 });
+      gsap.set(stageRef.current, { opacity: 1 });
+      resetStage();
 
-      const tl = gsap.timeline({ delay: 0.3, repeat: -1, repeatDelay: 0.4 });
-
-      // Trigger pops in
-      tl.to(triggerRef.current, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.28,
-        ease: "back.out(1.7)",
-      })
-        // Draw first pipe + multi packets
-        .to(flowLine1Ref.current, {
-          strokeDashoffset: 0,
-          duration: 0.45,
-          ease: "power2.inOut",
-        })
-        .fromTo(
-          packet1Ref.current,
-          { opacity: 0, cy: "10%" },
-          { opacity: 1, cy: "32%", duration: 0.45, ease: "power2.inOut" },
-          "-=0.4",
-        )
-        .fromTo(
-          packet3Ref.current,
-          { opacity: 0, cy: "12%" },
-          { opacity: 0.7, cy: "28%", duration: 0.4, ease: "power2.inOut" },
-          "-=0.28",
-        )
-        // Process node + energy
-        .to(
-          processRef.current,
-          { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(1.6)" },
-          "-=0.1",
-        )
-        .fromTo(
-          ringRef.current,
-          { scale: 0.7, opacity: 0.9 },
-          { scale: 1.35, opacity: 0, duration: 0.55, ease: "power2.out" },
-          "-=0.05",
-        )
-        .fromTo(
-          rippleRef.current,
-          { scale: 0.8, opacity: 0.85 },
-          { scale: 1.6, opacity: 0, duration: 0.65, ease: "power2.out" },
-          "-=0.4",
-        )
-        // Second pipe
-        .to(flowLine2Ref.current, {
-          strokeDashoffset: 0,
-          duration: 0.35,
-          ease: "power2.inOut",
-        })
-        .fromTo(
-          packet2Ref.current,
-          { opacity: 0, cy: "40%" },
-          { opacity: 1, cy: "54%", duration: 0.35, ease: "power2.inOut" },
-          "-=0.3",
-        )
-        // Outputs unlock cascade
-        .to(outputs, {
+      const addRun = (t: gsap.core.Timeline) => {
+        t.to(triggerRef.current, {
           opacity: 1,
           scale: 1,
-          duration: 0.22,
-          ease: "back.out(1.8)",
-          stagger: 0.12,
+          duration: 0.3,
+          ease: "back.out(1.7)",
         })
-        .to(
-          outputs,
-          {
-            boxShadow: "0 0 18px rgba(34,211,238,0.25)",
-            duration: 0.2,
-            stagger: 0.08,
-            yoyo: true,
-            repeat: 1,
-          },
-          "-=0.2",
-        )
-        // Status + logs
-        .to(statusRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.2,
-          ease: "power2.out",
-        })
-        .to(
-          log1Ref.current,
-          { opacity: 1, scale: 1, x: 0, duration: 0.18, ease: "power2.out" },
-          "-=0.05",
-        )
-        .to(log2Ref.current, {
-          opacity: 1,
-          scale: 1,
-          x: 0,
-          duration: 0.18,
-          ease: "power2.out",
-        })
-        // Alive hold: gentle process pulse + packet shimmer
-        .to(glowRef.current, {
-          opacity: 0.45,
-          duration: 0.4,
-          ease: "power2.out",
-        })
-        .to(
-          processRef.current,
-          {
-            scale: 1.04,
-            duration: 0.45,
-            yoyo: true,
-            repeat: 3,
-            ease: "sine.inOut",
-          },
-          "-=0.1",
-        )
-        .to({}, { duration: 0.6 })
-        // Soft reset
-        .to(
-          [
-            triggerRef.current,
-            processRef.current,
-            ...outputs,
-            statusRef.current,
-            log1Ref.current,
-            log2Ref.current,
-          ],
-          {
-            opacity: 0,
-            scale: 0.9,
-            duration: 0.2,
-            ease: "power2.in",
-            stagger: 0.02,
-          },
-        )
-        .to(
-          [flowLine1Ref.current, flowLine2Ref.current],
-          { strokeDashoffset: 100, duration: 0.15 },
-          "-=0.1",
-        )
-        .to(
-          [
+          .to(flowLine1Ref.current, {
+            strokeDashoffset: 0,
+            duration: 0.48,
+            ease: "power2.inOut",
+          })
+          .fromTo(
             packet1Ref.current,
-            packet2Ref.current,
+            { opacity: 0, cy: "10%" },
+            {
+              opacity: 1,
+              cy: "32%",
+              duration: 0.48,
+              ease: "power2.inOut",
+            },
+            "-=0.42",
+          )
+          .fromTo(
             packet3Ref.current,
-            rippleRef.current,
+            { opacity: 0, cy: "12%" },
+            {
+              opacity: 0.7,
+              cy: "28%",
+              duration: 0.42,
+              ease: "power2.inOut",
+            },
+            "-=0.3",
+          )
+          .to(
+            processRef.current,
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.28,
+              ease: "back.out(1.55)",
+            },
+            "-=0.08",
+          )
+          .fromTo(
             ringRef.current,
-          ],
-          { opacity: 0, duration: 0.08 },
-        )
-        .to(glowRef.current, { opacity: 0.2, duration: 0.2 });
-    }, containerRef);
+            { scale: 0.75, opacity: 0.9 },
+            { scale: 1.4, opacity: 0, duration: 0.55, ease: "power2.out" },
+            "-=0.05",
+          )
+          .fromTo(
+            rippleRef.current,
+            { scale: 0.85, opacity: 0.8 },
+            { scale: 1.65, opacity: 0, duration: 0.65, ease: "power2.out" },
+            "-=0.4",
+          )
+          .to(flowLine2Ref.current, {
+            strokeDashoffset: 0,
+            duration: 0.38,
+            ease: "power2.inOut",
+          })
+          .fromTo(
+            packet2Ref.current,
+            { opacity: 0, cy: "40%" },
+            {
+              opacity: 1,
+              cy: "54%",
+              duration: 0.38,
+              ease: "power2.inOut",
+            },
+            "-=0.32",
+          )
+          .to(outputs, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.24,
+            ease: "back.out(1.75)",
+            stagger: 0.11,
+          })
+          .to(statusRef.current, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.22,
+            ease: "power2.out",
+          })
+          .to(
+            log1Ref.current,
+            {
+              opacity: 1,
+              scale: 1,
+              x: 0,
+              duration: 0.2,
+              ease: "power2.out",
+            },
+            "-=0.05",
+          )
+          .to(log2Ref.current, {
+            opacity: 1,
+            scale: 1,
+            x: 0,
+            duration: 0.2,
+            ease: "power2.out",
+          })
+          .to(glowRef.current, {
+            opacity: 0.42,
+            duration: 0.35,
+            ease: "power2.out",
+          })
+          // Alive hold — subtle process pulse, no wipe
+          .to(
+            processRef.current,
+            {
+              scale: 1.035,
+              duration: 0.55,
+              yoyo: true,
+              repeat: 3,
+              ease: "sine.inOut",
+            },
+            "-=0.05",
+          )
+          .to({}, { duration: 1.2 });
+      };
+
+      const loop = gsap.timeline({ paused: true, repeat: -1 });
+      addRun(loop);
+      loop
+        .to(stageRef.current, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        })
+        .add(resetStage)
+        .set(stageRef.current, { opacity: 1 });
+      addRun(loop);
+      loop
+        .to(stageRef.current, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        })
+        .add(resetStage)
+        .set(stageRef.current, { opacity: 1 });
+
+      const intro = gsap.timeline({ paused: true });
+      intro
+        .to(cardRef.current, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power3.out",
+        })
+        .add(() => {
+          loop.restart();
+        });
+
+      let started = false;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          const on = entry.isIntersecting && entry.intersectionRatio >= 0.28;
+          if (on) {
+            if (!started) {
+              started = true;
+              intro.play(0);
+            } else if (loop.paused()) loop.play();
+          } else {
+            loop.pause();
+            intro.pause();
+          }
+        },
+        { threshold: [0, 0.28, 0.55] },
+      );
+      io.observe(root);
+
+      return () => {
+        io.disconnect();
+        intro.kill();
+        loop.kill();
+      };
+    }, root);
 
     return () => ctx.revert();
   }, []);
@@ -227,7 +295,7 @@ export default function WorkflowVisual() {
       <div
         ref={glowRef}
         className="absolute -inset-8 rounded-2xl bg-cyan-600/20 blur-3xl"
-        style={{ opacity: 0.2 }}
+        style={{ opacity: 0.18 }}
       />
 
       <div
@@ -246,13 +314,13 @@ export default function WorkflowVisual() {
           </div>
         </div>
 
-        <div className="relative h-[400px] p-5">
+        <div ref={stageRef} className="relative h-[400px] p-5">
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full"
             style={{ overflow: "visible" }}
           >
             <defs>
-              <filter id="glowCyan">
+              <filter id="glowCyanWf">
                 <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
                 <feMerge>
                   <feMergeNode in="coloredBlur" />
@@ -276,7 +344,7 @@ export default function WorkflowVisual() {
               cy="10%"
               r="4.5"
               fill="rgba(34,211,238,0.95)"
-              filter="url(#glowCyan)"
+              filter="url(#glowCyanWf)"
               style={{ opacity: 0 }}
             />
             <circle
@@ -285,7 +353,7 @@ export default function WorkflowVisual() {
               cy="12%"
               r="3"
               fill="rgba(165,243,252,0.7)"
-              filter="url(#glowCyan)"
+              filter="url(#glowCyanWf)"
               style={{ opacity: 0 }}
             />
             <line
@@ -304,7 +372,7 @@ export default function WorkflowVisual() {
               cy="44%"
               r="4.5"
               fill="rgba(34,211,238,0.95)"
-              filter="url(#glowCyan)"
+              filter="url(#glowCyanWf)"
               style={{ opacity: 0 }}
             />
           </svg>
@@ -315,7 +383,7 @@ export default function WorkflowVisual() {
               className="flex w-fit items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-2 shadow-[0_0_20px_rgba(74,222,128,0.12)]"
               style={{ opacity: 0 }}
             >
-              <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
               <span className="font-mono text-xs text-green-300/80">
                 Shopify → New Order #4821
               </span>
@@ -443,7 +511,7 @@ export default function WorkflowVisual() {
               style={{ opacity: 0 }}
             >
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
                 <span className="text-[10px] text-white/45">
                   3 actions completed
                 </span>

@@ -4,10 +4,9 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 /**
- * StorefrontVisual — Service 1: Custom Web Development
- *
- * WOW: browser "builds itself" with staggered product assembly, live score
- * tick-up, metric count-up, soft glow pulse on completion, smooth rebuild loop.
+ * StorefrontVisual — Service 1
+ * Seamless assemble → score → hold → soft crossfade rebuild.
+ * Pause off-screen. Reduced-motion = finished frame.
  */
 export default function StorefrontVisual() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -15,90 +14,124 @@ export default function StorefrontVisual() {
   const glowRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const productsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const metricsRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressLabelRef = useRef<HTMLSpanElement>(null);
   const scoreRef = useRef<HTMLSpanElement>(null);
   const scanRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const productCards = gsap.utils.toArray<HTMLElement>(".sf-product");
-      const metricValues = gsap.utils.toArray<HTMLElement>(".sf-metric-value");
+    const root = containerRef.current;
+    if (!root) return;
 
+    const productCards = gsap.utils.toArray<HTMLElement>(
+      root.querySelectorAll(".sf-product"),
+    );
+    const metricValues = gsap.utils.toArray<HTMLElement>(
+      root.querySelectorAll(".sf-metric-value"),
+    );
+
+    const showFinished = () => {
+      gsap.set(cardRef.current, { opacity: 1, scale: 1, y: 0 });
+      gsap.set(stageRef.current, { opacity: 1 });
       gsap.set(
         [headerRef.current, heroRef.current, ctaRef.current, metricsRef.current],
-        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0 },
       );
-      gsap.set(productCards, { opacity: 0, y: 20, scale: 0.92 });
+      gsap.set(productCards, { opacity: 1, y: 0, scale: 1 });
+      gsap.set(progressBarRef.current, {
+        scaleX: 1,
+        transformOrigin: "left center",
+      });
+      gsap.set([scanRef.current], { opacity: 0 });
+      gsap.set(glowRef.current, { opacity: 0.35 });
+      if (progressLabelRef.current)
+        progressLabelRef.current.textContent = "Optimized";
+      if (scoreRef.current) scoreRef.current.textContent = "98/100";
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      showFinished();
+      return;
+    }
+
+    const score = { v: 0 };
+    const progress = { v: 0 };
+
+    const resetStage = () => {
+      score.v = 0;
+      progress.v = 0;
+      if (progressLabelRef.current)
+        progressLabelRef.current.textContent = "Building… 0%";
+      if (scoreRef.current) scoreRef.current.textContent = "0/100";
       gsap.set(progressBarRef.current, {
         scaleX: 0,
         transformOrigin: "left center",
       });
-      gsap.set(scanRef.current, { xPercent: -120, opacity: 0 });
-      if (progressLabelRef.current) progressLabelRef.current.textContent = "0%";
-      if (scoreRef.current) scoreRef.current.textContent = "0/100";
-
-      gsap.fromTo(
-        cardRef.current,
-        { opacity: 0, scale: 0.96, y: 12 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "power3.out" },
+      gsap.set(productCards, { opacity: 0, y: 18, scale: 0.92 });
+      gsap.set(
+        [headerRef.current, heroRef.current, ctaRef.current, metricsRef.current],
+        { opacity: 0, y: 16 },
       );
+      gsap.set(metricValues, { scale: 1, opacity: 1 });
+    };
 
-      const score = { v: 0 };
-      const progress = { v: 0 };
+    const ctx = gsap.context(() => {
+      gsap.set(cardRef.current, { opacity: 0, scale: 0.97, y: 12 });
+      gsap.set(glowRef.current, { opacity: 0.16 });
+      gsap.set(scanRef.current, { xPercent: -130, opacity: 0 });
+      gsap.set(stageRef.current, { opacity: 1 });
+      resetStage();
 
-      const tl = gsap.timeline({
-        delay: 0.25,
-        repeat: -1,
-        repeatDelay: 0.35,
-      });
+      const loop = gsap.timeline({ paused: true, repeat: -1 });
 
-      // Scan sweep across browser chrome
-      tl.fromTo(
-        scanRef.current,
-        { xPercent: -120, opacity: 0 },
-        { xPercent: 120, opacity: 0.55, duration: 0.7, ease: "power2.inOut" },
-      )
-        .to(scanRef.current, { opacity: 0, duration: 0.15 }, "-=0.1")
-        // Build: header → hero
-        .to(headerRef.current, {
+      const addBuild = (t: gsap.core.Timeline, scan: boolean) => {
+        if (scan) {
+          t.fromTo(
+            scanRef.current,
+            { xPercent: -130, opacity: 0 },
+            {
+              xPercent: 130,
+              opacity: 0.55,
+              duration: 0.7,
+              ease: "power2.inOut",
+            },
+          ).to(scanRef.current, { opacity: 0, duration: 0.12 }, "-=0.1");
+        }
+
+        t.to(headerRef.current, {
           opacity: 1,
           y: 0,
-          duration: 0.28,
+          duration: 0.3,
           ease: "power3.out",
         })
-        .to(
-          heroRef.current,
-          { opacity: 1, y: 0, duration: 0.28, ease: "power3.out" },
-          "-=0.12",
-        )
-        // Products cascade
-        .to(
-          productCards,
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.32,
-            ease: "back.out(1.6)",
-            stagger: 0.1,
-          },
-          "-=0.08",
-        )
-        .to(
-          ctaRef.current,
-          { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" },
-          "-=0.1",
-        )
-        // Progress + score tick
-        .to(
-          progress,
-          {
+          .to(
+            heroRef.current,
+            { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" },
+            "-=0.12",
+          )
+          .to(
+            productCards,
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.34,
+              ease: "back.out(1.55)",
+              stagger: 0.1,
+            },
+            "-=0.1",
+          )
+          .to(
+            ctaRef.current,
+            { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" },
+            "-=0.1",
+          )
+          .to(progress, {
             v: 98,
-            duration: 0.9,
+            duration: 1.0,
             ease: "power2.inOut",
             onUpdate: () => {
               const n = Math.round(progress.v);
@@ -106,90 +139,115 @@ export default function StorefrontVisual() {
                 progressLabelRef.current.textContent =
                   n < 98 ? `Building… ${n}%` : "Optimized";
               }
-              if (progressBarRef.current) {
-                gsap.set(progressBarRef.current, { scaleX: n / 100 });
-              }
+              gsap.set(progressBarRef.current, { scaleX: n / 100 });
             },
-          },
-          "-=0.05",
-        )
-        .to(
-          score,
-          {
-            v: 98,
-            duration: 0.9,
-            ease: "power2.inOut",
-            onUpdate: () => {
-              if (scoreRef.current) {
-                scoreRef.current.textContent = `${Math.round(score.v)}/100`;
-              }
+          })
+          .to(
+            score,
+            {
+              v: 98,
+              duration: 1.0,
+              ease: "power2.inOut",
+              onUpdate: () => {
+                if (scoreRef.current)
+                  scoreRef.current.textContent = `${Math.round(score.v)}/100`;
+              },
             },
-          },
-          "<",
-        )
-        // Metrics pop + count-ish flash
-        .to(
-          metricsRef.current,
-          { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" },
-          "-=0.2",
-        )
-        .fromTo(
-          metricValues,
-          { scale: 0.7, opacity: 0.4 },
-          {
-            scale: 1,
-            opacity: 1,
+            "<",
+          )
+          .to(
+            metricsRef.current,
+            { opacity: 1, y: 0, duration: 0.26, ease: "power2.out" },
+            "-=0.22",
+          )
+          .fromTo(
+            metricValues,
+            { scale: 0.75, opacity: 0.4 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.36,
+              ease: "back.out(1.7)",
+              stagger: 0.08,
+            },
+            "-=0.16",
+          )
+          .to(glowRef.current, {
+            opacity: 0.46,
             duration: 0.35,
-            ease: "back.out(1.8)",
-            stagger: 0.08,
-          },
-          "-=0.15",
-        )
-        // Completion glow pulse
-        .to(glowRef.current, {
-          opacity: 0.55,
-          duration: 0.35,
-          ease: "power2.out",
-        })
-        .to(glowRef.current, {
-          opacity: 0.25,
-          duration: 0.5,
+            ease: "power2.out",
+          })
+          .to(glowRef.current, {
+            opacity: 0.28,
+            duration: 0.65,
+            ease: "sine.inOut",
+          })
+          // Long finished hold
+          .to({}, { duration: 2.8 });
+      };
+
+      // Loop body: build → hold → soft cover → reset → (repeat rebuild without zero flash)
+      addBuild(loop, true);
+      loop
+        .to(stageRef.current, {
+          opacity: 0,
+          duration: 0.32,
           ease: "power2.inOut",
         })
-        // Hold to admire
-        .to({}, { duration: 1.8 })
-        // Soft dismantle
-        .to(
-          [
-            headerRef.current,
-            heroRef.current,
-            ...productCards,
-            ctaRef.current,
-            metricsRef.current,
-          ],
-          {
-            opacity: 0,
-            y: -12,
-            duration: 0.22,
-            ease: "power2.in",
-            stagger: 0.025,
-          },
-        )
-        .to(
-          progressBarRef.current,
-          { scaleX: 0, duration: 0.18, ease: "power2.in" },
-          "-=0.1",
-        )
+        .add(resetStage)
+        .set(stageRef.current, { opacity: 1 });
+      addBuild(loop, false);
+      loop
+        .to(stageRef.current, {
+          opacity: 0,
+          duration: 0.32,
+          ease: "power2.inOut",
+        })
+        .add(resetStage)
+        .set(stageRef.current, { opacity: 1 });
+      // After second soft reset, timeline repeats from start which does scan+build again
+      // First tween of next cycle starts with empty stage already reset - good
+      // But first cycle also has card entrance outside:
+
+      const intro = gsap.timeline({ paused: true });
+      intro
+        .to(cardRef.current, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power3.out",
+        })
         .add(() => {
-          progress.v = 0;
-          score.v = 0;
-          if (progressLabelRef.current) {
-            progressLabelRef.current.textContent = "0%";
-          }
-          if (scoreRef.current) scoreRef.current.textContent = "0/100";
-          gsap.set(productCards, { scale: 0.92, y: 20 });
+          loop.restart();
         });
-    }, containerRef);
+
+      let started = false;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          const on = entry.isIntersecting && entry.intersectionRatio >= 0.28;
+          if (on) {
+            if (!started) {
+              started = true;
+              intro.play(0);
+            } else if (loop.paused()) {
+              loop.play();
+            }
+          } else {
+            loop.pause();
+            intro.pause();
+          }
+        },
+        { threshold: [0, 0.28, 0.55] },
+      );
+      io.observe(root);
+
+      return () => {
+        io.disconnect();
+        intro.kill();
+        loop.kill();
+      };
+    }, root);
 
     return () => ctx.revert();
   }, []);
@@ -202,7 +260,7 @@ export default function StorefrontVisual() {
       <div
         ref={glowRef}
         className="absolute -inset-8 rounded-2xl bg-blue-600/20 blur-3xl"
-        style={{ opacity: 0.25 }}
+        style={{ opacity: 0.16 }}
       />
 
       <div
@@ -210,11 +268,10 @@ export default function StorefrontVisual() {
         className="glass relative z-10 overflow-hidden rounded-xl border border-white/10 bg-white/[0.02]"
         style={{ opacity: 0 }}
       >
-        {/* Browser chrome + scan line */}
         <div className="relative flex items-center gap-2 overflow-hidden border-b border-white/5 bg-white/[0.02] px-5 py-3">
           <div
             ref={scanRef}
-            className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-cyan-400/25 to-transparent"
+            className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent"
           />
           <div className="flex gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500/60" />
@@ -226,7 +283,7 @@ export default function StorefrontVisual() {
           </div>
         </div>
 
-        <div className="p-5">
+        <div ref={stageRef} className="p-5">
           <div
             ref={headerRef}
             className="mb-4 flex items-center justify-between"
@@ -256,7 +313,7 @@ export default function StorefrontVisual() {
             <div className="h-7 w-28 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 opacity-90 shadow-[0_0_16px_rgba(34,211,238,0.35)]" />
           </div>
 
-          <div ref={productsRef} className="mb-4 grid grid-cols-3 gap-2.5">
+          <div className="mb-4 grid grid-cols-3 gap-2.5">
             {[
               { name: "Premium Pack", price: "$49.99" },
               { name: "Starter Kit", price: "$29.00" },
@@ -268,7 +325,9 @@ export default function StorefrontVisual() {
                 style={{ opacity: 0 }}
               >
                 <div className="mb-2 h-9 w-full rounded bg-gradient-to-br from-white/10 to-white/[0.03]" />
-                <div className="mb-1 text-[9px] text-white/35">{product.name}</div>
+                <div className="mb-1 text-[9px] text-white/35">
+                  {product.name}
+                </div>
                 <div className="text-[9px] font-medium text-cyan-300/50">
                   {product.price}
                 </div>
@@ -291,7 +350,7 @@ export default function StorefrontVisual() {
                 ref={progressLabelRef}
                 className="font-mono text-[10px] text-white/35"
               >
-                0%
+                Building… 0%
               </span>
               <span
                 ref={scoreRef}
@@ -304,7 +363,10 @@ export default function StorefrontVisual() {
               <div
                 ref={progressBarRef}
                 className="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 shadow-[0_0_12px_rgba(34,211,238,0.5)]"
-                style={{ transformOrigin: "left center" }}
+                style={{
+                  transformOrigin: "left center",
+                  transform: "scaleX(0)",
+                }}
               />
             </div>
           </div>
@@ -323,7 +385,9 @@ export default function StorefrontVisual() {
                 key={m.label}
                 className="rounded-lg border border-white/5 bg-white/[0.03] p-2 text-center"
               >
-                <div className={`sf-metric-value text-base font-black ${m.color}`}>
+                <div
+                  className={`sf-metric-value text-base font-black ${m.color}`}
+                >
                   {m.value}
                 </div>
                 <div className="mt-0.5 text-[8px] text-white/30">{m.label}</div>
