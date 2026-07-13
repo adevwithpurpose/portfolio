@@ -65,3 +65,6 @@ tmp/
 
 # Private/local deployment notes - do not publish server audits or credentials
 deploy/
+
+# local trash
+.trash/

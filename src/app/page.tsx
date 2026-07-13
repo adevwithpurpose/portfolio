@@ -42,8 +42,10 @@ const SECTION_IDS = [
  * 2-4. Services — outcome-named with baseline pricing
  * 5. Process — "How It Works" 3-step flow
  * 6. Case Studies — 2 detailed stories
- * 7. Why Me vs Agency — comparison table
- * 8. Contact — Calendly primary + WhatsApp secondary
+ * 7. How I Work — operating principles
+ * 8. Why Me vs Agency — comparison table
+ * 9. FAQ
+ * 10. Contact — Cal.com primary + WhatsApp secondary
  */
 export default function Home() {
   const [activeSection, setActiveSection] = useState(0);
@@ -119,7 +121,7 @@ export default function Home() {
         </a>
         {/* Book button */}
         <a
-          href="https://cal.com/safeer-ahmad"
+          href="https://cal.com/safeer-ahmad/15min"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-semibold text-blue-400 backdrop-blur-sm transition-all duration-200 hover:bg-blue-500/20 hover:text-blue-300"

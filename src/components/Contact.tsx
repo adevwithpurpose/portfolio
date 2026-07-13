@@ -8,7 +8,7 @@ import SectionWrapper from "@/components/SectionWrapper";
  * Contact — Simplified CTA section.
  *
  * Conversion research: 1-2 CTAs convert 23% better than 3+.
- * Primary: Calendly (highest intent). Secondary: WhatsApp (low friction).
+ * Primary: Cal.com discovery call (highest intent). Secondary: WhatsApp (low friction).
  * Form removed — discovery call is the conversion goal.
  */
 export default function Contact({ onEnter }: { onEnter?: () => void }) {
@@ -145,10 +145,10 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
           </div>
         </div>
 
-        {/* Primary CTA: Calendly */}
+        {/* Primary CTA: Cal.com */}
         <div className="reveal-item mb-10 flex flex-col items-center gap-4">
           <a
-            href="https://cal.com/safeer-ahmad"
+            href="https://cal.com/safeer-ahmad/15min"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary magnetic inline-flex items-center gap-2 text-base"

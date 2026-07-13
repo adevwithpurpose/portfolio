@@ -224,7 +224,7 @@ export default function PricingPage() {
 
               {/* CTA */}
               <a
-                href="https://cal.com/safeer-ahmad"
+                href="https://cal.com/safeer-ahmad/15min"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full justify-center rounded-full py-3 text-center text-sm font-semibold transition-all duration-300 ${

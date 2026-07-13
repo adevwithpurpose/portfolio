@@ -204,16 +204,16 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         >
           You work directly with me. No account managers. No handoffs. I use AI
           and automation to deliver faster — so you get senior-level execution
-          at a fraction of the cost.
+          without agency overhead.
         </p>
 
-        {/* CTAs — 1 primary (Calendly) + 1 secondary (See Work) */}
+        {/* CTAs — 1 primary (Cal.com 15-min) + 1 secondary (See Work) */}
         <div
           ref={ctasRef}
           className="flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
           <a
-            href="https://cal.com/safeer-ahmad"
+            href="https://cal.com/safeer-ahmad/15min"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary magnetic"

@@ -28,7 +28,7 @@ export default function NavigationDots({
   const particleIdRef = useRef(0);
   const rafRef = useRef<number>(0);
 
-  // Human-readable labels for each section
+  // Human-readable labels — must match SECTION_IDS order/count in page.tsx
   const labels = [
     "Home",
     "Testimonials",
@@ -37,6 +37,7 @@ export default function NavigationDots({
     "AI Agents",
     "How It Works",
     "Case Studies",
+    "How I Work",
     "Why Me",
     "FAQ",
     "Contact",
