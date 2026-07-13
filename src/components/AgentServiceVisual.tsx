@@ -4,9 +4,10 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 /**
- * AgentServiceVisual — Service 3
- * Typewriter inquiry → live confidence → decision → action cascade → soft loop.
- * Pause off-screen. Reduced-motion = finished frame.
+ * Ops Theater / Live Triage Console — Service 3
+ * An incoming request becomes a classified, review-safe operating decision,
+ * then proves its payoff through routed actions. Pause off-screen; reduced
+ * motion renders the finished review-approved frame.
  */
 export default function AgentServiceVisual() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -299,18 +300,17 @@ export default function AgentServiceVisual() {
           loop.restart();
         });
 
-      let started = false;
+      // Start the one-shot card entrance deterministically. The observer only
+      // controls the repeating work, so a delayed/strict-mode observer callback
+      // can never leave the visual transparent.
+      intro.play(0);
       const io = new IntersectionObserver(
         ([entry]) => {
           const on = entry.isIntersecting && entry.intersectionRatio >= 0.28;
           if (on) {
-            if (!started) {
-              started = true;
-              intro.play(0);
-            } else if (loop.paused()) loop.play();
+            if (loop.paused()) loop.play();
           } else {
             loop.pause();
-            intro.pause();
           }
         },
         { threshold: [0, 0.28, 0.55] },
@@ -405,32 +405,22 @@ export default function AgentServiceVisual() {
 
           <div
             ref={decisionRef}
-            className="rounded-lg border border-violet-500/20 bg-violet-500/5 p-3"
+            className="grid grid-cols-2 gap-2.5 rounded-lg border border-violet-500/20 bg-violet-500/5 p-3"
             style={{ opacity: 0 }}
           >
-            <div className="flex items-center gap-2">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="rgba(167,139,250,0.9)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-medium text-violet-300/75">
-                  Intent Classified
-                </span>
-                <span className="text-xs text-white/65">
-                  Bulk order inquiry → high-value lead
-                </span>
+            <div className="rounded-md border border-violet-400/15 bg-black/10 p-2">
+              <div className="mb-1 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wide text-violet-300/75">
+                <span className="h-1.5 w-1.5 rounded-full bg-violet-400" /> AI decision
               </div>
+              <div className="text-[11px] font-medium text-white/75">Bulk order · High value</div>
+              <div className="mt-1 text-[9px] leading-relaxed text-white/35">Draft ships EU terms and routes sales context.</div>
+            </div>
+            <div className="rounded-md border border-green-400/20 bg-green-400/[0.04] p-2">
+              <div className="mb-1 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wide text-green-300/75">
+                <span className="text-[11px]">✓</span> Review gate
+              </div>
+              <div className="text-[11px] font-medium text-white/75">Approved to send</div>
+              <div className="mt-1 text-[9px] leading-relaxed text-white/35">Human review stays in control when it matters.</div>
             </div>
           </div>
 
@@ -450,7 +440,7 @@ export default function AgentServiceVisual() {
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
               </svg>
               <span className="text-[10px] uppercase tracking-wider text-white/30">
-                Actions Dispatched
+                Approved actions
               </span>
             </div>
             <div
@@ -467,7 +457,7 @@ export default function AgentServiceVisual() {
                 <div className="text-[10px] font-medium text-green-300/75">
                   Reply Sent
                 </div>
-                <div className="text-[9px] text-white/30">Shipping info</div>
+                <div className="text-[9px] text-white/30">EU terms draft</div>
               </div>
               <div
                 ref={action2Ref}

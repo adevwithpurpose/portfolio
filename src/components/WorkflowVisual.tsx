@@ -4,9 +4,9 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 /**
- * WorkflowVisual — Service 2
- * Multi-packet pipeline with energy rings, cascading unlocks, soft crossfade loop.
- * Pause off-screen. Reduced-motion = finished frame.
+ * Ops Theater / Order Pipeline Cinema — Service 2
+ * One order becomes three verified actions. The finished frame makes the
+ * operational payoff explicit: manual work deleted in 0.3 seconds.
  */
 export default function WorkflowVisual() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -259,18 +259,17 @@ export default function WorkflowVisual() {
           loop.restart();
         });
 
-      let started = false;
+      // Start the one-shot card entrance deterministically. The observer only
+      // controls the repeating work, so a delayed/strict-mode observer callback
+      // can never leave the visual transparent.
+      intro.play(0);
       const io = new IntersectionObserver(
         ([entry]) => {
           const on = entry.isIntersecting && entry.intersectionRatio >= 0.28;
           if (on) {
-            if (!started) {
-              started = true;
-              intro.play(0);
-            } else if (loop.paused()) loop.play();
+            if (loop.paused()) loop.play();
           } else {
             loop.pause();
-            intro.pause();
           }
         },
         { threshold: [0, 0.28, 0.55] },
@@ -310,7 +309,7 @@ export default function WorkflowVisual() {
             <div className="h-3 w-3 rounded-full bg-green-500/60" />
           </div>
           <div className="ml-3 flex-1 rounded bg-white/5 px-2.5 py-1 font-mono text-xs text-white/25">
-            Workflow — Request Processing
+Order Pipeline Cinema — 0.3 sec
           </div>
         </div>
 
@@ -375,6 +374,11 @@ export default function WorkflowVisual() {
               filter="url(#glowCyanWf)"
               style={{ opacity: 0 }}
             />
+            {/* Permanent branch map: the animated packet reaches the hub, then its
+                result fan-outs into three business systems below. */}
+            <line x1="50%" y1="54%" x2="20%" y2="64%" stroke="rgba(74,222,128,0.24)" strokeWidth="1.25" strokeDasharray="3 4" />
+            <line x1="50%" y1="54%" x2="50%" y2="64%" stroke="rgba(96,165,250,0.24)" strokeWidth="1.25" strokeDasharray="3 4" />
+            <line x1="50%" y1="54%" x2="80%" y2="64%" stroke="rgba(196,181,253,0.24)" strokeWidth="1.25" strokeDasharray="3 4" />
           </svg>
 
           <div className="absolute left-0 right-0 top-6 flex justify-center px-5">
@@ -513,7 +517,7 @@ export default function WorkflowVisual() {
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
                 <span className="text-[10px] text-white/45">
-                  3 actions completed
+                  Manual steps deleted · 3 actions complete
                 </span>
               </div>
               <span className="font-mono text-[10px] text-cyan-400/70">

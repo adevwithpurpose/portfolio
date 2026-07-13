@@ -4,9 +4,10 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 /**
- * StorefrontVisual — Service 1
- * Seamless assemble → score → hold → soft crossfade rebuild.
- * Pause off-screen. Reduced-motion = finished frame.
+ * Ops Theater / Ship a Storefront — Service 1
+ * Wireframe cues resolve into a live storefront, then prove launch quality
+ * through Lighthouse + conversion outcomes. Pause off-screen; reduced-motion
+ * renders the finished proof frame.
  */
 export default function StorefrontVisual() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -222,20 +223,17 @@ export default function StorefrontVisual() {
           loop.restart();
         });
 
-      let started = false;
+      // Start the one-shot card entrance deterministically. The observer only
+      // controls the repeating work, so a delayed/strict-mode observer callback
+      // can never leave the visual transparent.
+      intro.play(0);
       const io = new IntersectionObserver(
         ([entry]) => {
           const on = entry.isIntersecting && entry.intersectionRatio >= 0.28;
           if (on) {
-            if (!started) {
-              started = true;
-              intro.play(0);
-            } else if (loop.paused()) {
-              loop.play();
-            }
+            if (loop.paused()) loop.play();
           } else {
             loop.pause();
-            intro.pause();
           }
         },
         { threshold: [0, 0.28, 0.55] },
@@ -304,13 +302,29 @@ export default function StorefrontVisual() {
 
           <div
             ref={heroRef}
-            className="mb-4 rounded-lg border border-white/5 bg-white/[0.03] p-4"
+            className="mb-4 overflow-hidden rounded-lg border border-cyan-400/15 bg-gradient-to-br from-blue-500/10 via-white/[0.03] to-cyan-400/5 p-4"
             style={{ opacity: 0 }}
           >
-            <div className="mb-2 h-4 w-40 rounded bg-white/20" />
-            <div className="mb-1 h-2 w-56 rounded bg-white/10" />
-            <div className="mb-3 h-2 w-40 rounded bg-white/10" />
-            <div className="h-7 w-28 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 opacity-90 shadow-[0_0_16px_rgba(34,211,238,0.35)]" />
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-cyan-300/70">
+                Launch sequence
+              </span>
+              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-2 py-0.5 font-mono text-[8px] text-cyan-200/70">
+                BUILD → LIVE
+              </span>
+            </div>
+            <div className="mb-1 text-base font-black tracking-tight text-white/80">
+              Premium storefront, shipped.
+            </div>
+            <div className="mb-3 text-[10px] text-white/40">
+              Responsive product experience with a conversion-ready checkout path.
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 px-3 py-1.5 text-[9px] font-bold text-slate-950 shadow-[0_0_16px_rgba(34,211,238,0.35)]">
+                Shop the collection
+              </div>
+              <span className="font-mono text-[9px] text-green-300/70">● deployed</span>
+            </div>
           </div>
 
           <div className="mb-4 grid grid-cols-3 gap-2.5">
