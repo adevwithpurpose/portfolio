@@ -13,8 +13,8 @@ const faqs = [
     a: "Simple projects (landing pages, single automation) take 1-2 weeks. Larger systems (AI agents, multi-workflow setups) take 2-4 weeks. You'll see progress every step of the way.",
   },
   {
-    q: "What if I'm not happy with the result?",
-    a: "I offer a satisfaction guarantee. If you're not happy after the first week of a project, I'll refund you. No questions asked. I only win when you win.",
+    q: "What if we're not a good fit?",
+    a: "1-Week Pilot Exit Clause: If we find we aren't an ideal workflow fit during the first week of the pilot, we cancel the project and I refund your deposit immediately. No questions asked.",
   },
   {
     q: "Do you sign NDAs?",

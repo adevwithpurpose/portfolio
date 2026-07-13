@@ -253,7 +253,7 @@ export default function WorkflowVisual() {
             >
               <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-xs font-mono text-green-300/80">
-                New Request #4821
+                Shopify → New Order #4821
               </span>
             </div>
           </div>

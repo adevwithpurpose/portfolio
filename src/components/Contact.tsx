@@ -148,7 +148,7 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
         {/* Primary CTA: Calendly */}
         <div className="reveal-item mb-10 flex flex-col items-center gap-4">
           <a
-            href="https://calendly.com/saf08/30min"
+            href="https://cal.com/safeer-ahmad"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary magnetic inline-flex items-center gap-2 text-base"
@@ -221,7 +221,7 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
           </div>
           {/* Risk Reversal */}
           <div className="rounded-full border border-green-500/20 bg-green-500/5 px-4 py-1.5 text-[11px] text-green-400/80">
-            ✓ Satisfaction guaranteed — refund if not happy after week 1
+            ✓ 1-Week Pilot Exit Clause — full refund if we&apos;re not a fit
           </div>
         </div>
 
@@ -235,7 +235,7 @@ export default function Contact({ onEnter }: { onEnter?: () => void }) {
         </div>
 
         {/* Secondary CTA: WhatsApp + Email */}
-        <div className="reveal-item flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <div className="reveal-item flex flex-col items-center justify-center gap-4 pb-16 sm:flex-row sm:pb-0">
           <a
             href="https://wa.me/923327457257?text=Hi%20Safeer%2C%20I%20found%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project."
             target="_blank"

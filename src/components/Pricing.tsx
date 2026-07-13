@@ -206,7 +206,7 @@ export default function Pricing({ onEnter }: { onEnter?: () => void }) {
 
               {/* CTA */}
               <a
-                href="https://calendly.com/saf08/30min"
+                href="https://cal.com/safeer-ahmad"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full justify-center rounded-full py-3 text-center text-sm font-semibold transition-all duration-300 ${

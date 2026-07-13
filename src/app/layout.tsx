@@ -14,37 +14,37 @@ export const viewport: Viewport = {
   themeColor: "#09090b",
 };
 
+const SITE_DESCRIPTION =
+  "Direct-to-developer engineering. I build custom high-performance web applications, automated workflows, and intelligent AI agents — without agency overhead.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-flame-psi-75.vercel.app"),
   title: {
-    default: "Safeer — Automation & Web Development",
-    template: "%s | Safeer",
+    default: "Safeer Ahmad | Senior Web Developer & Automation Engineer",
+    template: "%s | Safeer Ahmad",
   },
-  description:
-    "I build clean websites, workflow automations, AI assistants, and internal tools that remove operational friction for growing businesses.",
+  description: SITE_DESCRIPTION,
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://portfolio-flame-psi-75.vercel.app",
-    siteName: "Safeer — Portfolio",
-    title: "Safeer — Automation & Web Development",
-    description:
-      "Clean websites, workflow automations, AI assistants, and internal tools for growing businesses.",
+    siteName: "Safeer Ahmad — Portfolio",
+    title: "Safeer Ahmad | Senior Web Developer & Automation Engineer",
+    description: SITE_DESCRIPTION,
     images: [
       {
-        url: "/og-image.svg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Safeer — Automation & Web Development",
+        alt: "Safeer Ahmad — Senior Web Developer & Automation Engineer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Safeer — Automation & Web Development",
-    description:
-      "Clean websites, workflow automations, AI assistants, and internal tools for growing businesses.",
-    images: ["/og-image.svg"],
+    title: "Safeer Ahmad | Senior Web Developer & Automation Engineer",
+    description: SITE_DESCRIPTION,
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -66,6 +66,24 @@ export default function RootLayout({
         className={`${inter.variable} font-sans antialiased min-h-screen bg-[#09090b] text-white`}
       >
         {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Safeer Ahmad",
+              "jobTitle": "Senior Web Developer & Automation Engineer",
+              "url": "https://portfolio-flame-psi-75.vercel.app",
+              "description": "Direct-to-developer engineering. I build custom high-performance web applications, automated workflows, and intelligent AI agents — without agency overhead.",
+              "knowsAbout": ["Web Development", "Workflow Automation", "AI Agents", "Next.js", "React", "TypeScript"],
+              "offers": {
+                "@type": "Service",
+                "serviceType": "Web Development & Automation"
+              }
+            })
+          }}
+        />
       </body>
     </html>
   );

@@ -135,7 +135,7 @@ export default function StorefrontVisual() {
             <div className="h-3 w-3 rounded-full bg-green-500/60" />
           </div>
           <div className="ml-3 flex-1 rounded bg-white/5 px-2.5 py-1 text-xs text-white/25 font-mono">
-            yourstore.com
+            client-storefront.com
           </div>
         </div>
 
@@ -149,10 +149,7 @@ export default function StorefrontVisual() {
           >
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400" />
-              <div className="flex flex-col gap-1">
-                <div className="h-2.5 w-20 rounded bg-white/20" />
-                <div className="h-1.5 w-12 rounded bg-white/10" />
-              </div>
+              <span className="text-sm font-bold text-white/40 tracking-tight">NovaBrand</span>
             </div>
             <div className="flex gap-3">
               <div className="h-2 w-10 rounded bg-white/15" />
@@ -179,14 +176,18 @@ export default function StorefrontVisual() {
             className="mb-4 grid grid-cols-3 gap-2.5"
             style={{ opacity: 0 }}
           >
-            {[0, 1, 2].map((i) => (
+            {[
+              { name: "Premium Pack", price: "$49.99" },
+              { name: "Starter Kit", price: "$29.00" },
+              { name: "Pro Bundle", price: "$89.95" },
+            ].map((product, i) => (
               <div
                 key={i}
                 className="rounded-lg border border-white/5 bg-white/[0.03] p-2.5"
               >
                 <div className="mb-2 h-9 w-full rounded bg-white/8" />
-                <div className="mb-1 h-1.5 w-full rounded bg-white/15" />
-                <div className="h-1.5 w-3/4 rounded bg-white/10" />
+                <div className="mb-1 text-[9px] text-white/25">{product.name}</div>
+                <div className="text-[9px] text-white/15">{product.price}</div>
               </div>
             ))}
           </div>

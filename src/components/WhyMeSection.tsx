@@ -30,9 +30,9 @@ const comparisonRows = [
     agencyIcon: "✗",
   },
   {
-    label: "Hourly rate",
-    me: "$18-25/hr first project, $30-55/hr after",
-    agency: "$100-180/hr blended rate",
+    label: "Pricing model",
+    me: "Fixed-scope pilots — pay for deliverables, not hours",
+    agency: "Blended hourly billing with bloated scoping phases",
     meIcon: "✓",
     agencyIcon: "✗",
   },
@@ -180,6 +180,20 @@ export default function WhyMeSection({ onEnter }: WhyMeSectionProps) {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Premium positioning callout */}
+        <div className="mt-10 mx-auto max-w-2xl text-center">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-8 py-6 backdrop-blur-sm">
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-blue-400/80">
+              Premium, Not Cheap
+            </p>
+            <p className="text-base text-zinc-300 leading-relaxed">
+              I don&apos;t compete on hourly rate. I compete on outcomes that compound.
+              A system that saves 20 hours a week and runs for two years is cheaper
+              than a quick fix that breaks in a month.
+            </p>
+          </div>
         </div>
       </div>
     </SectionWrapper>

@@ -39,7 +39,7 @@ export default function FloatingWhatsAppButton() {
       href="https://wa.me/923327457257?text=Hi%20Safeer%2C%20I%20found%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project."
       target="_blank"
       rel="noopener noreferrer"
-      className="group fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-[0_0_30px_rgba(37,211,102,0.4)] transition-transform hover:scale-110"
+      className="group fixed bottom-4 right-4 z-50 flex h-12 w-12 sm:bottom-6 sm:right-6 sm:h-14 sm:w-14 items-center justify-center rounded-full shadow-[0_0_30px_rgba(37,211,102,0.4)] transition-transform hover:scale-110"
       style={{
         backgroundColor: "#25D366",
         boxShadow: "0 0 20px rgba(37,211,102,0.35), 0 4px 20px rgba(0,0,0,0.3)",
@@ -52,8 +52,8 @@ export default function FloatingWhatsAppButton() {
       </span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
+        width="24"
+        height="24"
         viewBox="0 0 24 24"
         fill="white"
       >

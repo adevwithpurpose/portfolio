@@ -119,7 +119,7 @@ export default function Home() {
         </a>
         {/* Book button */}
         <a
-          href="https://calendly.com/saf08/30min"
+          href="https://cal.com/safeer-ahmad"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-semibold text-blue-400 backdrop-blur-sm transition-all duration-200 hover:bg-blue-500/20 hover:text-blue-300"

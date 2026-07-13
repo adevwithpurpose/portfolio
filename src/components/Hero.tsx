@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import SectionWrapper from "@/components/SectionWrapper";
 
@@ -171,10 +172,13 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         <div className="mb-8 flex justify-center">
           <div className="group relative">
             <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 opacity-30 blur-lg transition-opacity duration-300 group-hover:opacity-60" />
-            <img
+            <Image
               src="/safeer.webp"
-              alt="Safeer — Automation and Web Development Partner"
+              alt="Safeer Ahmad — Senior Web Developer & Automation Engineer"
+              width={96}
+              height={96}
               className="relative h-20 w-20 rounded-full border-2 border-white/20 object-cover shadow-xl sm:h-24 sm:w-24"
+              priority
             />
             <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-[3px] border-[#09090b] bg-green-500 shadow-lg">
               <svg
@@ -209,7 +213,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
           className="flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
           <a
-            href="https://calendly.com/saf08/30min"
+            href="https://cal.com/safeer-ahmad"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary magnetic"
