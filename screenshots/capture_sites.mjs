@@ -3,12 +3,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const SITES = [
-  { name: 'diesel-patriots', url: 'https://dieselpatriots.com' },
+  { name: 'luminous', url: 'https://luminous.outafbox.com' },
+  { name: '99ads', url: 'https://99ads.com' },
+  { name: 'calmicollar', url: 'https://calmicollar.com' },
   { name: 'nuumi', url: 'https://nuumipet.com' },
   { name: 'amanotte', url: 'https://amanotte.it' },
-  { name: 'calmicollar', url: 'https://calmicollar.com' },
   { name: 'fantasticane', url: 'https://shop.fantasticane.com' },
-  { name: '99ads', url: 'https://99ads.com' },
+  { name: 'diesel-patriots', url: 'https://dieselpatriots.com' },
   { name: 'comfort-truss', url: 'https://comfort-truss.com/pages/hernia-belt-comparison' }
 ];
 
@@ -34,7 +35,7 @@ for (const site of SITES) {
     
     const page = await context.newPage();
 
-    await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 25000 });
     
     // Wait slightly for lazy loaded images
     await page.evaluate(() => window.scrollBy(0, window.innerHeight));

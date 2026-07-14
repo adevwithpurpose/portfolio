@@ -25,169 +25,163 @@ const PROJECTS: ProjectNode[] = [
   {
     id: "node-1",
     type: "ecom",
-    tag: "Shopify Speed Optimization",
-    brand: "Diesel Patriots",
-    tagline: "Liquid Codebase Recode & Core Web Vitals Optimization",
+    tag: "Redesign Concept",
+    brand: "Luminous Face Yoga",
+    tagline: "HTML · CSS · JavaScript · cPanel deployment · Quiet-luxury design",
     challenge:
-      "A high-traffic e-commerce storefront suffered from legacy Liquid structures, excessive thread-blocking third-party scripts, and severe layout shifts that pushed mobile page speeds below 30 on Lighthouse.",
+      "Reshaping a dense course experience into a clearer guided journey to lower user churn and boost premium signups.",
     solution: [
-      "Pruned redundant Shopify dynamic pixel tracking scripts",
-      "Recoded core product grid pages into lightweight vanilla Liquid templates",
-      "Restructured CSS assets to resolve heavy cumulative layout shifts (CLS)",
-      "Optimized site assets to return 95+ mobile performance indexes",
+      "Designed a clean high-end aesthetic reflecting quiet luxury B2C design",
+      "Created structured grid-based guided courses to ease layout density",
+      "Optimized legacy asset compilation for fast load-times on mobile viewports",
     ],
     metrics: [
-      { value: "95+", label: "Lighthouse Performance" },
-      { value: "⬇ 65%", label: "LCP Loading Latency" },
-      { value: "⬆ 18%", label: "Conversion Rate Boost" },
+      { value: "Instant", label: "Mobile Render Speed" },
+      { value: "Fluid", label: "Guided Course Journey" },
+      { value: "Clean", label: "Quiet-Luxury UI Theme" },
     ],
-    tech: ["Shopify Liquid", "Dawn Architecture", "Speed Recode", "Tailwind CSS"],
-    liveLink: "https://dieselpatriots.com",
-    visualAsset: "/screenshots/diesel-patriots.png",
+    tech: ["HTML", "CSS", "JavaScript", "cPanel", "Editorial Design"],
+    liveLink: "https://luminous.outafbox.com",
+    visualAsset: "/screenshots/luminous.png",
   },
   {
     id: "node-2",
     type: "ecom",
-    tag: "Shopify Storefront",
-    brand: "Nuumi Pet",
-    tagline: "Premium Custom Shopify UI & Liquid Refactor",
+    tag: "Agency Showcase",
+    brand: "99ads",
+    tagline: "WordPress · PHP · Custom theme · Dynamic portfolio filtering",
     challenge:
-      "A modern pet brand needed complex custom product styling layout controls (e.g. customized selection grids, custom bundles) that standard themes could not provide without performance degradation.",
+      "High-performance website built to turn complex creative services and case studies into a focused, conversion-led B2B lead-generation experience.",
     solution: [
-      "Built custom bespoke Liquid product page templates",
-      "Developed interactive product bundle configurations without heavy apps",
-      "Implemented clean lazy loading for high-resolution graphics",
-      "Refactored custom product drawer logic to maintain smooth flow",
+      "Developed custom template layouts optimizing core PHP theme layers",
+      "Created dynamic CSS portfolio filtering nodes sorting video ad assets instantly",
+      "Engineered clean conversion paths eliminating barrier questions",
     ],
     metrics: [
-      { value: "92+", label: "Shopify Speed Index" },
+      { value: "0ms", label: "Filter Latency" },
+      { value: "100%", label: "Conversion-led Core UI" },
+      { value: "Fast", label: "Asset Loading Engine" },
+    ],
+    tech: ["WordPress", "PHP", "Tailwind CSS", "Aria Filter API", "Dynamic Search"],
+    liveLink: "https://99ads.com",
+    visualAsset: "/screenshots/99ads.png",
+  },
+  {
+    id: "node-3",
+    type: "ecom",
+    tag: "DTC Pet Wellness Store",
+    brand: "CalmiCollar",
+    tagline: "Shopify · Liquid · CRO landing page · Trust Education",
+    challenge:
+      "Product-led Shopify experience designed around trust-building education, addressing objections, and a direct path to purchase.",
+    solution: [
+      "Mapped cart configurations to checkouts to remove shopping blockades",
+      "Added customizable objection-handling FAQ tabs inside product templates",
+      "Optimized Dawn framework reducing asset sizes for fast mobile response",
+    ],
+    metrics: [
+      { value: "95+", label: "Shopify Speed Index" },
+      { value: "⬇ 35%", label: "Objections Drop-off" },
+      { value: "Liquid", label: "Optimized Core Build" },
+    ],
+    tech: ["Shopify Liquid", "Dawn Core", "CRO Funnel Setup", "Vanila JavaScript"],
+    liveLink: "https://calmicollar.com",
+    visualAsset: "/screenshots/calmicollar.png",
+  },
+  {
+    id: "node-4",
+    type: "ecom",
+    tag: "Pet Wellness Ecommerce",
+    brand: "NuumiPet",
+    tagline: "Shopify · Liquid · Wellness-focused information architecture",
+    challenge:
+      "Ecommerce storefront unifying calming, training, and gut-health products under a warm, editorial dog wellness brand.",
+    solution: [
+      "Unified diverse catalog lines under a single wellness ecosystem",
+      "Wrote custom storytelling blocks emphasizing product quality and trust",
+      "Developed optimized collection page flows keeping layout speed pristine",
+    ],
+    metrics: [
+      { value: "92+", label: "Shopify Speed Score" },
       { value: "⬇ 1.8s", label: "Mobile LCP Speed" },
-      { value: "Fully", label: "Tailored Bundle Engine" },
+      { value: "Warm", label: "Editorial Commerce UI" },
     ],
     tech: ["Shopify Liquid", "Dawn", "Webpack", "Tailwind CSS", "JavaScript"],
     liveLink: "https://nuumipet.com",
     visualAsset: "/screenshots/nuumi.png",
   },
   {
-    id: "node-3",
+    id: "node-5",
     type: "ecom",
-    tag: "Shopify Storefront",
-    brand: "Amanotte Bedding",
-    tagline: "Luxury Italian Domestics Shopify Custom Build",
+    tag: "Sleep Products Ecommerce",
+    brand: "Amanotte",
+    tagline: "Shopify · Liquid · Product-page optimization · 9,700+ reviews",
     challenge:
-      "A premium Italian bed linens brand required an optimized, highly aesthetic layout mimicking high-end fashion catalogs with fast media load times.",
+      "Italian Shopify storefront for premium sleep products, using benefit-led storytelling and social proof to sell comfort and premium transformation.",
     solution: [
-      "Developed high-fidelity custom Shopify Liquid templates matching strict Figma guidelines",
-      "Optimized large editorial gallery modules using responsive srcsets",
-      "Implemented smooth, lag-free slide transitions and collection drawers",
-      "Refactored checkout cart validation steps to decrease bounce rates",
+      "Statically cached 9,700+ Shopify reviews for fast page rendering",
+      "Programmed a clean, hospitality-inspired layout showcasing premium quality",
+      "Refactored collection checkouts to decrease user cart abandonment",
     ],
     metrics: [
-      { value: "94+", label: "Mobile Design Score" },
-      { value: "⬇ 2.2s", label: "Largest Contentful Paint" },
-      { value: "⬆ 25%", label: "Average Session Duration" },
+      { value: "94+", label: "Design Performance Index" },
+      { value: "9,700+", label: "Social Proof Reviews" },
+      { value: "⬇ 2.2s", label: "Page LCP Latency" },
     ],
-    tech: ["Shopify Liquid", "Custom Liquid", "JavaScript", "SEO Optimization", "Webpack"],
+    tech: ["Shopify Liquid", "Reviews Caching API", "Conversion Optimization", "Premium UI Styling"],
     liveLink: "https://amanotte.it",
     visualAsset: "/screenshots/amanotte.png",
   },
   {
-    id: "node-4",
+    id: "node-6",
     type: "ecom",
-    tag: "Shopify Storefront",
-    brand: "CalmiCollar",
-    tagline: "Custom Brand Commerce Page Refactor",
+    tag: "Pet Products Store",
+    brand: "FantastiCane",
+    tagline: "WordPress · Ecommerce · Promotional UX · accessible design",
     challenge:
-      "A wellness pet brand required a customized landing-to-checkout pipeline focusing on a singular product line to maximize local conversion funnel flow.",
+      "Ecommerce refresh for an Italian pet brand, presenting complementary wellness products through clear education and offer-led merchandising.",
     solution: [
-      "Pruned heavy layout bloat and refactored core grid blocks",
-      "Wrote custom drawer and bundle modules optimizing asset file sizes",
-      "Created highly responsive grid layouts showing customer social proof",
-      "Unified Shopify checkouts ensuring seamless buy flow loops",
-    ],
-    metrics: [
-      { value: "95+", label: "Mobile Speed Rating" },
-      { value: "⬇ 35%", label: "Bounce Rate Decline" },
-      { value: "⬆ 19%", label: "Funnel Conversion Rate" },
-    ],
-    tech: ["Shopify Dawn", "Vanilla JS", "Liquid Scripts", "Custom Bundlers"],
-    liveLink: "https://calmicollar.com",
-    visualAsset: "/screenshots/calmicollar.png",
-  },
-  {
-    id: "node-5",
-    type: "ecom",
-    tag: "Shopify Storefront",
-    brand: "Fantastica Cane",
-    tagline: "Premium Leather Pet Goods Custom Build",
-    challenge:
-      "A handmade leather goods brand needed an immersive, fast storefront showing high-resolution leather details and customizations without lag.",
-    solution: [
-      "Optimized theme structure to handle heavy close-up zoom imagery",
-      "Mapped clean dynamic collection filters with native Shopify search API",
-      "Wrote custom responsive slider segments for custom size selections",
+      "Refactored custom product catalogs to support dynamic promotion blocks",
+      "Coded clean, accessible commerce filters with high visual accessibility",
+      "Added responsive slider blocks illustrating proper product application",
     ],
     metrics: [
       { value: "2.1s", label: "Time to First Byte (TTFB)" },
-      { value: "⬇ 40%", label: "Resource Bloat Erased" },
-      { value: "90+", label: "Lighthouse Mobile Score" },
+      { value: "A++", label: "Accessibility Score" },
+      { value: "Bright", label: "Promo-focused Merch UX" },
     ],
-    tech: ["Shopify Liquid", "Dawn Core", "JavaScript", "Responsive Media"],
+    tech: ["WordPress Core", "WooCommerce Engine", "Tailwind", "Responsive Media"],
     liveLink: "https://shop.fantasticane.com",
     visualAsset: "/screenshots/fantasticane.png",
   },
   {
-    id: "node-6",
-    type: "n8n",
-    tag: "Data Pipeline Automation",
-    brand: "Ad-Ops Reporting Automation",
-    tagline: "Cross-Channel data aggregation pipeline via n8n",
-    challenge:
-      "The client was manually extracting data daily from Meta Ads, Google Ads, Microsoft Ads, and Klaviyo metrics into Google Sheets, then compiling Slack digests weekly, stealing 6+ hours.",
-    solution: [
-      "Designed an n8n webhook workflow querying all ad networks programmatically",
-      "Normalized raw statistics across diverse JSON structures daily",
-      "Wrote script pipelines parsing dates, daily metrics, and CTR matrices",
-      "Configured scheduled digests automatically building summaries to Slack channels",
-    ],
-    metrics: [
-      { value: "100%", label: "Automated Synchronization" },
-      { value: "6h/wk", label: "Manual Hours Erased" },
-      { value: "0", label: "Human Metrics Errors" },
-    ],
-    tech: ["n8n.io", "Meta Ads API", "Google Ads API", "Klaviyo API", "Google Sheets", "Slack API"],
-    liveLink: "https://next.theecommarketingcompany.com", // Representing ads reporting metrics interface
-    visualAsset: "/screenshots/99ads.png",
-  },
-  {
     id: "node-7",
-    type: "funnel",
-    tag: "Landing Funnel",
-    brand: "Comfort Truss",
-    tagline: "High-Converting Custom Comparison Page Funnel",
+    type: "n8n",
+    tag: "Data Pipeline",
+    brand: "Ad-Ops Reporting Flow",
+    tagline: "n8n.io · Meta Ads API · Google Ads API · Klaviyo API · Slack API",
     challenge:
-      "A direct consumer health brand needed a highly optimized comparison landing page loading instantly on mobile and directing paid search traffic into comparison buying tables.",
+      "Automated daily gathering of spent and conversion metrics across Meta, Google, Microsoft, and Klaviyo APIs to Google Sheets and client Slack channels.",
     solution: [
-      "Coded custom mobile-first layout with instant layouts and animations",
-      "Created structured grid comparison matrices with simple custom buy triggers",
-      "Eliminated heavy frameworks to yield lightweight loading under 1 second",
-      "Linked directly with custom checkout endpoints to lower cart abandonment drop-offs",
+      "Integrated ad channel platforms programmatically through custom nodes",
+      "Engineered automated spreadsheet validation checking daily values",
+      "Despatched daily, weekly, and monthly PDF update digests to client Slack channels",
     ],
     metrics: [
-      { value: "⬇ 45%", label: "Conversion Funnel Drop-off" },
-      { value: "< 1s", label: "Mobile Loading Latency" },
-      { value: "⬆ 14%", label: "Average Order Value Boost" },
+      { value: "100%", label: "Daily Data Sync" },
+      { value: "6h/wk", label: "Manual Hours Erased" },
+      { value: "0", label: "Human Error Rates" },
     ],
-    tech: ["Next.js", "Tailwind CSS", "Framer Motion", "Checkout Webhooks", "Liquid API"],
-    liveLink: "https://comfort-truss.com/pages/hernia-belt-comparison",
-    visualAsset: "/screenshots/comfort-truss.png",
+    tech: ["n8n.io Core", "Meta Ads API SDK", "Slack Channel Webhooks", "GSheets API"],
+    liveLink: "https://next.theecommarketingcompany.com",
+    visualAsset: "/screenshots/99ads.png",
   },
   {
     id: "node-8",
     type: "ai",
     tag: "AI Automation Agent",
-    brand: "Autonomous Lead Router Agent",
-    tagline: "Unstructured Inbound Event Triage Agent",
+    brand: "Autonomous Lead Router",
+    tagline: "FastAPI · OpenAI API · ReAct Loop Framework · Webhooks",
     challenge:
       "Inbound developer requests and client requests were processed manually, lagging and missing critical target bids. Built an agent that scans, classifies, and alerts via Slack/WhatsApp.",
     solution: [
@@ -197,26 +191,26 @@ const PROJECTS: ProjectNode[] = [
       "Built loop logs showing thinking paths so operators can audit outputs",
     ],
     metrics: [
-      { value: "< 2s", label: "Response Classification" },
-      { value: "98%", label: "Triage Accuracy" },
+      { value: "< 2s", label: "Triage Classification" },
+      { value: "98%", label: "Classification Intent Accuracy" },
       { value: "⬇ 95%", label: "Operator Response Latency" },
     ],
     tech: ["FastAPI", "OpenAI API", "ReAct Loop Framework", "Pinecone", "Webhooks"],
     liveLink: "https://luminous.outafbox.com",
-    visualAsset: "/screenshots/ai-triage.png",
+    visualAsset: "/screenshots/luminous.png",
   },
 ];
 
 export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
-  const [activeNode, setActiveNode] = useState<string>("node-2"); // Default to n8n node
-  const [tabMode, setTabMode] = useState<"specs" | "visual">("specs");
+  const [activeNode, setActiveNode] = useState<string>("node-1"); // Default to Luminous Node
+  const [tabMode, setTabMode] = useState<"specs" | "visual">("visual"); // Default to visual when load
   const containerRef = useRef<HTMLDivElement>(null);
-  const activeProj = PROJECTS.find((p) => p.id === activeNode) || PROJECTS[1];
+  const activeProj = PROJECTS.find((p) => p.id === activeNode) || PROJECTS[0];
 
-  // Reset tab mode to specs when switching projects
+  // Reset tab mode to visual when switching projects
   const handleNodeSwitch = (id: string) => {
     setActiveNode(id);
-    setTabMode("specs");
+    setTabMode("visual");
   };
 
   // GSAP Entrance
@@ -269,45 +263,47 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
           </p>
         </div>
 
-        {/* Dashboard Grid Panel */}
-        <div className="control-panel grid grid-cols-1 lg:grid-cols-12 gap-6 rounded-2xl border border-white/10 bg-[#070709]/90 shadow-2xl overflow-hidden p-6 animate-in fade-in duration-500">
+        {/* Dashboard Grid Panel - Stretched height */}
+        <div className="control-panel grid grid-cols-1 lg:grid-cols-12 gap-6 rounded-2xl border border-white/10 bg-[#070709]/90 shadow-2xl overflow-hidden p-6 animate-in fade-in duration-500 min-h-[580px]">
           
-          {/* LEFT SYSTEM MENU (3 Cols - Scrollable for the 8 nodes) */}
-          <div className="lg:col-span-4 flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-white/5 pb-6 lg:pb-0 lg:pr-6 max-h-[380px] lg:max-h-[480px] overflow-y-auto pr-1 select-none custom-scrollbar">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 mb-2 block sticky top-0 bg-[#070709] py-1">
+          {/* LEFT SYSTEM MENU (3 Cols - Flush to bottom height matching viewport) */}
+          <div className="lg:col-span-4 flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-white/5 pb-6 lg:pb-0 lg:pr-6 overflow-y-auto select-none custom-scrollbar h-full lg:max-h-[540px]">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 mb-2 block sticky top-0 bg-[#070709] py-1 z-10">
               Select active node:
             </span>
-            {PROJECTS.map((proj) => {
-              const isActive = proj.id === activeNode;
-              return (
-                <button
-                  key={proj.id}
-                  onClick={() => handleNodeSwitch(proj.id)}
-                  className={`w-full text-left p-3.5 rounded-xl border font-mono transition-all duration-300 flex flex-col gap-1.5 active:scale-[0.98] ${
-                    isActive
-                      ? "border-blue-500/30 bg-blue-500/10 text-white"
-                      : "border-white/5 bg-[#121215]/20 text-zinc-400 hover:text-zinc-200 hover:border-white/10"
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className={`text-[10px] ${isActive ? "text-blue-400" : "text-zinc-500"}`}>
-                      {proj.id.toUpperCase()}
-                    </span>
-                    <span className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-green-400 animate-pulse" : "bg-zinc-600"}`} />
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold tracking-tight text-white">{proj.brand}</div>
-                    <div className="text-[10px] text-zinc-500 overflow-hidden text-ellipsis whitespace-nowrap mt-1">
-                      {proj.tag}
+            <div className="flex flex-col gap-2">
+              {PROJECTS.map((proj) => {
+                const isActive = proj.id === activeNode;
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => handleNodeSwitch(proj.id)}
+                    className={`w-full text-left p-3.5 rounded-xl border font-mono transition-all duration-300 flex flex-col gap-1.5 active:scale-[0.98] ${
+                      isActive
+                        ? "border-blue-500/30 bg-blue-500/10 text-white animate-pulse-subtle"
+                        : "border-white/5 bg-[#121215]/20 text-zinc-400 hover:text-zinc-200 hover:border-white/10"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-xs">
+                      <span className={`text-[10px] ${isActive ? "text-blue-400" : "text-zinc-500"}`}>
+                        {proj.id.toUpperCase()}
+                      </span>
+                      <span className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-green-400 animate-pulse" : "bg-zinc-600"}`} />
                     </div>
-                  </div>
-                </button>
-              );
-            })}
+                    <div>
+                      <div className="text-sm font-bold tracking-tight text-white">{proj.brand}</div>
+                      <div className="text-[10px] text-zinc-500 overflow-hidden text-ellipsis whitespace-nowrap mt-1">
+                        {proj.tag}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* RIGHT VIEWPORT (8 Cols) */}
-          <div className="lg:col-span-8 flex flex-col gap-6 lg:pl-6 text-left">
+          {/* RIGHT VIEWPORT (8 Cols - Matches height) */}
+          <div className="lg:col-span-8 flex flex-col gap-6 lg:pl-6 text-left h-full">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
               <div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-blue-400">
@@ -347,7 +343,7 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
             </div>
 
             {tabMode === "specs" ? (
-              <>
+              <div className="flex flex-col gap-6 animate-in fade-in duration-300">
                 {/* Core Stats Metrics Grid */}
                 <div className="grid grid-cols-3 gap-3">
                   {activeProj.metrics.map((met, i) => (
@@ -373,10 +369,10 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                     <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
                       System strategy:
                     </h4>
-                    <ul className="space-y-2 text-xs sm:text-sm text-zinc-300">
+                    <ul className="space-y-2 text-xs sm:text-sm text-zinc-300 text-left">
                       {activeProj.solution.map((sol, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="mt-1.5 h-1 w-1 bg-blue-500 rounded-full flex-shrink-0" />
+                          <span className="mt-1.5 h-1.5 w-1.5 bg-blue-500 rounded-full flex-shrink-0" />
                           <span>{sol}</span>
                         </li>
                       ))}
@@ -396,7 +392,7 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                   {activeProj.type === "ai" && <AiWidget />}
                   {activeProj.type === "funnel" && <FunnelWidget />}
                 </div>
-              </>
+              </div>
             ) : (
               /* VISUAL SITE MOCK VIEW */
               <div className="flex flex-col gap-4 animate-in fade-in duration-300">
@@ -417,15 +413,15 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                     </span>
                   </div>
 
-                  {/* Scrollable Visual Viewport Container */}
-                  <div className="relative h-[250px] sm:h-[300px] w-full bg-[#0E0E11] overflow-hidden">
+                  {/* Scrollable Visual Viewport Container - Increased height to match parent grid */}
+                  <div className="relative h-[280px] sm:h-[350px] w-full bg-[#0E0E11] overflow-hidden">
                     {activeProj.visualAsset ? (
                       /* Auto scrolling full page screenshot */
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={activeProj.visualAsset}
                         alt={`${activeProj.brand} full page screenshot preview`}
-                        className="absolute top-0 left-0 w-full h-auto transition-transform duration-[12s] ease-in-out transform translate-y-0 group-hover:-translate-y-[calc(100%-250px)] sm:group-hover:-translate-y-[calc(100%-300px)] object-cover"
+                        className="absolute top-0 left-0 w-full h-auto transition-transform duration-[12s] ease-in-out transform translate-y-0 group-hover:-translate-y-[calc(100%-280px)] sm:group-hover:-translate-y-[calc(100%-350px)] object-cover"
                       />
                     ) : (
                       /* SVG Fallback Frame */
