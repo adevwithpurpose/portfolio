@@ -5,6 +5,7 @@ import Hero from "@/components/Hero";
 import SocialProof from "@/components/SocialProof";
 import Services from "@/components/Services";
 import ProcessSection from "@/components/ProcessSection";
+// Webhook kick-deploy comment to restart Vercel builder
 import CaseStudies from "@/components/CaseStudies";
 import HowIWork from "@/components/HowIWork";
 import WhyMeSection from "@/components/WhyMeSection";
