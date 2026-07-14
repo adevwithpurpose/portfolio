@@ -235,7 +235,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
               <line x1="8" x2="8" y1="2" y2="6" />
               <line x1="3" x2="21" y1="10" y2="10" />
             </svg>
-            Book a Free 15-Min Discovery Call
+            Talk with Safeer
           </a>
           <button
             className="btn-secondary magnetic"
