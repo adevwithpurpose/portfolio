@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import gsap from "gsap";
 import SectionWrapper from "@/components/SectionWrapper";
 import HeroTerminal from "./HeroTerminal";
@@ -173,34 +172,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
           &middot; Internal Tools
         </p>
 
-        {/* Professional Headshot — integrated into hero for instant trust */}
-        <div className="mb-8 flex justify-start">
-          <div className="group relative">
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 opacity-30 blur-lg transition-opacity duration-300 group-hover:opacity-60" />
-            <Image
-              src="/safeer.webp"
-              alt="Safeer Ahmad — Senior Web Developer & Automation Engineer"
-              width={96}
-              height={96}
-              className="relative h-20 w-20 rounded-full border-2 border-white/20 object-cover shadow-xl sm:h-24 sm:w-24"
-              priority
-            />
-            <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-[3px] border-[#09090b] bg-green-500 shadow-lg">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M20 6L9 17l-5-5" />
-              </svg>
-            </div>
-          </div>
-        </div>
+        
 
         {/* Tagline — direct-work positioning + AI-speed hint */}
         <p
