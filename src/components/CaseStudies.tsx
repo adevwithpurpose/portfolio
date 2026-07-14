@@ -17,6 +17,8 @@ interface ProjectNode {
   metrics: { value: string; label: string }[];
   tech: string[];
   type: "ecom" | "n8n" | "ai";
+  liveLink?: string;
+  visualAsset?: string;
 }
 
 const PROJECTS: ProjectNode[] = [
@@ -40,6 +42,8 @@ const PROJECTS: ProjectNode[] = [
       { value: "⬆ 22%", label: "Conversion Rate Uplift" },
     ],
     tech: ["Shopify Dawn", "Custom Liquid", "JavaScript", "Webpack", "Vercel"],
+    liveLink: "https://dawn.shopify.com", // Example live link matching stack
+    visualAsset: "/screenshots/shopify-dawn.png",
   },
   {
     id: "node-2",
@@ -61,6 +65,7 @@ const PROJECTS: ProjectNode[] = [
       { value: "0", label: "Human Metrics Errors" },
     ],
     tech: ["n8n.io", "Meta Ads API", "Google Ads API", "Klaviyo API", "Google Sheets", "Slack API"],
+    visualAsset: "/screenshots/n8n-flow.png",
   },
   {
     id: "node-3",
@@ -82,13 +87,21 @@ const PROJECTS: ProjectNode[] = [
       { value: "⬇ 95%", label: "Operator Response Latency" },
     ],
     tech: ["FastAPI", "OpenAI API", "ReAct Loop Framework", "Pinecone", "Webhooks"],
+    visualAsset: "/screenshots/ai-triage.png",
   },
 ];
 
 export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
   const [activeNode, setActiveNode] = useState<string>("node-2"); // Default to n8n node
+  const [tabMode, setTabMode] = useState<"specs" | "visual">("specs");
   const containerRef = useRef<HTMLDivElement>(null);
   const activeProj = PROJECTS.find((p) => p.id === activeNode) || PROJECTS[1];
+
+  // Reset tab mode to specs when switching projects
+  const handleNodeSwitch = (id: string) => {
+    setActiveNode(id);
+    setTabMode("specs");
+  };
 
   // GSAP Entrance
   useEffect(() => {
@@ -153,7 +166,7 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
               return (
                 <button
                   key={proj.id}
-                  onClick={() => setActiveNode(proj.id)}
+                  onClick={() => handleNodeSwitch(proj.id)}
                   className={`w-full text-left p-3.5 rounded-xl border font-mono transition-all duration-300 flex flex-col gap-1.5 active:scale-[0.98] ${
                     isActive
                       ? "border-blue-500/30 bg-blue-500/10 text-white"
@@ -179,65 +192,174 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
 
           {/* RIGHT VIEWPORT (8 Cols) */}
           <div className="lg:col-span-8 flex flex-col gap-6 lg:pl-6 text-left">
-            <div>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-blue-400">
-                {activeProj.tag}
-              </span>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-1">
-                {activeProj.brand}
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-400 font-mono mt-1.5">
-                {activeProj.tagline}
-              </p>
-            </div>
-
-            {/* Core Stats Metrics Grid */}
-            <div className="grid grid-cols-3 gap-3">
-              {activeProj.metrics.map((met, i) => (
-                <div key={i} className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
-                  <div className="text-lg sm:text-xl font-black text-white">{met.value}</div>
-                  <div className="text-[9px] sm:text-[10px] leading-tight text-zinc-500 mt-1 font-mono">{met.label}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Main Project Content Challenge/Solution */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/5 pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
               <div>
-                <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
-                  The Problem:
-                </h4>
-                <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                  {activeProj.challenge}
+                <span className="text-[10px] uppercase font-bold tracking-widest text-blue-400">
+                  {activeProj.tag}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-1">
+                  {activeProj.brand}
+                </h3>
+                <p className="text-xs sm:text-sm text-zinc-400 font-mono mt-1.5">
+                  {activeProj.tagline}
                 </p>
               </div>
 
-              <div>
-                <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
-                  System strategy:
-                </h4>
-                <ul className="space-y-2 text-xs sm:text-sm text-zinc-300">
-                  {activeProj.solution.map((sol, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1 w-1 bg-blue-500 rounded-full flex-shrink-0" />
-                      <span>{sol}</span>
-                    </li>
-                  ))}
-                </ul>
+              {/* View Selector Tabs */}
+              <div className="flex items-center gap-1.5 bg-white/[0.03] border border-white/5 rounded-lg p-1 self-start sm:self-center">
+                <button
+                  onClick={() => setTabMode("specs")}
+                  className={`px-3 py-1.5 rounded-md text-xs font-mono transition-all ${
+                    tabMode === "specs"
+                      ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                      : "text-zinc-400 hover:text-white border border-transparent"
+                  }`}
+                >
+                  System Specs
+                </button>
+                <button
+                  onClick={() => setTabMode("visual")}
+                  className={`px-3 py-1.5 rounded-md text-xs font-mono transition-all ${
+                    tabMode === "visual"
+                      ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                      : "text-zinc-400 hover:text-white border border-transparent"
+                  }`}
+                >
+                  Visual Interface
+                </button>
               </div>
             </div>
 
-            {/* Custom Interactive Sandbox Widget (Match project type) */}
-            <div className="mt-4 rounded-xl border border-white/5 bg-[#0A0A0C] p-4 flex flex-col gap-3">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 flex justify-between items-center">
-                <span>Interactive Simulation:</span>
-                <span className="text-green-500 font-bold">&#10003; Live Environment</span>
-              </span>
+            {tabMode === "specs" ? (
+              <>
+                {/* Core Stats Metrics Grid */}
+                <div className="grid grid-cols-3 gap-3">
+                  {activeProj.metrics.map((met, i) => (
+                    <div key={i} className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+                      <div className="text-lg sm:text-xl font-black text-white">{met.value}</div>
+                      <div className="text-[9px] sm:text-[10px] leading-tight text-zinc-500 mt-1 font-mono">{met.label}</div>
+                    </div>
+                  ))}
+                </div>
 
-              {activeProj.type === "ecom" && <EcomWidget />}
-              {activeProj.type === "n8n" && <N8nWidget />}
-              {activeProj.type === "ai" && <AiWidget />}
-            </div>
+                {/* Main Project Content Challenge/Solution */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/5 pt-6">
+                  <div>
+                    <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
+                      The Problem:
+                    </h4>
+                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                      {activeProj.challenge}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
+                      System strategy:
+                    </h4>
+                    <ul className="space-y-2 text-xs sm:text-sm text-zinc-300">
+                      {activeProj.solution.map((sol, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="mt-1.5 h-1 w-1 bg-blue-500 rounded-full flex-shrink-0" />
+                          <span>{sol}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Custom Interactive Sandbox Widget (Match project type) */}
+                <div className="mt-4 rounded-xl border border-white/5 bg-[#0A0A0C] p-4 flex flex-col gap-3">
+                  <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 flex justify-between items-center">
+                    <span>Interactive Simulation:</span>
+                    <span className="text-green-500 font-bold">&#10003; Live Environment</span>
+                  </span>
+
+                  {activeProj.type === "ecom" && <EcomWidget />}
+                  {activeProj.type === "n8n" && <N8nWidget />}
+                  {activeProj.type === "ai" && <AiWidget />}
+                </div>
+              </>
+            ) : (
+              /* VISUAL SITE MOCK VIEW */
+              <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+                {/* Fake Browser Wrapper */}
+                <div className="border border-white/10 rounded-xl overflow-hidden bg-[#0A0A0C] shadow-xl">
+                  {/* Browser chrome header */}
+                  <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 bg-white/[0.02]">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+                    </div>
+                    <div className="mx-auto text-[10px] font-mono text-zinc-500 lowercase bg-black/40 px-6 py-0.5 rounded border border-white/5 max-w-[200px] sm:max-w-[300px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      {activeProj.liveLink || `https://${activeProj.brand.toLowerCase().replace(/\s+/g, "-")}.com`}
+                    </div>
+                  </div>
+
+                  {/* Visual Frame */}
+                  <div className="relative aspect-video w-full bg-[#121215] flex flex-col items-center justify-center p-6 border-b border-white/5">
+                    {/* If visualAsset exists, render the image. 
+                        Since these won't resolve locally until files are dropped, we can render a gorgeous, 
+                        dynamic CSS representation that degrades silently. */}
+                    <div className="absolute inset-0 w-full h-full opacity-40 mix-blend-color-dodge bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none" />
+                    
+                    {/* SVG Blueprint Mockup */}
+                    <div className="flex flex-col items-center gap-4 text-center z-10 max-w-[280px]">
+                      <svg
+                        className="w-16 h-16 text-blue-500/60 animate-pulse"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <path d="M21 12H3M12 3v18" />
+                      </svg>
+                      
+                      <div>
+                        <p className="text-white text-xs font-bold font-mono">
+                          {activeProj.brand} Console Mirror
+                        </p>
+                        <p className="text-zinc-500 text-[10px] font-mono mt-1">
+                          File mirror path: {activeProj.visualAsset}
+                        </p>
+                      </div>
+                      
+                      <span className="text-[9px] px-2 py-0.5 rounded border border-amber-500/20 bg-amber-500/5 text-amber-400 font-mono">
+                        Drop screenshot to public/ path to sync UI template
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* External Actions */}
+                {activeProj.liveLink && (
+                  <a
+                    href={activeProj.liveLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full text-center py-2.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-xs font-mono text-white font-bold transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-blue-500/10 active:scale-[0.98]"
+                  >
+                    Open Live Interface Build
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            )}
 
             {/* Tech tag list */}
             <div className="flex flex-wrap gap-2 border-t border-white/5 pt-4 mt-auto">
@@ -282,7 +404,6 @@ function EcomWidget() {
     <div className="flex flex-col sm:flex-row items-center justify-around gap-6 py-2 font-mono">
       <div className="flex flex-col items-center">
         <div className="relative flex items-center justify-center w-28 h-28">
-          {/* Animated circular gauge SVG */}
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.03)" strokeWidth="8" fill="transparent" />
             <circle
@@ -365,7 +486,6 @@ function N8nWidget() {
 
   return (
     <div className="flex flex-col gap-4 font-mono text-left">
-      {/* Pulse Flow map */}
       <div className="flex items-center justify-between text-xs border border-white/5 bg-[#121215] p-3 rounded-lg overflow-x-auto whitespace-nowrap scrollbar-none gap-4">
         <div className={`p-2 rounded border transition-colors ${status === "fetching" ? "border-blue-500 bg-blue-500/10 text-white" : "border-white/5 text-zinc-500"}`}>
           AD APIs
@@ -384,7 +504,6 @@ function N8nWidget() {
         </div>
       </div>
 
-      {/* Terminal log logs */}
       <div className="bg-black/60 border border-white/5 p-3 rounded-lg h-[120px] overflow-y-auto text-[10px] text-[#A78BFA] flex flex-col gap-1 scrollbar-none">
         {logs.map((log, index) => (
           <div key={index} className="leading-relaxed">
