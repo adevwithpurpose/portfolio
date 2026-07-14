@@ -1,80 +1,112 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SectionWrapper from "@/components/SectionWrapper";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const caseStudies = [
+interface ProjectNode {
+  id: string;
+  tag: string;
+  brand: string;
+  tagline: string;
+  challenge: string;
+  solution: string[];
+  metrics: { value: string; label: string }[];
+  tech: string[];
+  type: "ecom" | "n8n" | "ai";
+}
+
+const PROJECTS: ProjectNode[] = [
   {
-    tag: "Workflow Automation",
-    brand: "An Operations-Heavy Commerce Team",
-    tagline: "From manual handoffs to a cleaner operating workflow",
+    id: "node-1",
+    type: "ecom",
+    tag: "E-Commerce",
+    brand: "D2C Brand Storefront",
+    tagline: "Dawn Theme Refactor & Core Web Vitals Optimization",
     challenge:
-      "The team was moving orders, inventory updates, and customer notifications through scattered spreadsheets, inboxes, and manual checks. Every handoff created delay and room for mistakes.",
+      "A high-traffic e-commerce storefront suffered from app bloat and unoptimized Liquid files, dragging performance scores to the low 30s on mobile and bleeding conversion rate.",
     solution: [
-      "Mapped the workflow end-to-end before touching tools",
-      "Built automated checks for inventory, order status, and customer updates",
-      "Added alerts for exceptions that need human review",
-      "Documented the system so the team could maintain it after launch",
+      "Pruned 12+ redundant marketing and pixel apps",
+      "Refactored custom Liquid logic into lightweight Tailwind & Vanilla JS",
+      "Implemented clean lazy-loading and WebP image generation pipelines",
+      "Restructured cart drawer script to eliminate thread-blocking delays",
     ],
-    results: [
-      { metric: "Less manual work", label: "across recurring operations" },
-      { metric: "Cleaner handoffs", label: "between tools and teammates" },
-      { metric: "Faster updates", label: "for customers and internal teams" },
+    metrics: [
+      { value: "95+", label: "Lighthouse Performance" },
+      { value: "⬇ 67%", label: "Time to Interactive" },
+      { value: "⬆ 22%", label: "Conversion Rate Uplift" },
     ],
-    tech: ["Workflow automation", "API integrations", "Slack alerts", "Airtable"],
+    tech: ["Shopify Dawn", "Custom Liquid", "JavaScript", "Webpack", "Vercel"],
   },
   {
-    tag: "AI Assistant System",
-    brand: "A Customer-Facing Service Business",
-    tagline: "An assistant that triages inquiries and routes the right next step",
+    id: "node-2",
+    type: "n8n",
+    tag: "Workflow Automation",
+    brand: "Ad-Ops Automation Engine",
+    tagline: "Unified Multi-Channel Ads Reporting Pipeline",
     challenge:
-      "Inbound messages were landing in multiple places with no consistent triage. Common questions slowed the team down, while high-intent requests were too easy to miss.",
+      "A client team was manually extracting daily performance data from Meta, Google, Microsoft, and Klaviyo to Google Sheets, then compiling weekly/monthly Slack digests, consuming 6+ hours weekly.",
     solution: [
-      "Built an AI assistant to classify incoming messages by intent and urgency",
-      "Drafted helpful first responses for common questions",
-      "Routed high-value or sensitive requests to WhatsApp for human follow-up",
-      "Logged unresolved cases into a simple tracking system",
+      "Designed an n8n webhook workflow querying all ad networks programmatically",
+      "Normalized raw statistics across diverse JSON structures daily",
+      "Wrote script pipelines parsing dates, daily metrics, and CTR matrices",
+      "Configured scheduled digests automatically building summaries to Slack channels",
     ],
-    results: [
-      { metric: "Faster triage", label: "for common customer requests" },
-      { metric: "Clear routing", label: "for high-intent conversations" },
-      { metric: "Better visibility", label: "into unresolved follow-ups" },
+    metrics: [
+      { value: "100%", label: "Daily Data Synchronization" },
+      { value: "6h/wk", label: "Manual Data Entry Erased" },
+      { value: "0", label: "Human Metrics Errors" },
     ],
-    tech: [
-      "AI assistant",
-      "WhatsApp routing",
-      "Airtable",
-      "Claude API",
-      "Internal tools",
+    tech: ["n8n.io", "Meta Ads API", "Google Ads API", "Klaviyo API", "Google Sheets", "Slack API"],
+  },
+  {
+    id: "node-3",
+    type: "ai",
+    tag: "AI Intelligence",
+    brand: "Autonomous Intent Routing Agent",
+    tagline: "Unstructured Inbound Lead Classification system",
+    challenge:
+      "Inbound developer requests and lead emails were landing raw without triage, creating slow follow-up cycles and missing high-priority target projects.",
+    solution: [
+      "Crafted an AI router parsing text files, emails, or chat messages",
+      "Implemented intent categorization system detecting budget, scope, and urgency",
+      "Linked lead validations immediately with custom alerts to Slack & WhatsApp",
+      "Built loop logs showing thinking paths so operators can audit outputs",
     ],
+    metrics: [
+      { value: "< 2s", label: "Lead Categories Categorized" },
+      { value: "98%", label: "Classification Intent Accuracy" },
+      { value: "⬇ 95%", label: "Operator Response Latency" },
+    ],
+    tech: ["FastAPI", "OpenAI API", "ReAct Loop Framework", "Pinecone", "Webhooks"],
   },
 ];
 
 export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
-  const gridRef = useRef<HTMLDivElement>(null);
+  const [activeNode, setActiveNode] = useState<string>("node-2"); // Default to n8n node
+  const containerRef = useRef<HTMLDivElement>(null);
+  const activeProj = PROJECTS.find((p) => p.id === activeNode) || PROJECTS[1];
 
+  // GSAP Entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const cards = gridRef.current?.querySelectorAll(".cs-card");
-      if (!cards?.length) return;
       gsap.fromTo(
-        cards,
-        { opacity: 0, y: 40 },
+        ".control-panel",
+        { opacity: 0, scale: 0.98, y: 30 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.25,
+          scale: 1,
+          duration: 0.8,
           ease: "power2.out",
-          stagger: 0.08,
           scrollTrigger: {
-            trigger: gridRef.current,
+            trigger: containerRef.current,
             start: "top 75%",
           },
-        },
+        }
       );
     });
     return () => ctx.revert();
@@ -83,138 +115,350 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
   return (
     <SectionWrapper
       id="case-studies"
-      className="flex flex-col items-center justify-center py-24"
+      className="relative py-24 overflow-hidden border-t border-white/5"
       onEnter={onEnter}
     >
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="h-[500px] w-[500px] rounded-full bg-blue-600/8 blur-[120px]" />
+      {/* Background grids */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute top-12 left-12 w-64 h-64 rounded-full bg-blue-500/20 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 w-full px-6">
-        {/* Demo lab badge */}
-        <div className="mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-[11px] text-amber-400/80 backdrop-blur-sm">
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          Demo Lab — Anonymized Case Studies
+      <div className="relative z-10 mx-auto max-w-6xl px-6 w-full" ref={containerRef}>
+        {/* Eyebrow Label */}
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-blue-400/80 backdrop-blur-sm">
+          <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
+          Operations Center &mdash; Project Nodes
         </div>
 
-        {/* Header */}
-        <div className="mx-auto mb-16 max-w-3xl text-center">
-          <span className="mb-4 block text-sm font-medium uppercase tracking-[0.3em] text-white/40">
-            Case Studies
-          </span>
-          <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-black leading-[1.1] tracking-tight text-white">
-            Selected Results
+        {/* Section Heading */}
+        <div className="mb-12 max-w-2xl">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight tracking-tight">
+            Selected Live Case Studies
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-zinc-400">
-            A sample of client projects with metrics and outcomes. Brand names
-            anonymized for privacy.
+          <p className="mt-3 text-zinc-400 text-sm sm:text-base leading-relaxed">
+            Direct outcomes built for modern operations. Click a node on the left to boot up its system metrics and interactive workspace.
           </p>
         </div>
 
-        {/* Case study cards */}
-        <div
-          ref={gridRef}
-          className="mx-auto grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-2"
-        >
-          {caseStudies.map((cs, i) => (
-            <div
-              key={i}
-              className="cs-card holographic group relative cursor-default rounded-2xl border border-white/[0.06] bg-white/[0.03] p-8 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-blue-500/25"
-              style={{
-                boxShadow: "0 0 0 rgba(37,99,235,0)",
-                transition:
-                  "box-shadow 0.5s ease, transform 0.5s ease, border-color 0.5s ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow =
-                  "0 0 40px rgba(37,99,235,0.15), 0 0 80px rgba(37,99,235,0.07)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow =
-                  "0 0 0 rgba(37,99,235,0)";
-              }}
-            >
-              {/* Holographic shimmer */}
-              <div className="shimmer-overlay pointer-events-none absolute inset-0 rounded-2xl" />
-
-              {/* Tag */}
-              <span className="mb-3 block text-xs font-medium uppercase tracking-widest text-blue-400/60">
-                {cs.tag}
-              </span>
-
-              {/* Brand */}
-              <h3 className="mb-1 text-xl font-bold text-white">{cs.brand}</h3>
-              <p className="mb-4 text-sm font-medium text-blue-300/70">
-                {cs.tagline}
-              </p>
-
-              {/* Challenge */}
-              <p className="mb-5 text-sm leading-relaxed text-zinc-400">
-                {cs.challenge}
-              </p>
-
-              {/* Solution bullets */}
-              <ul className="mb-6 space-y-2">
-                {cs.solution.map((s, j) => (
-                  <li
-                    key={j}
-                    className="flex items-start gap-2.5 text-sm text-zinc-300"
-                  >
-                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500/60" />
-                    {s}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Results */}
-              <div className="mb-6 grid grid-cols-3 gap-3">
-                {cs.results.map((r) => (
-                  <div
-                    key={r.label}
-                    className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center"
-                  >
-                    <div className="text-lg font-black text-white">
-                      {r.metric}
-                    </div>
-                    <div className="mt-0.5 text-[10px] leading-snug text-zinc-400">
-                      {r.label}
+        {/* Dashboard Grid Panel */}
+        <div className="control-panel grid grid-cols-1 lg:grid-cols-12 gap-6 rounded-2xl border border-white/10 bg-[#070709]/90 shadow-2xl overflow-hidden p-6">
+          
+          {/* LEFT SYSTEM MENU (3 Cols) */}
+          <div className="lg:col-span-4 flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-white/5 pb-6 lg:pb-0 lg:pr-6">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 mb-2">
+              Select active node:
+            </span>
+            {PROJECTS.map((proj) => {
+              const isActive = proj.id === activeNode;
+              return (
+                <button
+                  key={proj.id}
+                  onClick={() => setActiveNode(proj.id)}
+                  className={`w-full text-left p-3.5 rounded-xl border font-mono transition-all duration-300 flex flex-col gap-1.5 active:scale-[0.98] ${
+                    isActive
+                      ? "border-blue-500/30 bg-blue-500/10 text-white"
+                      : "border-white/5 bg-[#121215]/20 text-zinc-400 hover:text-zinc-200 hover:border-white/10"
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-xs">
+                    <span className={`text-[10px] ${isActive ? "text-blue-400" : "text-zinc-500"}`}>
+                      {proj.id.toUpperCase()}
+                    </span>
+                    <span className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-green-400 animate-pulse" : "bg-zinc-600"}`} />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold tracking-tight">{proj.brand}</div>
+                    <div className="text-[10px] text-zinc-500 overflow-hidden text-ellipsis whitespace-nowrap mt-1">
+                      {proj.tag}
                     </div>
                   </div>
-                ))}
-              </div>
+                </button>
+              );
+            })}
+          </div>
 
-              {/* Tech stack */}
-              <div className="flex flex-wrap gap-2">
-                {cs.tech.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-0.5 text-[10px] text-white/30"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              {/* Bottom accent */}
-              <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-blue-500/20 to-transparent transition-all duration-500 group-hover:via-blue-400/50" />
+          {/* RIGHT VIEWPORT (8 Cols) */}
+          <div className="lg:col-span-8 flex flex-col gap-6 lg:pl-6 text-left">
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-blue-400">
+                {activeProj.tag}
+              </span>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-1">
+                {activeProj.brand}
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-400 font-mono mt-1.5">
+                {activeProj.tagline}
+              </p>
             </div>
-          ))}
+
+            {/* Core Stats Metrics Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              {activeProj.metrics.map((met, i) => (
+                <div key={i} className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+                  <div className="text-lg sm:text-xl font-black text-white">{met.value}</div>
+                  <div className="text-[9px] sm:text-[10px] leading-tight text-zinc-500 mt-1 font-mono">{met.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Main Project Content Challenge/Solution */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/5 pt-6">
+              <div>
+                <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
+                  The Problem:
+                </h4>
+                <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                  {activeProj.challenge}
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
+                  System strategy:
+                </h4>
+                <ul className="space-y-2 text-xs sm:text-sm text-zinc-300">
+                  {activeProj.solution.map((sol, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1 w-1 bg-blue-500 rounded-full flex-shrink-0" />
+                      <span>{sol}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Custom Interactive Sandbox Widget (Match project type) */}
+            <div className="mt-4 rounded-xl border border-white/5 bg-[#0A0A0C] p-4 flex flex-col gap-3">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 flex justify-between items-center">
+                <span>Interactive Simulation:</span>
+                <span className="text-green-500 font-bold">&#10003; Live Environment</span>
+              </span>
+
+              {activeProj.type === "ecom" && <EcomWidget />}
+              {activeProj.type === "n8n" && <N8nWidget />}
+              {activeProj.type === "ai" && <AiWidget />}
+            </div>
+
+            {/* Tech tag list */}
+            <div className="flex flex-wrap gap-2 border-t border-white/5 pt-4 mt-auto">
+              {activeProj.tech.map((t, idx) => (
+                <span
+                  key={idx}
+                  className="rounded-full border border-white/10 bg-white/[0.02] px-2.5 py-0.5 text-[10px] text-zinc-500 font-mono"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
+          </div>
         </div>
       </div>
     </SectionWrapper>
+  );
+}
+
+// 1. E-Commerce Speed Widget
+function EcomWidget() {
+  const [score, setScore] = useState<number>(34);
+  const [active, setActive] = useState<boolean>(false);
+
+  const runAudit = () => {
+    if (active) return;
+    setActive(true);
+    setScore(34);
+    let count = 34;
+    const interval = setInterval(() => {
+      count += 2;
+      setScore(count);
+      if (count >= 96) {
+        clearInterval(interval);
+        setActive(false);
+      }
+    }, 30);
+  };
+
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-around gap-6 py-2 font-mono">
+      <div className="flex flex-col items-center">
+        <div className="relative flex items-center justify-center w-28 h-28">
+          {/* Animated circular gauge SVG */}
+          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.03)" strokeWidth="8" fill="transparent" />
+            <circle
+              cx="50"
+              cy="50"
+              r="40"
+              stroke={score > 80 ? "#10B981" : score > 50 ? "#F59E0B" : "#EF4444"}
+              strokeWidth="8"
+              fill="transparent"
+              strokeDasharray="251.2"
+              strokeDashoffset={251.2 - (251.2 * score) / 100}
+              style={{ transition: "stroke-dashoffset 0.1s linear, stroke 0.3s ease" }}
+            />
+          </svg>
+          <div className="absolute flex flex-col items-center justify-center">
+            <span className="text-2xl font-extrabold text-white">{score}</span>
+            <span className="text-[8px] text-zinc-500">LIGHTHOUSE</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-start gap-3 max-w-[280px]">
+        <p className="text-[11px] text-zinc-400 leading-snug">
+          The optimizations removed rendering blockades, returning a performance index rating of <span className="text-[#10B981] font-bold">96/100</span>.
+        </p>
+        <button
+          onClick={runAudit}
+          disabled={active}
+          className="w-full py-1.5 px-3 rounded-md bg-blue-500/10 border border-blue-500/30 text-xs text-blue-400 font-bold hover:bg-blue-500/20 active:scale-95 disabled:opacity-50 disabled:active:scale-100 transition-all font-mono"
+        >
+          {active ? "Auditing Pipeline..." : "Trigger Speed Audit"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// 2. n8n Dynamic Payload Sync Widget
+function N8nWidget() {
+  const [status, setStatus] = useState<"idle" | "fetching" | "gsheet" | "slack" | "done">("idle");
+  const [logs, setLogs] = useState<string[]>([
+    "System parked. Click trigger to monitor scheduler execution."
+  ]);
+
+  const runSync = async () => {
+    if (status !== "idle" && status !== "done") return;
+    
+    setStatus("fetching");
+    setLogs([
+      "[n8n Sync started via CRON scheduler]",
+      "[fetching] Requesting ad set performance vectors from Meta Ads API...",
+      "[fetching] Parsing impressions, CTR metrics, and spent budget from Google Ads SDK...",
+      "[fetching] Pulling conversion metrics from Microsoft Graph API..."
+    ]);
+    
+    await new Promise(r => setTimeout(r, 1200));
+    setStatus("gsheet");
+    setLogs(prev => [
+      ...prev,
+      "[gsheet] Authenticated successfully with Google Drive Service Account...",
+      "[gsheet] Appending structured rows to GSheet [Main-Client-Dashboard] (SheetID: xxx9201a)..."
+    ]);
+
+    await new Promise(r => setTimeout(r, 1200));
+    setStatus("slack");
+    setLogs(prev => [
+      ...prev,
+      "[slack] Raw matrices verified. Compiling PDF weekly metrics block...",
+      "[slack] Connecting to client webhook pipeline...",
+      "[slack] Output dispatched format: 'Ad-Ops Digest: Total spend: $14.2K, ROAS: 3.42' to Slack #marketing-pulse."
+    ]);
+
+    await new Promise(r => setTimeout(r, 1000));
+    setStatus("done");
+    setLogs(prev => [
+      ...prev,
+      "[Success] Workflow execution finished. Pipeline sleeping safely (Exit: 0)."
+    ]);
+  };
+
+  return (
+    <div className="flex flex-col gap-4 font-mono text-left">
+      {/* Pulse Flow map */}
+      <div className="flex items-center justify-between text-xs border border-white/5 bg-[#121215] p-3 rounded-lg overflow-x-auto whitespace-nowrap scrollbar-none gap-4">
+        <div className={`p-2 rounded border transition-colors ${status === "fetching" ? "border-blue-500 bg-blue-500/10 text-white" : "border-white/5 text-zinc-500"}`}>
+          AD APIs
+        </div>
+        <div className="text-zinc-700 font-bold font-sans">&mdash;&rsaquo;</div>
+        <div className={`p-2 rounded border transition-colors ${status === "fetching" || status === "gsheet" || status === "slack" ? "border-blue-500 bg-blue-500/10 text-white animate-pulse" : "border-white/5 text-zinc-500"}`}>
+          n8n.io Engine
+        </div>
+        <div className="text-zinc-700 font-bold font-sans">&mdash;&rsaquo;</div>
+        <div className={`p-2 rounded border transition-colors ${status === "gsheet" ? "border-green-500 bg-green-500/10 text-white animate-pulse" : "border-white/5 text-zinc-500"}`}>
+          Google Sheet
+        </div>
+        <div className="text-zinc-700 font-bold font-sans">&mdash;&rsaquo;</div>
+        <div className={`p-2 rounded border transition-colors ${status === "slack" ? "border-orange-500 bg-orange-500/10 text-white animate-pulse" : "border-white/5 text-zinc-500"}`}>
+          Slack Message
+        </div>
+      </div>
+
+      {/* Terminal log logs */}
+      <div className="bg-black/60 border border-white/5 p-3 rounded-lg h-[120px] overflow-y-auto text-[10px] text-[#A78BFA] flex flex-col gap-1 scrollbar-none">
+        {logs.map((log, index) => (
+          <div key={index} className="leading-relaxed">
+            {log}
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={runSync}
+        disabled={status !== "idle" && status !== "done"}
+        className="w-full py-2 rounded-md bg-blue-500/10 border border-blue-500/30 text-xs text-blue-400 font-bold hover:bg-blue-500/20 active:scale-[0.98] transition-all disabled:opacity-50"
+      >
+        {status !== "idle" && status !== "done" ? "Sync Execution In Progress..." : "Run Test n8n Automation Engine"}
+      </button>
+    </div>
+  );
+}
+
+// 3. AI Agent ReAct Router Logger Widget
+function AiWidget() {
+  const [running, setRunning] = useState<boolean>(false);
+  const [step, setStep] = useState<number>(0);
+  const logs = [
+    { type: "sys", text: "[Agent-System Init] Input: 'Request a cost breakdown for a Headless migration project'" },
+    { type: "thought", text: "Thought: The client wishes to get cost pricing. I must check my internal business context first." },
+    { type: "action", text: "Action: Scan knowledge-base for 'pricing_structure' and 'headless_cost'" },
+    { type: "sys", text: "Observation: Safeer quotes on project values, skipping hourly layers. Re-routing required." },
+    { type: "thought", text: "Thought: I need to output pricing structures to Slack notifications as a lead triage, and generate direct email links to client." },
+    { type: "action", text: "Action: Submit alert: 'Contact Lead Alert: Headless' and send directly to Safeer Slack" },
+    { type: "final", text: "Final Response: [Dispatched request context to Safeer. Triage routing: Successful.]" }
+  ];
+
+  const triggerAgent = () => {
+    if (running) return;
+    setRunning(true);
+    setStep(0);
+    let count = 0;
+    const interval = setInterval(() => {
+      count++;
+      setStep(count);
+      if (count >= logs.length - 1) {
+        clearInterval(interval);
+      }
+    }, 600);
+  };
+
+  return (
+    <div className="flex flex-col gap-3 font-mono text-left">
+      <div className="bg-black/60 border border-white/5 p-3 rounded-lg h-[140px] overflow-y-auto text-[10px] sm:text-xs flex flex-col gap-1.5 scrollbar-none">
+        {running ? (
+          logs.slice(0, step + 1).map((log, index) => {
+            let color = "text-zinc-400";
+            if (log.type === "thought") color = "text-amber-400/90";
+            if (log.type === "action") color = "text-blue-400";
+            if (log.type === "final") color = "text-green-400 font-bold";
+            return (
+              <div key={index} className={`${color} leading-relaxed`}>
+                {log.text}
+              </div>
+            );
+          })
+        ) : (
+          <span className="text-zinc-500">Agent parked. Load an intent query to test ReAct loop execution.</span>
+        )}
+      </div>
+
+      <button
+        onClick={triggerAgent}
+        disabled={running && step < logs.length - 1}
+        className="w-full py-2 rounded-md bg-blue-500/10 border border-blue-500/30 text-xs text-blue-400 font-bold hover:bg-blue-500/20 active:scale-[0.98] transition-all disabled:opacity-50"
+      >
+        {running && step < logs.length - 1 ? "Agent Triaging Prompt..." : "Process Prompt through AI-Agent"}
+      </button>
+    </div>
   );
 }
