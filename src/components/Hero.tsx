@@ -12,7 +12,7 @@ interface HeroProps {
 
 export default function Hero({ onEnter, onCTAClick }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const ctasRef = useRef<HTMLDivElement>(null);
@@ -130,14 +130,15 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         </div>
 
         {/* Main Title — problem-focused, hooks in 3 seconds */}
-        <h1
-          ref={titleRef}
-          className="mb-6 text-[clamp(1.75rem,4vw,3.25rem)] font-black leading-[1.15] tracking-tight"
-        >
-          <span
+        <div ref={titleRef} className="mb-6 flex flex-col items-start gap-2">
+          <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-blue-400">
+            Stop Doing Manual Work
+          </p>
+          <h1
+            className="text-[clamp(2rem,4.5vw,3.25rem)] font-extrabold leading-[1.1] tracking-tight text-left"
             style={{
               background:
-                "linear-gradient(135deg, #ffffff 0%, #93c5fd 40%, #2563eb 60%, #ffffff 100%)",
+                "linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #2563eb 100%)",
               backgroundSize: "200% 200%",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -145,23 +146,9 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
               animation: "gradientShift 6s ease infinite",
             }}
           >
-            Stop Doing Manual Work
-          </span>
-          <br />
-          <span
-            style={{
-              background:
-                "linear-gradient(135deg, #2563eb 0%, #3b82f6 40%, #60a5fa 60%, #2563eb 100%)",
-              backgroundSize: "200% 200%",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              animation: "gradientShift 6s ease infinite reverse",
-            }}
-          >
             Build Systems That Run Themselves
-          </span>
-        </h1>
+          </h1>
+        </div>
 
         {/* Subtitle — buyer-outcome language */}
         <p
