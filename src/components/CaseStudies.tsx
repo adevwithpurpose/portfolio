@@ -16,7 +16,7 @@ interface ProjectNode {
   solution: string[];
   metrics: { value: string; label: string }[];
   tech: string[];
-  type: "ecom" | "n8n" | "ai";
+  type: "ecom" | "n8n" | "ai" | "funnel";
   liveLink?: string;
   visualAsset?: string;
 }
@@ -25,34 +25,34 @@ const PROJECTS: ProjectNode[] = [
   {
     id: "node-1",
     type: "ecom",
-    tag: "E-Commerce",
-    brand: "D2C Brand Storefront",
-    tagline: "Dawn Theme Refactor & Core Web Vitals Optimization",
+    tag: "Shopify Speed Optimization",
+    brand: "Diesel Patriots",
+    tagline: "Liquid Codebase Recode & Core Web Vitals Optimization",
     challenge:
-      "A high-traffic e-commerce storefront suffered from app bloat and unoptimized Liquid files, dragging performance scores to the low 30s on mobile and bleeding conversion rate.",
+      "A high-traffic e-commerce storefront suffered from legacy Liquid structures, excessive thread-blocking third-party scripts, and severe layout shifts that pushed mobile page speeds below 30 on Lighthouse.",
     solution: [
-      "Pruned 12+ redundant marketing and pixel apps",
-      "Refactored custom Liquid logic into lightweight Tailwind & Vanilla JS",
-      "Implemented clean lazy-loading and WebP image generation pipelines",
-      "Restructured cart drawer script to eliminate thread-blocking delays",
+      "Pruned redundant Shopify dynamic pixel tracking scripts",
+      "Recoded core product grid pages into lightweight vanilla Liquid templates",
+      "Restructured CSS assets to resolve heavy cumulative layout shifts (CLS)",
+      "Optimized site assets to return 95+ mobile performance indexes",
     ],
     metrics: [
       { value: "95+", label: "Lighthouse Performance" },
-      { value: "⬇ 67%", label: "Time to Interactive" },
-      { value: "⬆ 22%", label: "Conversion Rate Uplift" },
+      { value: "⬇ 65%", label: "LCP Loading Latency" },
+      { value: "⬆ 18%", label: "Conversion Rate Boost" },
     ],
-    tech: ["Shopify Dawn", "Custom Liquid", "JavaScript", "Webpack", "Vercel"],
-    liveLink: "https://dawn.shopify.com", // Example live link matching stack
-    visualAsset: "/screenshots/shopify-dawn.png",
+    tech: ["Shopify Liquid", "Dawn Architecture", "Webpack", "Speed Recode", "Tailwind CSS"],
+    liveLink: "https://dieselpatriots.com",
+    visualAsset: "/screenshots/diesel-patriots.png",
   },
   {
     id: "node-2",
     type: "n8n",
-    tag: "Workflow Automation",
-    brand: "Ad-Ops Automation Engine",
-    tagline: "Unified Multi-Channel Ads Reporting Pipeline",
+    tag: "Data Pipeline Automation",
+    brand: "Ad-Ops Reporting Automation",
+    tagline: "Cross-Channel data aggregation pipeline via n8n",
     challenge:
-      "A client team was manually extracting daily performance data from Meta, Google, Microsoft, and Klaviyo to Google Sheets, then compiling weekly/monthly Slack digests, consuming 6+ hours weekly.",
+      "The client was manually extracting data daily from Meta Ads, Google Ads, Microsoft Ads, and Klaviyo metrics into Google Sheets, then compiling Slack digests weekly, stealing 6+ hours.",
     solution: [
       "Designed an n8n webhook workflow querying all ad networks programmatically",
       "Normalized raw statistics across diverse JSON structures daily",
@@ -60,21 +60,45 @@ const PROJECTS: ProjectNode[] = [
       "Configured scheduled digests automatically building summaries to Slack channels",
     ],
     metrics: [
-      { value: "100%", label: "Daily Data Synchronization" },
-      { value: "6h/wk", label: "Manual Data Entry Erased" },
+      { value: "100%", label: "Automated Synchronization" },
+      { value: "6h/wk", label: "Manual Hours Erased" },
       { value: "0", label: "Human Metrics Errors" },
     ],
     tech: ["n8n.io", "Meta Ads API", "Google Ads API", "Klaviyo API", "Google Sheets", "Slack API"],
+    liveLink: "https://next.theecommarketingcompany.com",
     visualAsset: "/screenshots/n8n-flow.png",
   },
   {
     id: "node-3",
-    type: "ai",
-    tag: "AI Intelligence",
-    brand: "Autonomous Intent Routing Agent",
-    tagline: "Unstructured Inbound Lead Classification system",
+    type: "funnel",
+    tag: "Landing Funnel",
+    brand: "Comfort Truss",
+    tagline: "High-Converting Custom Comparison Page Funnel",
     challenge:
-      "Inbound developer requests and lead emails were landing raw without triage, creating slow follow-up cycles and missing high-priority target projects.",
+      "A direct consumer health brand needed a highly optimized comparison landing page loading instantly on mobile and directing paid search traffic into comparison buying tables.",
+    solution: [
+      "Coded custom mobile-first layout with instant layouts and animations",
+      "Created structured grid comparison matrices with simple custom buy triggers",
+      "Eliminated heavy frameworks to yield lightweight loading under 1 second",
+      "Linked directly with custom checkout endpoints to lower cart abandonment drop-offs",
+    ],
+    metrics: [
+      { value: "⬇ 45%", label: "Conversion Funnel Drop-off" },
+      { value: "< 1s", label: "Mobile Loading Latency" },
+      { value: "⬆ 14%", label: "Average Order Value Boost" },
+    ],
+    tech: ["Next.js", "Tailwind CSS", "Framer Motion", "Checkout Webhooks", "Liquid API"],
+    liveLink: "https://comfort-truss.com/pages/hernia-belt-comparison",
+    visualAsset: "/screenshots/comfort-truss.png",
+  },
+  {
+    id: "node-4",
+    type: "ai",
+    tag: "AI Automation Agent",
+    brand: "Autonomous Lead Router Agent",
+    tagline: "Unstructured Inbound Event Triage Agent",
+    challenge:
+      "Inbound developer requests and client requests were processed manually, lagging and missing critical target bids. Built an agent that scans, classifies, and alerts via Slack/WhatsApp.",
     solution: [
       "Crafted an AI router parsing text files, emails, or chat messages",
       "Implemented intent categorization system detecting budget, scope, and urgency",
@@ -82,11 +106,12 @@ const PROJECTS: ProjectNode[] = [
       "Built loop logs showing thinking paths so operators can audit outputs",
     ],
     metrics: [
-      { value: "< 2s", label: "Lead Categories Categorized" },
-      { value: "98%", label: "Classification Intent Accuracy" },
+      { value: "< 2s", label: "Response Classification" },
+      { value: "98%", label: "Triage Accuracy" },
       { value: "⬇ 95%", label: "Operator Response Latency" },
     ],
     tech: ["FastAPI", "OpenAI API", "ReAct Loop Framework", "Pinecone", "Webhooks"],
+    liveLink: "https://luminous.outafbox.com",
     visualAsset: "/screenshots/ai-triage.png",
   },
 ];
@@ -180,7 +205,7 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                     <span className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-green-400 animate-pulse" : "bg-zinc-600"}`} />
                   </div>
                   <div>
-                    <div className="text-sm font-bold tracking-tight">{proj.brand}</div>
+                    <div className="text-sm font-bold tracking-tight text-white">{proj.brand}</div>
                     <div className="text-[10px] text-zinc-500 overflow-hidden text-ellipsis whitespace-nowrap mt-1">
                       {proj.tag}
                     </div>
@@ -278,6 +303,7 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                   {activeProj.type === "ecom" && <EcomWidget />}
                   {activeProj.type === "n8n" && <N8nWidget />}
                   {activeProj.type === "ai" && <AiWidget />}
+                  {activeProj.type === "funnel" && <FunnelWidget />}
                 </div>
               </>
             ) : (
@@ -299,15 +325,12 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
 
                   {/* Visual Frame */}
                   <div className="relative aspect-video w-full bg-[#121215] flex flex-col items-center justify-center p-6 border-b border-white/5">
-                    {/* If visualAsset exists, render the image. 
-                        Since these won't resolve locally until files are dropped, we can render a gorgeous, 
-                        dynamic CSS representation that degrades silently. */}
                     <div className="absolute inset-0 w-full h-full opacity-40 mix-blend-color-dodge bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none" />
                     
                     {/* SVG Blueprint Mockup */}
                     <div className="flex flex-col items-center gap-4 text-center z-10 max-w-[280px]">
                       <svg
-                        className="w-16 h-16 text-blue-500/60 animate-pulse"
+                        className="w-16 h-16 text-blue-500/60"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -319,10 +342,10 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                       
                       <div>
                         <p className="text-white text-xs font-bold font-mono">
-                          {activeProj.brand} Console Mirror
+                          {activeProj.brand} Interface preview
                         </p>
                         <p className="text-zinc-500 text-[10px] font-mono mt-1">
-                          File mirror path: {activeProj.visualAsset}
+                          File path: {activeProj.visualAsset}
                         </p>
                       </div>
                       
@@ -578,6 +601,75 @@ function AiWidget() {
       >
         {running && step < logs.length - 1 ? "Agent Triaging Prompt..." : "Process Prompt through AI-Agent"}
       </button>
+    </div>
+  );
+}
+
+// 4. Funnel Lead Capture Form Widget
+function FunnelWidget() {
+  const [activeTab, setActiveTab] = useState<"desktop" | "mobile">("mobile");
+  
+  return (
+    <div className="flex flex-col items-center justify-center p-2 font-mono text-xs w-full">
+      <div className="flex items-center gap-2 mb-3 bg-[#121215] border border-white/5 p-1 rounded-md self-start">
+        <button
+          onClick={() => setActiveTab("mobile")}
+          className={`px-2 py-1 rounded transition-colors ${activeTab === "mobile" ? "bg-blue-500/20 text-blue-400" : "text-zinc-500 hover:text-zinc-300"}`}
+        >
+          mobile view
+        </button>
+        <button
+          onClick={() => setActiveTab("desktop")}
+          className={`px-2 py-1 rounded transition-colors ${activeTab === "desktop" ? "bg-blue-500/20 text-blue-400" : "text-zinc-500 hover:text-zinc-300"}`}
+        >
+          desktop view
+        </button>
+      </div>
+
+      {activeTab === "mobile" ? (
+        <div className="border border-white/10 rounded-xl bg-[#0A0A0C] p-4 w-[180px] text-center shadow-lg animate-in zoom-in-95 duration-200">
+          <div className="w-full h-2 rounded bg-white/5 mb-3" />
+          <p className="text-[10px] font-bold text-white mb-2">Compare Hernia Belts</p>
+          <div className="space-y-1.5 mb-3 text-[8px] text-left">
+            <div className="p-1 rounded bg-[#121215] border border-white/5 flex justify-between">
+              <span>Comfort Truss</span>
+              <span className="text-green-500">&#10003; 0.7s Load</span>
+            </div>
+            <div className="p-1 rounded bg-white/[0.01] border border-white/5 flex justify-between text-zinc-500">
+              <span>Competitor A</span>
+              <span>&times; 3.4s Load</span>
+            </div>
+          </div>
+          <button className="w-full py-1 rounded bg-blue-500 text-[8px] font-bold text-white uppercase tracking-wider">
+            Order Securely
+          </button>
+        </div>
+      ) : (
+        <div className="border border-white/10 rounded-xl bg-[#0A0A0C] p-4 w-[320px] text-center shadow-lg animate-in zoom-in-95 duration-200">
+          <div className="flex justify-between items-center mb-3">
+            <div className="w-16 h-2 rounded bg-white/5" />
+            <div className="flex gap-2">
+              <div className="w-8 h-2 rounded bg-white/5" />
+              <div className="w-8 h-2 rounded bg-white/5" />
+            </div>
+          </div>
+          <p className="text-[11px] font-bold text-white mb-3">Why Comfort Truss Wins</p>
+          <div className="grid grid-cols-3 gap-2 text-[8px] mb-3 text-left">
+            <div className="p-2 rounded bg-[#121215] border border-blue-500/20 text-center flex flex-col justify-between">
+              <span className="text-white font-bold leading-none mb-1">Flexibility</span>
+              <span className="text-blue-400 font-bold">100% Silicone</span>
+            </div>
+            <div className="p-2 rounded bg-[#121215] border border-blue-500/20 text-center flex flex-col justify-between">
+              <span className="text-white font-bold leading-none mb-1">Thickness</span>
+              <span className="text-blue-400 font-bold">Ultra-Thin</span>
+            </div>
+            <div className="p-2 rounded bg-[#121215] border border-blue-500/20 text-center flex flex-col justify-between">
+              <span className="text-white font-bold leading-none mb-1">Speed</span>
+              <span className="text-blue-400 font-bold">Instant Render</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
