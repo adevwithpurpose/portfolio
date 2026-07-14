@@ -145,7 +145,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
               animation: "gradientShift 6s ease infinite",
             }}
           >
-            Stop Losing Hours to Work
+            Stop Doing Manual Work
           </span>
           <br />
           <span
@@ -159,7 +159,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
               animation: "gradientShift 6s ease infinite reverse",
             }}
           >
-            That Should Run Itself
+            Build Systems That Run Themselves
           </span>
         </h1>
 
