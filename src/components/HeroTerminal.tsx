@@ -8,6 +8,11 @@ type OutputLine = {
   content: string | React.ReactNode;
 };
 
+type APIMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 const COMMAND_RESPONSES: Record<string, string[]> = {
   whoami: [
     "safeer_ahmad",
@@ -32,16 +37,27 @@ const COMMAND_RESPONSES: Record<string, string[]> = {
     "1. Shopify & E-Commerce: Headless builds, Dawn optimization to 90+ Lighthouse.",
     "2. Web Development: Next.js, Astro, WordPress (Bricks/Elementor).",
     "3. Automation: AI Agents, n8n workflows, lowering manual hours.",
+  ],
+  help: [
+    "=== AVAILABLE COMMANDS ===",
+    "whoami      - Display profile information",
+    "stack       - Show technical stack",
+    "ping        - System status check",
+    "services    - Get list of services",
+    "clear       - Reset terminal screen",
+    "--- Plain English queries ---",
+    "Feel free to type questions (e.g. 'How to hire you?' or 'What are your rates?') to talk to Safeer's AI agent."
   ]
 };
 
 export default function HeroTerminal() {
   const [output, setOutput] = useState<OutputLine[]>([
     { id: "init1", type: "output", content: "safeer-os v2.4.0 starting..." },
-    { id: "init2", type: "output", content: "Type or click a command to begin. (Hint: Try asking 'how much do you charge?')" },
+    { id: "init2", type: "output", content: "Type 'help' or click a command to begin. Ask questions to chat with Safeer's AI assistant." },
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [inputVal, setInputVal] = useState("");
+  const [apiHistory, setApiHistory] = useState<APIMessage[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,39 +67,75 @@ export default function HeroTerminal() {
     }
   }, [output, isTyping]);
 
-  const processText = (text: string) => {
-    // Process plain english to canned responses
-    const aiText = text.toLowerCase();
-    if (aiText.includes("cost") || aiText.includes("price") || aiText.includes("rate") || aiText.includes("how much") || aiText.includes("charge")) {
-      return ["I don't charge bloated agency fees. Every project is scoped individually based on the value delivered, not hourly billing. Book a call to get a custom breakdown!"];
-    }
-    if (aiText.includes("contact") || aiText.includes("book") || aiText.includes("call") || aiText.includes("hire") || aiText.includes("email")) {
-      return ["You can reach me at safeer@safeer.dev or click the 'Talk with Safeer' button on the left to book a call directly."];
-    }
-    if (aiText.includes("experience") || aiText.includes("background") || aiText.includes("who are you") || aiText.includes("about")) {
-      return ["I'm a Senior Frontend & Automation Engineer with a background in Mechatronics Engineering. I skip the middleman to work directly with business owners."];
-    }
-    if (aiText.includes("hello") || aiText.includes("hi ") || aiText === "hi") {
-      return ["Hello! I'm Safeer's terminal AI. Ask me about his services, stack, or how to hire him."];
-    }
-    return ["Command not found or I couldn't understand. Try asking about 'services', 'stack', or 'pricing' instead. Or use standard commands like 'whoami'."];
-  };
-
-  const runCommand = async (cmd: string) => {
-    if (isTyping || !cmd.trim()) return;
+  const runCommand = async (cmdText: string) => {
+    const trimmed = cmdText.trim();
+    if (isTyping || !trimmed) return;
     setIsTyping(true);
     setInputVal("");
     
-    setOutput(prev => [...prev, { id: Math.random().toString(), type: "command", content: `visitor@safeer-os:~$ ${cmd}` }]);
+    // Add command input to screen
+    setOutput(prev => [
+      ...prev, 
+      { 
+        id: Math.random().toString(), 
+        type: "command", 
+        content: (
+          <span>
+            <span className="text-blue-400">visitor@safeer-os:~$</span> {trimmed}
+          </span>
+        ) 
+      }
+    ]);
     
     // Simulate thinking delay
     await new Promise(r => setTimeout(r, 400));
     
-    const lines = COMMAND_RESPONSES[cmd.toLowerCase()] || processText(cmd);
+    const cmdClean = trimmed.toLowerCase();
     
-    for (const line of lines) {
-      setOutput(prev => [...prev, { id: Math.random().toString(), type: "output", content: line }]);
-      await new Promise(r => setTimeout(r, 150));
+    // Check locally resolved commands first
+    if (cmdClean === "clear") {
+      setOutput([]);
+      setApiHistory([]);
+      setIsTyping(false);
+      return;
+    }
+
+    if (COMMAND_RESPONSES[cmdClean]) {
+      const lines = COMMAND_RESPONSES[cmdClean];
+      for (const line of lines) {
+        setOutput(prev => [...prev, { id: Math.random().toString(), type: "output", content: line }]);
+        await new Promise(r => setTimeout(r, 100));
+      }
+    } else {
+      // Call external API route for intelligent chat
+      try {
+        const nextMessages = [...apiHistory, { role: "user" as const, content: trimmed }];
+        setApiHistory(nextMessages);
+
+        const res = await fetch("/api/terminal-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: nextMessages })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setOutput(prev => [...prev, { id: Math.random().toString(), type: "output", content: data.text }]);
+          setApiHistory(prev => [...prev, { role: "assistant", content: data.text }]);
+        } else {
+          throw new Error("API call failed");
+        }
+      } catch (err) {
+        console.error("Terminal chat execution error:", err);
+        setOutput(prev => [
+          ...prev, 
+          { 
+            id: Math.random().toString(), 
+            type: "error", 
+            content: "[Terminal Error]: Chat connection failed. Try 'whoami', 'stack', or 'help'." 
+          }
+        ]);
+      }
     }
     
     setIsTyping(false);
@@ -93,7 +145,10 @@ export default function HeroTerminal() {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto rounded-xl border border-white/10 bg-[#0c0c0e]/95 shadow-2xl backdrop-blur-md overflow-hidden flex flex-col font-mono text-xs sm:text-sm h-[320px] sm:h-[400px]" onClick={() => inputRef.current?.focus()}>
+    <div 
+      className="w-full max-w-lg mx-auto rounded-xl border border-white/10 bg-[#0c0c0e]/95 shadow-2xl backdrop-blur-md overflow-hidden flex flex-col font-mono text-xs sm:text-sm h-[400px] sm:h-[480px]" 
+      onClick={() => inputRef.current?.focus()}
+    >
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-[#18181b]/90">
         <div className="flex gap-1.5">
@@ -112,7 +167,10 @@ export default function HeroTerminal() {
         className="flex-1 p-5 overflow-y-auto space-y-2 text-zinc-300 text-left custom-scrollbar"
       >
         {output.map(line => (
-          <div key={line.id} className={line.type === "command" ? "text-blue-400 mt-4 mb-2" : ""}>
+          <div 
+            key={line.id} 
+            className={line.type === "command" ? "mt-4 mb-2" : "whitespace-pre-line leading-relaxed"}
+          >
             {line.content}
           </div>
         ))}
@@ -121,9 +179,9 @@ export default function HeroTerminal() {
         {!isTyping && (
           <form 
              onSubmit={(e) => { e.preventDefault(); runCommand(inputVal); }} 
-             className="flex items-center mt-4 text-zinc-500 whitespace-nowrap"
+             className="flex items-center mt-4 text-zinc-500"
           >
-             <span className="text-blue-400">visitor@safeer-os:~$</span>
+             <span className="text-blue-400 font-bold whitespace-nowrap">visitor@safeer-os:~$</span>
              <input
                ref={inputRef}
                type="text"
@@ -141,18 +199,21 @@ export default function HeroTerminal() {
       {/* Command Buttons */}
       <div className="p-3 border-t border-white/5 bg-[#18181b]/80 backdrop-blur-lg">
         <div className="flex flex-wrap items-center gap-2">
-          {["whoami", "stack", "ping", "services"].map(cmd => (
+          {["whoami", "stack", "ping", "services", "help"].map(cmd => (
             <button
               key={cmd}
               onClick={() => runCommand(cmd)}
               disabled={isTyping}
-              className="px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/5 text-zinc-400 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/5 text-zinc-400 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs"
             >
               <span className="text-blue-400 mr-1">$</span>{cmd}
             </button>
           ))}
           <button 
-             onClick={() => setOutput([])}
+             onClick={() => {
+               setOutput([]);
+               setApiHistory([]);
+             }}
              disabled={isTyping}
              className="px-3 py-1.5 rounded-md bg-transparent hover:bg-white/5 text-zinc-500 hover:text-zinc-300 transition-colors ml-auto text-xs disabled:opacity-50"
           >
