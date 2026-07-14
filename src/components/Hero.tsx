@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import SectionWrapper from "@/components/SectionWrapper";
+import InteractiveTerminal from "./InteractiveTerminal";
 
 interface HeroProps {
   onEnter?: () => void;
@@ -117,8 +118,11 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
       {/* ─── Hero Content ─── */}
       <div
         ref={containerRef}
-        className="relative z-10 mx-auto max-w-5xl px-6 text-center"
+        className="relative z-10 mx-auto max-w-7xl px-6 w-full pt-10"
       >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center text-left">
+          {/* Left Column */}
+          <div className="flex flex-col items-start">
         {/* Eyebrow tag — urgency + scarcity */}
         <div className="hero-eyebrow mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-blue-400/70 backdrop-blur-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
@@ -162,14 +166,14 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         {/* Subtitle — buyer-outcome language */}
         <p
           ref={subtitleRef}
-          className="mx-auto mb-6 max-w-3xl text-lg font-medium text-zinc-300 sm:text-xl md:text-2xl"
+          className="mb-6 max-w-xl text-lg font-medium text-zinc-300 sm:text-xl md:text-2xl"
         >
           Web Development &middot; Workflow Automation &middot; AI Assistants
           &middot; Internal Tools
         </p>
 
         {/* Professional Headshot — integrated into hero for instant trust */}
-        <div className="mb-8 flex justify-center">
+        <div className="mb-8 flex justify-start">
           <div className="group relative">
             <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 opacity-30 blur-lg transition-opacity duration-300 group-hover:opacity-60" />
             <Image
@@ -200,7 +204,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         {/* Tagline — direct-work positioning + AI-speed hint */}
         <p
           ref={taglineRef}
-          className="mx-auto mb-6 max-w-2xl text-base text-zinc-400 sm:text-lg"
+          className="mb-6 max-w-lg text-base text-zinc-400 sm:text-lg"
         >
           You work directly with me. No account managers. No handoffs. I use AI
           and automation to deliver faster — so you get senior-level execution
@@ -210,7 +214,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         {/* CTAs — 1 primary (Cal.com 15-min) + 1 secondary (See Work) */}
         <div
           ref={ctasRef}
-          className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+          className="flex flex-col items-start gap-4 sm:flex-row"
         >
           <a
             href="https://cal.com/safeer-ahmad/15min"
@@ -265,7 +269,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         </div>
 
         {/* Trust line + live counter */}
-        <div className="mt-8 flex flex-col items-center gap-3">
+        <div className="mt-8 flex flex-col items-start gap-3">
           <p className="text-sm text-zinc-600">
             Direct access. Fast turnaround. Senior-level work.
           </p>
@@ -280,7 +284,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         </div>
 
         {/* "Perfect For" section — reduces bounce rate */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-10 flex flex-wrap items-center justify-start gap-3">
           <span className="text-[10px] uppercase tracking-wider text-zinc-600">
             Perfect for:
           </span>
@@ -296,6 +300,16 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
               ✓ {tag}
             </span>
           ))}
+        </div>
+          </div>
+          
+          {/* Right Column: Interactive Terminal */}
+          <div className="w-full relative z-20 mt-12 lg:mt-0 opacity-0" ref={(el) => {
+            // we attach the animation to the wrapper so we don't break the terminal internal refs
+            if (el) gsap.fromTo(el, {opacity: 0, x: 50}, {opacity: 1, x: 0, duration: 1.2, delay: 0.5, ease: "power3.out"});
+          }}>
+            <InteractiveTerminal />
+          </div>
         </div>
       </div>
 
