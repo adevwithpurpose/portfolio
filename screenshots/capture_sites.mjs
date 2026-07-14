@@ -9,6 +9,7 @@ const SITES = [
   { name: 'nuumi', url: 'https://nuumipet.com' },
   { name: 'amanotte', url: 'https://amanotte.it' },
   { name: 'fantasticane', url: 'https://shop.fantasticane.com' },
+  { name: 'temco', url: 'https://temco.agency' },
   { name: 'diesel-patriots', url: 'https://dieselpatriots.com' },
   { name: 'comfort-truss', url: 'https://comfort-truss.com/pages/hernia-belt-comparison' }
 ];
@@ -16,6 +17,30 @@ const SITES = [
 const outDir = path.resolve('public/screenshots');
 if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
+}
+
+// Industry-standard full page automatic scrolling function for lazy-loading elements
+async function autoScroll(page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let totalHeight = 0;
+      const distance = 400; // Scroll step in pixels
+      const timer = setInterval(() => {
+        const scrollHeight = document.body.scrollHeight;
+        window.scrollBy(0, distance);
+        totalHeight += distance;
+
+        if (totalHeight >= scrollHeight - window.innerHeight) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, 150); // Wait 150ms per step to let visual assets load
+    });
+  });
+  
+  // Return to top and wait for animations to settle
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(2000); 
 }
 
 console.log('Launching browser...');
@@ -37,14 +62,11 @@ for (const site of SITES) {
 
     await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 25000 });
     
-    // Wait slightly for lazy loaded images
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight));
-    await page.waitForTimeout(2000);
-    await page.evaluate(() => window.scrollBy(0, -window.innerHeight));
-    await page.waitForTimeout(1000);
+    console.log(`Auto-scrolling page to force lazy loads...`);
+    await autoScroll(page);
 
     const dest = path.join(outDir, `${site.name}.png`);
-    console.log(`Capturing fullpage screenshot to ${dest}...`);
+    console.log(`Capturing fully loaded screenshot to ${dest}...`);
     await page.screenshot({ path: dest, fullPage: true });
     
     await context.close();
@@ -55,4 +77,4 @@ for (const site of SITES) {
 }
 
 await browser.close();
-console.log('All captures done.');
+console.log('All full-scroll captures done.');
