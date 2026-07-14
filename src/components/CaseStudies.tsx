@@ -41,12 +41,103 @@ const PROJECTS: ProjectNode[] = [
       { value: "⬇ 65%", label: "LCP Loading Latency" },
       { value: "⬆ 18%", label: "Conversion Rate Boost" },
     ],
-    tech: ["Shopify Liquid", "Dawn Architecture", "Webpack", "Speed Recode", "Tailwind CSS"],
+    tech: ["Shopify Liquid", "Dawn Architecture", "Speed Recode", "Tailwind CSS"],
     liveLink: "https://dieselpatriots.com",
     visualAsset: "/screenshots/diesel-patriots.png",
   },
   {
     id: "node-2",
+    type: "ecom",
+    tag: "Shopify Storefront",
+    brand: "Nuumi Pet",
+    tagline: "Premium Custom Shopify UI & Liquid Refactor",
+    challenge:
+      "A modern pet brand needed complex custom product styling layout controls (e.g. customized selection grids, custom bundles) that standard themes could not provide without performance degradation.",
+    solution: [
+      "Built custom bespoke Liquid product page templates",
+      "Developed interactive product bundle configurations without heavy apps",
+      "Implemented clean lazy loading for high-resolution graphics",
+      "Refactored custom product drawer logic to maintain smooth flow",
+    ],
+    metrics: [
+      { value: "92+", label: "Shopify Speed Index" },
+      { value: "⬇ 1.8s", label: "Mobile LCP Speed" },
+      { value: "Fully", label: "Tailored Bundle Engine" },
+    ],
+    tech: ["Shopify Liquid", "Dawn", "Webpack", "Tailwind CSS", "JavaScript"],
+    liveLink: "https://nuumipet.com",
+    visualAsset: "/screenshots/nuumi.png",
+  },
+  {
+    id: "node-3",
+    type: "ecom",
+    tag: "Shopify Storefront",
+    brand: "Amanotte Bedding",
+    tagline: "Luxury Italian Domestics Shopify Custom Build",
+    challenge:
+      "A premium Italian bed linens brand required an optimized, highly aesthetic layout mimicking high-end fashion catalogs with fast media load times.",
+    solution: [
+      "Developed high-fidelity custom Shopify Liquid templates matching strict Figma guidelines",
+      "Optimized large editorial gallery modules using responsive srcsets",
+      "Implemented smooth, lag-free slide transitions and collection drawers",
+      "Refactored checkout cart validation steps to decrease bounce rates",
+    ],
+    metrics: [
+      { value: "94+", label: "Mobile Design Score" },
+      { value: "⬇ 2.2s", label: "Largest Contentful Paint" },
+      { value: "⬆ 25%", label: "Average Session Duration" },
+    ],
+    tech: ["Shopify Liquid", "Custom Liquid", "JavaScript", "SEO Optimization", "Webpack"],
+    liveLink: "https://amanotte.it",
+    visualAsset: "/screenshots/amanotte.png",
+  },
+  {
+    id: "node-4",
+    type: "ecom",
+    tag: "Shopify Storefront",
+    brand: "CalmiCollar",
+    tagline: "Custom Brand Commerce Page Refactor",
+    challenge:
+      "A wellness pet brand required a customized landing-to-checkout pipeline focusing on a singular product line to maximize local conversion funnel flow.",
+    solution: [
+      "Pruned heavy layout bloat and refactored core grid blocks",
+      "Wrote custom drawer and bundle modules optimizing asset file sizes",
+      "Created highly responsive grid layouts showing customer social proof",
+      "Unified Shopify checkouts ensuring seamless buy flow loops",
+    ],
+    metrics: [
+      { value: "95+", label: "Mobile Speed Rating" },
+      { value: "⬇ 35%", label: "Bounce Rate Decline" },
+      { value: "⬆ 19%", label: "Funnel Conversion Rate" },
+    ],
+    tech: ["Shopify Dawn", "Vanilla JS", "Liquid Scripts", "Custom Bundlers"],
+    liveLink: "https://calmicollar.com",
+    visualAsset: "/screenshots/calmicollar.png",
+  },
+  {
+    id: "node-5",
+    type: "ecom",
+    tag: "Shopify Storefront",
+    brand: "Fantastica Cane",
+    tagline: "Premium Leather Pet Goods Custom Build",
+    challenge:
+      "A handmade leather goods brand needed an immersive, fast storefront showing high-resolution leather details and customizations without lag.",
+    solution: [
+      "Optimized theme structure to handle heavy close-up zoom imagery",
+      "Mapped clean dynamic collection filters with native Shopify search API",
+      "Wrote custom responsive slider segments for custom size selections",
+    ],
+    metrics: [
+      { value: "2.1s", label: "Time to First Byte (TTFB)" },
+      { value: "⬇ 40%", label: "Resource Bloat Erased" },
+      { value: "90+", label: "Lighthouse Mobile Score" },
+    ],
+    tech: ["Shopify Liquid", "Dawn Core", "JavaScript", "Responsive Media"],
+    liveLink: "https://shop.fantasticane.com",
+    visualAsset: "/screenshots/fantasticane.png",
+  },
+  {
+    id: "node-6",
     type: "n8n",
     tag: "Data Pipeline Automation",
     brand: "Ad-Ops Reporting Automation",
@@ -65,11 +156,11 @@ const PROJECTS: ProjectNode[] = [
       { value: "0", label: "Human Metrics Errors" },
     ],
     tech: ["n8n.io", "Meta Ads API", "Google Ads API", "Klaviyo API", "Google Sheets", "Slack API"],
-    liveLink: "https://next.theecommarketingcompany.com",
-    visualAsset: "/screenshots/n8n-flow.png",
+    liveLink: "https://next.theecommarketingcompany.com", // Representing ads reporting metrics interface
+    visualAsset: "/screenshots/99ads.png",
   },
   {
-    id: "node-3",
+    id: "node-7",
     type: "funnel",
     tag: "Landing Funnel",
     brand: "Comfort Truss",
@@ -92,7 +183,7 @@ const PROJECTS: ProjectNode[] = [
     visualAsset: "/screenshots/comfort-truss.png",
   },
   {
-    id: "node-4",
+    id: "node-8",
     type: "ai",
     tag: "AI Automation Agent",
     brand: "Autonomous Lead Router Agent",
@@ -179,11 +270,11 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
         </div>
 
         {/* Dashboard Grid Panel */}
-        <div className="control-panel grid grid-cols-1 lg:grid-cols-12 gap-6 rounded-2xl border border-white/10 bg-[#070709]/90 shadow-2xl overflow-hidden p-6">
+        <div className="control-panel grid grid-cols-1 lg:grid-cols-12 gap-6 rounded-2xl border border-white/10 bg-[#070709]/90 shadow-2xl overflow-hidden p-6 animate-in fade-in duration-500">
           
-          {/* LEFT SYSTEM MENU (3 Cols) */}
-          <div className="lg:col-span-4 flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-white/5 pb-6 lg:pb-0 lg:pr-6">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 mb-2">
+          {/* LEFT SYSTEM MENU (3 Cols - Scrollable for the 8 nodes) */}
+          <div className="lg:col-span-4 flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-white/5 pb-6 lg:pb-0 lg:pr-6 max-h-[380px] lg:max-h-[480px] overflow-y-auto pr-1 select-none custom-scrollbar">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 mb-2 block sticky top-0 bg-[#070709] py-1">
               Select active node:
             </span>
             {PROJECTS.map((proj) => {
@@ -273,7 +364,7 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                     <h4 className="text-xs font-mono uppercase text-zinc-400 mb-2 font-bold tracking-wider">
                       The Problem:
                     </h4>
-                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed text-left">
                       {activeProj.challenge}
                     </p>
                   </div>
@@ -310,9 +401,9 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
               /* VISUAL SITE MOCK VIEW */
               <div className="flex flex-col gap-4 animate-in fade-in duration-300">
                 {/* Fake Browser Wrapper */}
-                <div className="border border-white/10 rounded-xl overflow-hidden bg-[#0A0A0C] shadow-xl">
+                <div className="border border-white/10 rounded-xl overflow-hidden bg-[#0A0A0C] shadow-xl group">
                   {/* Browser chrome header */}
-                  <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 bg-white/[0.02]">
+                  <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 bg-[#121215]">
                     <div className="flex gap-1.5">
                       <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                       <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
@@ -321,38 +412,40 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                     <div className="mx-auto text-[10px] font-mono text-zinc-500 lowercase bg-black/40 px-6 py-0.5 rounded border border-white/5 max-w-[200px] sm:max-w-[300px] overflow-hidden text-ellipsis whitespace-nowrap">
                       {activeProj.liveLink || `https://${activeProj.brand.toLowerCase().replace(/\s+/g, "-")}.com`}
                     </div>
+                    <span className="text-[9px] font-mono text-zinc-500 ml-auto hidden sm:block animate-pulse">
+                      Hover frame to autoscroll (interactive)
+                    </span>
                   </div>
 
-                  {/* Visual Frame */}
-                  <div className="relative aspect-video w-full bg-[#121215] flex flex-col items-center justify-center p-6 border-b border-white/5">
-                    <div className="absolute inset-0 w-full h-full opacity-40 mix-blend-color-dodge bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none" />
-                    
-                    {/* SVG Blueprint Mockup */}
-                    <div className="flex flex-col items-center gap-4 text-center z-10 max-w-[280px]">
-                      <svg
-                        className="w-16 h-16 text-blue-500/60"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      >
-                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                        <path d="M21 12H3M12 3v18" />
-                      </svg>
-                      
-                      <div>
-                        <p className="text-white text-xs font-bold font-mono">
-                          {activeProj.brand} Interface preview
-                        </p>
-                        <p className="text-zinc-500 text-[10px] font-mono mt-1">
-                          File path: {activeProj.visualAsset}
+                  {/* Scrollable Visual Viewport Container */}
+                  <div className="relative h-[250px] sm:h-[300px] w-full bg-[#0E0E11] overflow-hidden">
+                    {activeProj.visualAsset ? (
+                      /* Auto scrolling full page screenshot */
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={activeProj.visualAsset}
+                        alt={`${activeProj.brand} full page screenshot preview`}
+                        className="absolute top-0 left-0 w-full h-auto transition-transform duration-[12s] ease-in-out transform translate-y-0 group-hover:-translate-y-[calc(100%-250px)] sm:group-hover:-translate-y-[calc(100%-300px)] object-cover"
+                      />
+                    ) : (
+                      /* SVG Fallback Frame */
+                      <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center select-none">
+                        <svg
+                          className="w-12 h-12 text-blue-500/40"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        >
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="9" cy="9" r="2" />
+                          <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                        </svg>
+                        <p className="text-zinc-500 text-[10px] font-sans mt-2">
+                          Visual mapping pipeline pending
                         </p>
                       </div>
-                      
-                      <span className="text-[9px] px-2 py-0.5 rounded border border-amber-500/20 bg-amber-500/5 text-amber-400 font-mono">
-                        Drop screenshot to public/ path to sync UI template
-                      </span>
-                    </div>
+                    )}
                   </div>
                 </div>
 
