@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import SectionWrapper from "@/components/SectionWrapper";
-import InteractiveTerminal from "./InteractiveTerminal";
+import HeroTerminal from "./HeroTerminal";
 
 interface HeroProps {
   onEnter?: () => void;
@@ -37,7 +37,8 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
       tl.to(titleRef.current, { opacity: 1, y: 0, duration: 1.2, delay: 0.2 })
         .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.9 }, "-=0.7")
         .to(taglineRef.current, { opacity: 1, y: 0, duration: 0.8 }, "-=0.6")
-        .to(ctasRef.current, { opacity: 1, y: 0, duration: 0.6 }, "-=0.4");
+        .to(ctasRef.current, { opacity: 1, y: 0, duration: 0.6 }, "-=0.4")
+        .fromTo(".hero-terminal-wrapper", { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 1.2, ease: "power3.out" }, "-=0.8");
 
       // Staggered floating particles
       particleRefs.current.forEach((p, i) => {
@@ -132,7 +133,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
         {/* Main Title — problem-focused, hooks in 3 seconds */}
         <h1
           ref={titleRef}
-          className="mb-6 text-[clamp(2rem,5.5vw,4rem)] font-black leading-[1.15] tracking-tight"
+          className="mb-6 text-[clamp(1.75rem,4vw,3.25rem)] font-black leading-[1.15] tracking-tight"
         >
           <span
             style={{
@@ -308,7 +309,7 @@ export default function Hero({ onEnter, onCTAClick }: HeroProps) {
             // we attach the animation to the wrapper so we don't break the terminal internal refs
             if (el) gsap.fromTo(el, {opacity: 0, x: 50}, {opacity: 1, x: 0, duration: 1.2, delay: 0.5, ease: "power3.out"});
           }}>
-            <InteractiveTerminal />
+            <HeroTerminal />
           </div>
         </div>
       </div>
