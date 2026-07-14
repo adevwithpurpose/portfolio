@@ -156,48 +156,46 @@ const PROJECTS: ProjectNode[] = [
   },
   {
     id: "node-7",
-    type: "n8n",
-    tag: "Data Pipeline",
-    brand: "Ad-Ops Reporting Flow",
-    tagline: "n8n.io · Meta Ads API · Google Ads API · Klaviyo API · Slack API",
+    type: "funnel",
+    tag: "Growth & Retention Agency",
+    brand: "TEMCO",
+    tagline: "Next.js deployment · Marketing site · Bold B2B design",
     challenge:
-      "Automated daily gathering of spent and conversion metrics across Meta, Google, Microsoft, and Klaviyo APIs to Google Sheets and client Slack channels.",
+      "Agency website built around a repeat-revenue positioning, translating a six-part retention system into a sharp, high-converting B2B lead-generation narrative.",
     solution: [
-      "Integrated ad channel platforms programmatically through custom nodes",
-      "Engineered automated spreadsheet validation checking daily values",
-      "Despatched daily, weekly, and monthly PDF update digests to client Slack channels",
+      "Optimized Next.js page generation paths for instant load speed and SEO crawl structures",
+      "Designed and coded a bold, high-fidelity B2B interactive interface matching strict retainer targets",
+      "Parsed complex case studies into a progressive narrative keeping bounce rates low",
     ],
     metrics: [
-      { value: "100%", label: "Daily Data Sync" },
-      { value: "6h/wk", label: "Manual Hours Erased" },
-      { value: "0", label: "Human Error Rates" },
+      { value: "Vercel", label: "Next.js Deployment" },
+      { value: "360°", label: "System Messaging" },
+      { value: "Bold", label: "B2B Design Frame" },
     ],
-    tech: ["n8n.io Core", "Meta Ads API SDK", "Slack Channel Webhooks", "GSheets API"],
-    liveLink: "https://next.theecommarketingcompany.com",
-    visualAsset: "/screenshots/99ads.png",
+    tech: ["Next.js", "Tailwind CSS", "Framer Motion", "Case Study Storytelling", "SEO Hardening"],
+    liveLink: "https://temco.agency", // Placeholder URL
+    visualAsset: "/screenshots/temco.png",
   },
   {
     id: "node-8",
-    type: "ai",
-    tag: "AI Automation Agent",
-    brand: "Autonomous Lead Router",
-    tagline: "FastAPI · OpenAI API · ReAct Loop Framework · Webhooks",
+    type: "n8n",
+    tag: "Automation Infrastructure",
+    brand: "n8n Connectors",
+    tagline: "N8n · Webhooks · APIs · Self-hosted deployment",
     challenge:
-      "Inbound developer requests and client requests were processed manually, lagging and missing critical target bids. Built an agent that scans, classifies, and alerts via Slack/WhatsApp.",
+      "Deploying and managing a self-hosted workflow-automation environment supporting custom integrations and secure transactional automations with a systems-first design.",
     solution: [
-      "Crafted an AI router parsing text files, emails, or chat messages",
-      "Implemented intent categorization system detecting budget, scope, and urgency",
-      "Linked lead validations immediately with custom alerts to Slack & WhatsApp",
-      "Built loop logs showing thinking paths so operators can audit outputs",
+      "Configured a self-hosted, scalable Docker context for n8n execution nodes",
+      "Created secure incoming webhook endpoints handling data validation steps",
+      "Built custom API routing paths normalizing data matrices for internal pipelines",
     ],
     metrics: [
-      { value: "< 2s", label: "Triage Classification" },
-      { value: "98%", label: "Classification Intent Accuracy" },
-      { value: "⬇ 95%", label: "Operator Response Latency" },
+      { value: "Self-Host", label: "Docker Deployment" },
+      { value: "100%", label: "Secure API Webhooks" },
+      { value: "Systems", label: "Practical Design" },
     ],
-    tech: ["FastAPI", "OpenAI API", "ReAct Loop Framework", "Pinecone", "Webhooks"],
-    liveLink: "https://luminous.outafbox.com",
-    visualAsset: "/screenshots/luminous.png",
+    tech: ["n8n.io", "Docker", "REST APIs", "Secure Webhooks", "Automation Setup"],
+    visualAsset: "/screenshots/n8n-flow.png", // Re-using flow graphic asset
   },
 ];
 
@@ -312,8 +310,12 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                 <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-1">
                   {activeProj.brand}
                 </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 font-mono mt-1.5">
-                  {activeProj.tagline}
+                <p className="text-xs sm:text-sm text-zinc-400 font-mono mt-1.5 flex flex-wrap gap-1.5">
+                  {activeProj.tagline.split(" · ").map((t, idx) => (
+                    <span key={idx} className="after:content-['·'] last:after:content-none after:ml-1.5 after:text-zinc-600">
+                      {t}
+                    </span>
+                  ))}
                 </p>
               </div>
 
