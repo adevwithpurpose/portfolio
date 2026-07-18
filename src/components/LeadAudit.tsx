@@ -1,11 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SectionWrapper from "@/components/SectionWrapper";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type LogLine = {
   id: string;
@@ -13,11 +8,7 @@ type LogLine = {
   text: string;
 };
 
-interface LeadSandboxProps {
-  onEnter?: () => void;
-}
-
-export default function LeadSandbox({ onEnter }: LeadSandboxProps) {
+export default function LeadAudit() {
   const [url, setUrl] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "running" | "success" | "error">("idle");
@@ -26,35 +17,12 @@ export default function LeadSandbox({ onEnter }: LeadSandboxProps) {
   ]);
   const [errorMessage, setErrorMessage] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [logs]);
-
-  // GSAP Entrance
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".sandbox-panel",
-        { opacity: 0, scale: 0.98, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 75%",
-          },
-        }
-      );
-    });
-    return () => ctx.revert();
-  }, []);
 
   const addLog = (text: string, type: LogLine["type"]) => {
     setLogs((prev) => [...prev, { id: Math.random().toString(), type, text }]);
@@ -109,9 +77,9 @@ export default function LeadSandbox({ onEnter }: LeadSandboxProps) {
       setStatus("success");
       setUrl("");
       setEmail("");
-    } catch (err: unknown) {
+    } catch (err: any) {
       await new Promise((r) => setTimeout(r, 600));
-      const message = err instanceof Error ? err.message : "Failed to execute API route.";
+      const message = err.message || "Failed to execute API route.";
       addLog(`[CRITICAL ERROR] Pipeline failed: ${message}`, "error");
       setErrorMessage(message);
       setStatus("error");
@@ -119,13 +87,13 @@ export default function LeadSandbox({ onEnter }: LeadSandboxProps) {
   };
 
   return (
-    <SectionWrapper id="sandbox" className="relative py-24 overflow-hidden border-t border-white/5 bg-black/60" onEnter={onEnter}>
+    <SectionWrapper id="lead-audit" className="relative py-20 overflow-hidden border-t border-white/5 bg-black/60">
       {/* Background glowing circle */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute bottom-12 right-12 w-64 h-64 rounded-full bg-blue-500/10 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-6 w-full" ref={containerRef}>
+      <div className="relative z-10 mx-auto max-w-6xl px-6 w-full">
         {/* Eyebrow badge */}
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/5 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-blue-400/80 backdrop-blur-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
@@ -143,7 +111,7 @@ export default function LeadSandbox({ onEnter }: LeadSandboxProps) {
         </div>
 
         {/* Outer Split Layout Container */}
-        <div className="sandbox-panel grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch rounded-2xl border border-white/10 bg-[#070709]/80 backdrop-blur-md p-6 sm:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch rounded-2xl border border-white/10 bg-[#070709]/80 backdrop-blur-md p-6 sm:p-8">
           
           {/* LEFT: Submission Form */}
           <div className="lg:col-span-5 flex flex-col justify-between text-left">
@@ -247,5 +215,22 @@ export default function LeadSandbox({ onEnter }: LeadSandboxProps) {
         </div>
       </div>
     </SectionWrapper>
+  );
+}
+
+// Wrapper mock section container integration matching rest of layout
+function SectionWrapper({
+  id,
+  className,
+  children,
+}: {
+  id: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className={`w-full ${className || ""}`}>
+      {children}
+    </section>
   );
 }
