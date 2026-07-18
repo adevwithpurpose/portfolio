@@ -7,6 +7,7 @@ import Services from "@/components/Services";
 import ProcessSection from "@/components/ProcessSection";
 // Webhook kick-deploy comment to restart Vercel builder
 import CaseStudies from "@/components/CaseStudies";
+import LeadSandbox from "@/components/LeadSandbox";
 import HowIWork from "@/components/HowIWork";
 import WhyMeSection from "@/components/WhyMeSection";
 import FAQSection from "@/components/FAQSection";
@@ -28,6 +29,7 @@ const SECTION_IDS = [
   "service-3",
   "process",
   "case-studies",
+  "sandbox",
   "how-i-work",
   "why-me",
   "faq",
@@ -176,10 +178,11 @@ export default function Home() {
       <Services onEnter={(i) => handleSectionEnter(i + 2)} />
       <ProcessSection onEnter={() => handleSectionEnter(5)} />
       <CaseStudies onEnter={() => handleSectionEnter(6)} />
-      <HowIWork onEnter={() => handleSectionEnter(7)} />
-      <WhyMeSection onEnter={() => handleSectionEnter(8)} />
-      <FAQSection onEnter={() => handleSectionEnter(9)} />
-      <Contact onEnter={() => handleSectionEnter(10)} />
+      <LeadSandbox onEnter={() => handleSectionEnter(7)} />
+      <HowIWork onEnter={() => handleSectionEnter(8)} />
+      <WhyMeSection onEnter={() => handleSectionEnter(9)} />
+      <FAQSection onEnter={() => handleSectionEnter(10)} />
+      <Contact onEnter={() => handleSectionEnter(11)} />
       {/* Footer snap section */}
       <section className="snap-section flex min-h-[50vh] items-center justify-center">
         <Footer />

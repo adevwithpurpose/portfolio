@@ -37,6 +37,7 @@ export default function NavigationDots({
     "AI Agents",
     "How It Works",
     "Case Studies",
+    "API Sandbox",
     "How I Work",
     "Why Me",
     "FAQ",
