@@ -35,6 +35,7 @@ export default function NavigationDots({
     "Web Development",
     "Automation",
     "AI Agents",
+    "Systems Built",
     "How It Works",
     "Case Studies",
     "API Sandbox",

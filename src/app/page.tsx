@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import Hero from "@/components/Hero";
 import SocialProof from "@/components/SocialProof";
 import Services from "@/components/Services";
+import SystemsShowcase from "@/components/SystemsShowcase";
 import ProcessSection from "@/components/ProcessSection";
 // Webhook kick-deploy comment to restart Vercel builder
 import CaseStudies from "@/components/CaseStudies";
@@ -27,6 +28,7 @@ const SECTION_IDS = [
   "service-1",
   "service-2",
   "service-3",
+  "systems-showcase",
   "process",
   "case-studies",
   "sandbox",
@@ -176,13 +178,14 @@ export default function Home() {
       <Hero onEnter={() => handleSectionEnter(0)} onCTAClick={handleCTAClick} />
       <SocialProof onEnter={() => handleSectionEnter(1)} />
       <Services onEnter={(i) => handleSectionEnter(i + 2)} />
-      <ProcessSection onEnter={() => handleSectionEnter(5)} />
-      <CaseStudies onEnter={() => handleSectionEnter(6)} />
-      <LeadSandbox onEnter={() => handleSectionEnter(7)} />
-      <HowIWork onEnter={() => handleSectionEnter(8)} />
-      <WhyMeSection onEnter={() => handleSectionEnter(9)} />
-      <FAQSection onEnter={() => handleSectionEnter(10)} />
-      <Contact onEnter={() => handleSectionEnter(11)} />
+      <SystemsShowcase onEnter={() => handleSectionEnter(5)} />
+      <ProcessSection onEnter={() => handleSectionEnter(6)} />
+      <CaseStudies onEnter={() => handleSectionEnter(7)} />
+      <LeadSandbox onEnter={() => handleSectionEnter(8)} />
+      <HowIWork onEnter={() => handleSectionEnter(9)} />
+      <WhyMeSection onEnter={() => handleSectionEnter(10)} />
+      <FAQSection onEnter={() => handleSectionEnter(11)} />
+      <Contact onEnter={() => handleSectionEnter(12)} />
       {/* Footer snap section */}
       <section className="snap-section flex min-h-[50vh] items-center justify-center">
         <Footer />
