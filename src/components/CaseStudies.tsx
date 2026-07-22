@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SectionWrapper from "@/components/SectionWrapper";
+import VideoFacade from "@/components/VideoFacade";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +20,8 @@ interface ProjectNode {
   type: "ecom" | "n8n" | "ai" | "funnel";
   liveLink?: string;
   visualAsset?: string;
+  videoUrl?: string;
+  posterUrl?: string;
 }
 
 const PROJECTS: ProjectNode[] = [
@@ -43,6 +46,8 @@ const PROJECTS: ProjectNode[] = [
     tech: ["HTML5", "CSS3", "Vanilla JS", "cPanel Git Hooks", "Responsive Design"],
     liveLink: "https://luminous.outafbox.com",
     visualAsset: "/screenshots/luminous.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/luminous.png",
   },
   {
     id: "node-2",
@@ -65,6 +70,8 @@ const PROJECTS: ProjectNode[] = [
     tech: ["WordPress", "PHP", "Coolify / Docker", "Google Drive API", "AJAX Filtering"],
     liveLink: "https://99ads.com",
     visualAsset: "/screenshots/99ads.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/99ads.png",
   },
   {
     id: "node-3",
@@ -87,6 +94,8 @@ const PROJECTS: ProjectNode[] = [
     tech: ["Shopify Liquid", "Dawn OS 2.0", "Checkout CRO", "Script Optimization"],
     liveLink: "https://calmicollar.com",
     visualAsset: "/screenshots/calmicollar.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/calmicollar.png",
   },
   {
     id: "node-4",
@@ -109,6 +118,8 @@ const PROJECTS: ProjectNode[] = [
     tech: ["Shopify Liquid", "Vanilla JavaScript", "Custom Drawer UI", "Metafields API"],
     liveLink: "https://nuumipet.com",
     visualAsset: "/screenshots/nuumi.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/nuumi.png",
   },
   {
     id: "node-5",
@@ -131,6 +142,8 @@ const PROJECTS: ProjectNode[] = [
     tech: ["Shopify Liquid", "Reviews Caching", "Asset Optimization", "Italian Localization"],
     liveLink: "https://amanotte.it",
     visualAsset: "/screenshots/amanotte.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/amanotte.png",
   },
   {
     id: "node-6",
@@ -153,6 +166,8 @@ const PROJECTS: ProjectNode[] = [
     tech: ["Python / Crawl4AI", "Shopify Migration", "WCAG Grid Rules", "301 Redirect Mapping"],
     liveLink: "https://shop.fantasticane.com",
     visualAsset: "/screenshots/fantasticane.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/fantasticane.png",
   },
   {
     id: "node-7",
@@ -175,6 +190,8 @@ const PROJECTS: ProjectNode[] = [
     tech: ["Astro", "Tailwind CSS", "Coolify Node Hosting", "Local Markdown Content"],
     liveLink: "https://next.theecommarketingcompany.com",
     visualAsset: "/screenshots/temco.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/temco.png",
   },
   {
     id: "node-8",
@@ -196,12 +213,14 @@ const PROJECTS: ProjectNode[] = [
     ],
     tech: ["n8n.io API", "Node.js Scripting", "JSON Schema Validation", "Git Pipeline"],
     visualAsset: "/screenshots/n8n-flow.png",
+    videoUrl: "https://player.vimeo.com/video/506888405",
+    posterUrl: "/screenshots/n8n-flow.png",
   },
 ];
 
 export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
   const [activeNode, setActiveNode] = useState<string>("node-1"); // Default to Luminous Node
-  const [tabMode, setTabMode] = useState<"specs" | "visual">("visual"); // Default to visual when load
+  const [tabMode, setTabMode] = useState<"specs" | "visual" | "video">("visual"); // Default to visual when load
   const containerRef = useRef<HTMLDivElement>(null);
   const activeProj = PROJECTS.find((p) => p.id === activeNode) || PROJECTS[0];
 
@@ -331,6 +350,18 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                 >
                   Technical Specs
                 </button>
+                {activeProj.videoUrl && (
+                  <button
+                    onClick={() => setTabMode("video")}
+                    className={`px-3 py-1.5 rounded-md text-xs font-mono transition-all ${
+                      tabMode === "video"
+                        ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                        : "text-zinc-400 hover:text-white border border-transparent"
+                    }`}
+                  >
+                    System Walkthrough
+                  </button>
+                )}
                 <button
                   onClick={() => setTabMode("visual")}
                   className={`px-3 py-1.5 rounded-md text-xs font-mono transition-all ${
@@ -397,6 +428,16 @@ export default function CaseStudies({ onEnter }: { onEnter?: () => void }) {
                   {activeProj.type === "n8n" && <N8nWidget />}
                   {activeProj.type === "ai" && <AiWidget />}
                   {activeProj.type === "funnel" && <FunnelWidget />}
+                </div>
+              </div>
+            ) : tabMode === "video" ? (
+              <div className="flex flex-col gap-4 animate-in fade-in duration-300 py-4 justify-center items-center h-full">
+                <div className="w-full max-w-2xl">
+                  <VideoFacade
+                    videoUrl={activeProj.videoUrl || ""}
+                    posterUrl={activeProj.posterUrl || "/screenshots/placeholder.png"}
+                    title={`${activeProj.brand} Solution Walkthrough`}
+                  />
                 </div>
               </div>
             ) : (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import VideoFacade from "@/components/VideoFacade";
 
 type OutputLine = {
   id: string;
@@ -42,7 +43,7 @@ const COMMAND_RESPONSES: Record<string, string[]> = {
     "=== AVAILABLE COMMANDS ===",
     "whoami      - Display profile information",
     "stack       - Show technical stack",
-    "ping        - System status check",
+    "video       - Launch business systems intro video",
     "services    - Get list of services",
     "clear       - Reset terminal screen",
     "--- Plain English queries ---",
@@ -96,6 +97,37 @@ export default function HeroTerminal() {
     if (cmdClean === "clear") {
       setOutput([]);
       setApiHistory([]);
+      setIsTyping(false);
+      return;
+    }
+
+    if (cmdClean === "video" || cmdClean === "intro" || cmdClean === "demo") {
+      setOutput(prev => [
+        ...prev,
+        {
+          id: Math.random().toString(),
+          type: "output",
+          content: "[system]: Establishing asynchronous video stream pipeline..."
+        },
+        {
+          id: Math.random().toString(),
+          type: "output",
+          content: "[system]: Launching Safeer's interactive media player facade..."
+        },
+        {
+          id: Math.random().toString(),
+          type: "output",
+          content: (
+            <div className="my-4 w-full max-w-md border border-white/5 bg-black/60 rounded-xl overflow-hidden shadow-xl animate-in zoom-in-95 duration-200">
+              <VideoFacade
+                videoUrl="https://player.vimeo.com/video/506888405" 
+                posterUrl="/screenshots/luminous.png" 
+                title="Safeer's Intro Explainer Video" 
+              />
+            </div>
+          )
+        }
+      ]);
       setIsTyping(false);
       return;
     }
@@ -199,7 +231,7 @@ export default function HeroTerminal() {
       {/* Command Buttons */}
       <div className="p-3 border-t border-white/5 bg-[#18181b]/80 backdrop-blur-lg">
         <div className="flex flex-wrap items-center gap-2">
-          {["whoami", "stack", "ping", "services", "help"].map(cmd => (
+          {["whoami", "stack", "video", "services", "help"].map(cmd => (
             <button
               key={cmd}
               onClick={() => runCommand(cmd)}
