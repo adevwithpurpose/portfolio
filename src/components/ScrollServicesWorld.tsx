@@ -1,21 +1,22 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import type * as THREE from "three";
 
 /* ─────────────────────────────────────────────────────────────
- * ScrollServicesWorld — True 3D scroll world
+ * ScrollServicesWorld — True Three.js WebGL 3D World
  *
  * Architecture:
  * - 400vh scroll track with a sticky 100svh viewport.
- *   (No overflow-hidden ancestors → sticky actually pins.)
- * - A perspective camera rig flies through three stage planes
- *   spaced 1600px apart on the Z axis (multi-plane parallax).
- * - A glowing grid floor + three drifting particle layers render
- *   below/behind the stages for depth.
- * - All per-frame motion (camera, planes, floor, HUD meter) is
- *   written directly to the DOM inside a lerped rAF loop —
- *   React state only changes when the active world changes.
+ * - A single THREE.WebGLRenderer + THREE.PerspectiveCamera + THREE.Scene
+ *   renders three distinct 3D worlds positioned along the Z axis.
+ * - Scroll progress drives smooth camera.position interpolation
+ *   and camera.lookAt targeting.
+ * - Three Worlds:
+ *   W1 — Wireframe storefront geometry + glowing vertex nodes + emerald particles
+ *   W2 — Glowing AI Core orb (wireframe + inner mesh) + orbiting satellites + line beams
+ *   W3 — Holographic column matrix + dynamic heights + data particles
+ * - HTML annotation badges overlay the canvas with fade transitions.
  * ───────────────────────────────────────────────────────────── */
 
 interface ServiceWorldData {
@@ -78,485 +79,695 @@ const SERVICE_WORLDS: ServiceWorldData[] = [
 ];
 
 const N = SERVICE_WORLDS.length;
-const DEPTH = 1600; // Z distance between stage planes
-const HUD_ZONE = 0.07; // progress reserved for entry/exit flight
+const WORLD_SPACING = 22; // Z distance between world centres
+const HUD_ZONE = 0.07;
+const CAMERA_OFFSET = 12; // camera sits this far ahead of focal point
 
 const clamp = (v: number, min: number, max: number) =>
   Math.min(max, Math.max(min, v));
 
-/* ── Interactive telemetry badge ─────────────────────────── */
-
-interface BadgeSpec {
+/* ── Badge annotation overlays (HTML over WebGL) ────────────── */
+interface BadgeAnnotation {
   label: string;
   detail: string;
-  z: number;
-  pos: string; // tailwind position classes
-  live?: boolean;
+  worldIdx: number;
+  anchor: { x: string; y: string }; // CSS positioning relative to viewport
 }
 
-function TelemetryBadge({
-  spec,
-  color,
-}: {
-  spec: BadgeSpec;
-  color: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
-    if (!spec.live) return;
-    const t = setInterval(() => setTick((p) => p + 1), 1800);
-    return () => clearInterval(t);
-  }, [spec.live]);
-
-  const liveSuffix = spec.live ? ` ${12 + (tick % 7)}ms` : "";
-
-  return (
-    <button
-      type="button"
-      tabIndex={-1}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-      onFocus={() => setOpen(true)}
-      onBlur={() => setOpen(false)}
-      className={`absolute ${spec.pos} hidden sm:block pointer-events-auto px-3.5 py-2 rounded-xl border backdrop-blur-md font-mono text-[11px] text-left shadow-2xl transition-all duration-300 cursor-default select-none ${
-        open ? "bg-[#12121A]/95" : "bg-[#12121A]/80"
-      }`}
-      style={{
-        transform: `translateZ(${spec.z}px) scale(${open ? 1.12 : 1})`,
-        borderColor: `${color}${open ? "90" : "50"}`,
-        color,
-        boxShadow: open ? `0 0 28px ${color}45` : `0 8px 24px rgba(0,0,0,0.5)`,
-        transitionProperty: "transform, box-shadow, border-color, background-color",
-      }}
-    >
-      <span className="flex items-center gap-1.5 whitespace-nowrap">
-        <span
-          className="w-1.5 h-1.5 rounded-full animate-pulse"
-          style={{ backgroundColor: color }}
-        />
-        {spec.label}
-        {liveSuffix}
-      </span>
-      <span
-        className="block overflow-hidden text-white/70 transition-all duration-300"
-        style={{
-          maxHeight: open ? 40 : 0,
-          opacity: open ? 1 : 0,
-          marginTop: open ? 4 : 0,
-        }}
-      >
-        {spec.detail}
-      </span>
-    </button>
-  );
-}
-
-/* ── Stage content panels (the deep 3D component per world) ── */
-
-function StorefrontPanel() {
-  const [tab, setTab] = useState<"checkout" | "liquid" | "astro">("checkout");
-  const accent = "#10B981";
-
-  return (
-    <div
-      className="relative w-full max-w-[min(92vw,36rem)] bg-[#0F0F14]/95 border rounded-2xl p-4 md:p-5 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-3 md:space-y-4"
-      style={{ borderColor: `${accent}4D`, transform: "translateZ(70px)" }}
-    >
-      <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-red-500/80 shrink-0" />
-          <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-yellow-500/80 shrink-0" />
-          <span className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-500/80 shrink-0" />
-          <span className="ml-1.5 text-[11px] md:text-xs font-mono text-white/50 truncate">
-            store.safeer-os.dev
-          </span>
-        </div>
-        <div className="flex gap-1 text-[10px] md:text-[11px] font-mono shrink-0">
-          {(["checkout", "liquid", "astro"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-2 md:px-2.5 py-1 rounded-md transition-colors ${
-                tab === t
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                  : "text-white/40 hover:text-white/70"
-              }`}
-            >
-              {t === "checkout" ? "UI" : t === "liquid" ? "Dawn" : "Astro"}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {tab === "checkout" && (
-        <div className="grid grid-cols-3 gap-2.5 md:gap-3 pt-1">
-          <div className="col-span-1 rounded-xl bg-white/[0.03] border border-white/10 p-2.5 md:p-3 space-y-2">
-            <div className="w-full h-16 md:h-20 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-              <svg
-                className="w-7 h-7 md:w-8 md:h-8 stroke-emerald-400 fill-none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-              >
-                <path
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div className="h-2.5 w-3/4 rounded bg-white/20" />
-            <div className="h-2 w-1/2 rounded bg-emerald-400/60" />
-          </div>
-          <div className="col-span-2 rounded-xl bg-white/[0.02] border border-white/10 p-2.5 md:p-3 flex flex-col justify-between">
-            <div className="space-y-1.5 md:space-y-2">
-              <div className="flex justify-between items-center text-[11px] md:text-xs font-mono text-white/80">
-                <span>Storefront API</span>
-                <span className="text-emerald-400 font-bold">PASS 100%</span>
-              </div>
-              <p className="text-[11px] md:text-xs text-gray-400 leading-relaxed">
-                Dawn sections tuned for zero layout shift (CLS 0.00). Instant
-                variant selection & custom cart drawer — no heavy apps.
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[10px] md:text-[11px] font-mono">
-              <span className="text-white/40">TTFB: 42ms</span>
-              <span className="text-emerald-400">Payload: 14KB</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {tab === "liquid" && (
-        <div className="bg-[#09090D] p-3 rounded-xl border border-white/10 text-[11px] md:text-xs font-mono text-emerald-300 space-y-1 overflow-x-auto">
-          <div>
-            <span className="text-purple-400">{"{%"}</span> comment{" "}
-            <span className="text-purple-400">{"%}"}</span> Dawn Custom Section{" "}
-            <span className="text-purple-400">{"{%"}</span> endcomment{" "}
-            <span className="text-purple-400">{"%}"}</span>
-          </div>
-          <div>
-            <span className="text-blue-400">&lt;section</span>{" "}
-            <span className="text-yellow-300">class=</span>
-            <span className="text-emerald-400">&quot;fast-product-grid&quot;</span>
-            <span className="text-blue-400">&gt;</span>
-          </div>
-          <div className="pl-4">
-            <span className="text-purple-400">{"{%"}</span>{" "}
-            <span className="text-blue-300">for</span> product{" "}
-            <span className="text-blue-300">in</span> collection.products{" "}
-            <span className="text-purple-400">{"%}"}</span>
-          </div>
-          <div className="pl-8">
-            <span className="text-purple-400">{"{%"}</span> render{" "}
-            <span className="text-emerald-400">&apos;card-product-fast&apos;</span>,
-            card_product: product <span className="text-purple-400">{"%}"}</span>
-          </div>
-          <div className="pl-4">
-            <span className="text-purple-400">{"{%"}</span> endfor{" "}
-            <span className="text-purple-400">{"%}"}</span>
-          </div>
-          <div>
-            <span className="text-blue-400">&lt;/section&gt;</span>
-          </div>
-        </div>
-      )}
-
-      {tab === "astro" && (
-        <div className="bg-[#09090D] p-3 rounded-xl border border-white/10 text-[11px] md:text-xs font-mono text-cyan-300 space-y-1 overflow-x-auto">
-          <div>
-            <span className="text-purple-400">---</span>
-          </div>
-          <div>
-            <span className="text-blue-300">import</span> {"{"}{" "}
-            getStorefrontProducts {"}"} <span className="text-blue-300">from</span>{" "}
-            <span className="text-emerald-400">&apos;@/lib/shopify&apos;</span>;
-          </div>
-          <div>
-            <span className="text-blue-300">const</span> products ={" "}
-            <span className="text-purple-400">await</span> getStorefrontProducts();
-          </div>
-          <div>
-            <span className="text-purple-400">---</span>
-          </div>
-          <div>
-            &lt;<span className="text-yellow-300">StorefrontGrid</span>{" "}
-            products=&#123;products&#125; /&gt;
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AgentTerminalPanel() {
-  const accent = "#06B6D4";
-  const logs = [
-    "[Crawl4AI] Initializing browser context...",
-    "[FastAPI] GET /v1/scrape/target - 200 OK (12ms)",
-    "[Hermes Agent] Parsing DOM schema & extracting JSON...",
-    "[Pipeline] 1,420 items indexed to Vector DB",
-    "[System] Standby for next extraction batch...",
-  ];
-  const [logIdx, setLogIdx] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => setLogIdx((p) => (p + 1) % logs.length), 2400);
-    return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <div
-      className="relative w-full max-w-[min(92vw,36rem)] bg-[#0B0F17]/95 border rounded-2xl p-4 md:p-5 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-3 md:space-y-4"
-      style={{ borderColor: `${accent}4D`, transform: "translateZ(70px)" }}
-    >
-      <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10 font-mono text-[11px] md:text-xs">
-        <div className="flex items-center gap-2 text-cyan-400 min-w-0">
-          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shrink-0" />
-          <span className="truncate">agent@safeer-os:~ (Crawl4AI + FastAPI)</span>
-        </div>
-        <span className="text-white/40 shrink-0">STATUS: ACTIVE</span>
-      </div>
-
-      <div className="bg-[#05080E] p-3.5 md:p-4 rounded-xl border border-white/10 font-mono text-[11px] md:text-xs space-y-2 h-40 md:h-44 flex flex-col justify-between overflow-hidden">
-        <div className="space-y-1.5 text-cyan-300/90">
-          <div className="text-white/50 truncate">
-            $ python3 -m crawl4ai.agent --target=&quot;https://client-site.com&quot;
-          </div>
-          <div className="text-emerald-400">
-            &gt;&gt; Extracting structured JSON schema...
-          </div>
-          <div className="text-cyan-400 font-bold">{logs[logIdx]}</div>
-        </div>
-        <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] md:text-[11px] text-white/50">
-          <span>Rate: 120 req/min</span>
-          <span className="text-cyan-400">Latency: 14ms</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function AnalyticsPanel() {
-  const accent = "#A855F7";
-  return (
-    <div
-      className="relative w-full max-w-[min(92vw,36rem)] bg-[#100C16]/95 border rounded-2xl p-4 md:p-5 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-3 md:space-y-4"
-      style={{ borderColor: `${accent}4D`, transform: "translateZ(70px)" }}
-    >
-      <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10 font-mono text-[11px] md:text-xs">
-        <span className="text-purple-400 truncate">EXECUTIVE TELEMETRY STREAM</span>
-        <span className="text-white/40 shrink-0">LATENCY: &lt;0.2s</span>
-      </div>
-      <div className="grid grid-cols-4 gap-2.5 md:gap-3 h-36 md:h-40 items-end p-3.5 md:p-4 rounded-xl bg-white/[0.02] border border-white/10">
-        {[65, 85, 45, 95].map((val, i) => (
-          <div key={i} className="flex flex-col items-center gap-2 h-full justify-end">
-            <div
-              className="w-full rounded-t-lg bg-gradient-to-t from-purple-600/40 to-purple-400 transition-all duration-500 border-t border-purple-300"
-              style={{ height: `${val}%` }}
-            />
-            <span className="text-[10px] font-mono text-white/50">M0{i + 1}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── Badge layouts per world (deep Z floating telemetry) ──── */
-
-const WORLD_BADGES: BadgeSpec[][] = [
-  [
-    {
-      label: "⚡ LIGHTHOUSE 98/100",
-      detail: "Performance · A11y · SEO · Best Practices",
-      z: 170,
-      pos: "-top-5 -left-4 md:-top-8 md:-left-16",
-    },
-    {
-      label: "🚀 LCP 0.4s",
-      detail: "Edge-cached Dawn sections, 14KB payload",
-      z: 210,
-      pos: "-bottom-5 -right-4 md:-bottom-8 md:-right-16",
-      live: true,
-    },
-    {
-      label: "🧩 HEADLESS CMS",
-      detail: "TinaCMS editorial layer over Storefront API",
-      z: 120,
-      pos: "top-1/2 -right-6 md:-right-24",
-    },
-  ],
-  [
-    {
-      label: "🤖 CRAWL4AI PARSER",
-      detail: "LLM-ready markdown + structured JSON",
-      z: 180,
-      pos: "-top-5 -right-4 md:-top-8 md:-right-16",
-    },
-    {
-      label: "⚙️ FASTAPI ENGINE",
-      detail: "Serverless scrape endpoints, auto-scaling",
-      z: 210,
-      pos: "-bottom-5 -left-4 md:-bottom-8 md:-left-16",
-      live: true,
-    },
-    {
-      label: "🧠 VECTOR DB SYNC",
-      detail: "1,420 docs indexed · semantic retrieval",
-      z: 120,
-      pos: "top-1/2 -left-6 md:-left-24",
-    },
-  ],
-  [
-    {
-      label: "📊 POWER BI MATRIX",
-      detail: "Executive KPIs refreshed in real time",
-      z: 180,
-      pos: "-top-5 -right-4 md:-top-8 md:-right-16",
-    },
-    {
-      label: "📈 PINE SCRIPT QUANT",
-      detail: "Custom indicators wired to live market data",
-      z: 210,
-      pos: "-bottom-5 -left-4 md:-bottom-8 md:-left-16",
-    },
-    {
-      label: "🛰️ STREAM",
-      detail: "WebSocket telemetry bus · SQL backbone",
-      z: 130,
-      pos: "top-1/2 -left-6 md:-left-28",
-      live: true,
-    },
-  ],
+const BADGE_DEFS: BadgeAnnotation[] = [
+  {
+    label: "⚡ 98+ Lighthouse",
+    detail: "Performance · A11y · SEO · Best Practices",
+    worldIdx: 0,
+    anchor: { x: "left-[8%]", y: "top-[18%]" },
+  },
+  {
+    label: "🚀 0.4s LCP",
+    detail: "Edge-cached Dawn sections · 14KB payload",
+    worldIdx: 0,
+    anchor: { x: "right-[8%]", y: "bottom-[28%]" },
+  },
+  {
+    label: "🤖 Crawl4AI Engine",
+    detail: "LLM-ready markdown + structured JSON extraction",
+    worldIdx: 1,
+    anchor: { x: "right-[8%]", y: "top-[22%]" },
+  },
+  {
+    label: "🧠 Vector DB Sync",
+    detail: "1,420 docs indexed · semantic retrieval",
+    worldIdx: 1,
+    anchor: { x: "left-[8%]", y: "bottom-[25%]" },
+  },
+  {
+    label: "📊 <0.2s Stream Latency",
+    detail: "Real-time telemetry · live data ingestion",
+    worldIdx: 2,
+    anchor: { x: "left-[10%]", y: "top-[20%]" },
+  },
+  {
+    label: "📈 Power BI Dashboards",
+    detail: "Executive views · Pine Script quant indicators",
+    worldIdx: 2,
+    anchor: { x: "right-[10%]", y: "bottom-[30%]" },
+  },
 ];
 
-/* ── Main component ───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+ * World Builder Functions
+ * Each creates a THREE.Group with the 3D geometry for one world.
+ * ═══════════════════════════════════════════════════════════════ */
+
+function buildWorld1(THREE: any) {
+  const group = new THREE.Group();
+  const accent = new THREE.Color(0x10b981);
+  const clock = new THREE.Clock();
+  const animatedObjects: { update: (t: number) => void }[] = [];
+
+  // ── Wireframe store geometry ──
+  // Front wall
+  const frontWallGeo = new THREE.BoxGeometry(6, 4, 0.15);
+  const wireframeMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.35,
+  });
+  const frontWall = new THREE.Mesh(frontWallGeo, wireframeMat);
+  frontWall.position.set(0, 0, 1);
+  group.add(frontWall);
+
+  // Roof (inverted V)
+  const roofGeo = new THREE.ConeGeometry(4.2, 2.2, 4);
+  const roofMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.3,
+  });
+  const roof = new THREE.Mesh(roofGeo, roofMat);
+  roof.position.set(0, 3.1, 1);
+  roof.rotation.y = Math.PI / 4;
+  group.add(roof);
+
+  // Side panels
+  const sideGeo = new THREE.BoxGeometry(0.15, 4, 6);
+  const sideL = new THREE.Mesh(sideGeo, wireframeMat.clone());
+  sideL.position.set(-3, 0, -2);
+  group.add(sideL);
+  const sideR = new THREE.Mesh(sideGeo, wireframeMat.clone());
+  sideR.position.set(3, 0, -2);
+  group.add(sideR);
+
+  // Back wall
+  const backGeo = new THREE.BoxGeometry(6, 4, 0.15);
+  const backWall = new THREE.Mesh(backGeo, wireframeMat.clone());
+  backWall.position.set(0, 0, -5);
+  group.add(backWall);
+
+  // Floor plane
+  const floorGeo = new THREE.PlaneGeometry(6, 6);
+  const floorMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.12,
+  });
+  const floor = new THREE.Mesh(floorGeo, floorMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.set(0, -2, -2);
+  group.add(floor);
+
+  // ── Glowing vertex nodes ──
+  const nodePositions: [number, number, number][] = [
+    [-3, 2, 1], [3, 2, 1], [-3, -2, 1], [3, -2, 1],
+    [0, 4.2, 1], [-3, 2, -5], [3, 2, -5], [-3, -2, -5], [3, -2, -5],
+    [0, -2, 1], [0, 2, -5], [-3, 0, -5], [3, 0, -5],
+  ];
+  const nodeSpheres: THREE.Mesh[] = [];
+  nodePositions.forEach((pos) => {
+    const geo = new THREE.SphereGeometry(0.12, 8, 8);
+    const mat = new THREE.MeshBasicMaterial({ color: accent });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(...pos);
+    group.add(mesh);
+    nodeSpheres.push(mesh);
+  });
+  animatedObjects.push({
+    update(t: number) {
+      nodeSpheres.forEach((s, i) => {
+        const s2 = 1 + 0.35 * Math.sin(t * 2 + i * 0.8);
+        s.scale.setScalar(s2);
+      });
+    },
+  });
+
+  // ── Emerald particle field ──
+  const particleCount = 300;
+  const pPositions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) {
+    pPositions[i * 3] = (Math.random() - 0.5) * 14;
+    pPositions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+    pPositions[i * 3 + 2] = (Math.random() - 0.5) * 14;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
+  const pMat = new THREE.PointsMaterial({
+    color: accent,
+    size: 0.08,
+    transparent: true,
+    opacity: 0.7,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const particles = new THREE.Points(pGeo, pMat);
+  group.add(particles);
+  animatedObjects.push({
+    update(t: number) {
+      const pos = particles.geometry.attributes.position as THREE.BufferAttribute;
+      for (let i = 0; i < particleCount; i++) {
+        pos.array[i * 3 + 1] += Math.sin(t + i * 0.1) * 0.002;
+      }
+      pos.needsUpdate = true;
+      particles.rotation.y = t * 0.05;
+    },
+  });
+
+  // ── Point lights for glow ──
+  const pl1 = new THREE.PointLight(0x10b981, 2, 12);
+  pl1.position.set(0, 2, 2);
+  group.add(pl1);
+
+  return { group, animatedObjects, clock };
+}
+
+function buildWorld2(THREE: any) {
+  const group = new THREE.Group();
+  const accent = new THREE.Color(0x06b6d4);
+  const animatedObjects: { update: (t: number) => void }[] = [];
+
+  // ── AI Core orb — outer wireframe ──
+  const coreOuterGeo = new THREE.IcosahedronGeometry(2.5, 1);
+  const coreOuterMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.45,
+  });
+  const coreOuter = new THREE.Mesh(coreOuterGeo, coreOuterMat);
+  group.add(coreOuter);
+
+  // ── AI Core orb — inner solid mesh ──
+  const coreInnerGeo = new THREE.IcosahedronGeometry(1.2, 2);
+  const coreInnerMat = new THREE.MeshStandardMaterial({
+    color: accent,
+    emissive: accent,
+    emissiveIntensity: 0.6,
+    transparent: true,
+    opacity: 0.3,
+    roughness: 0.3,
+    metalness: 0.8,
+  });
+  const coreInner = new THREE.Mesh(coreInnerGeo, coreInnerMat);
+  group.add(coreInner);
+
+  // ── Orbiting satellite nodes ──
+  const satelliteCount = 8;
+  const satellites: {
+    mesh: THREE.Mesh;
+    angle: number;
+    radius: number;
+    speed: number;
+    yOffset: number;
+  }[] = [];
+
+  for (let i = 0; i < satelliteCount; i++) {
+    const geo = new THREE.OctahedronGeometry(0.2, 0);
+    const mat = new THREE.MeshBasicMaterial({
+      color: accent,
+      transparent: true,
+      opacity: 0.8,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    const radius = 3.5 + Math.random() * 1.5;
+    const angle = (i / satelliteCount) * Math.PI * 2;
+    const speed = 0.3 + Math.random() * 0.4;
+    const yOffset = (Math.random() - 0.5) * 2;
+    satellites.push({ mesh, angle, radius, speed, yOffset });
+    group.add(mesh);
+  }
+
+  // ── Connecting line beams ──
+  const lineGroup = new THREE.Group();
+  const lineMat = new THREE.LineBasicMaterial({
+    color: accent,
+    transparent: true,
+    opacity: 0.3,
+  });
+  const lines: THREE.Line[] = [];
+  for (let i = 0; i < satelliteCount; i++) {
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(6); // 2 points * 3 components
+    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    const line = new THREE.Line(geo, lineMat.clone());
+    lines.push(line);
+    lineGroup.add(line);
+  }
+  group.add(lineGroup);
+
+  // ── Orbit rings ──
+  for (let i = 0; i < 3; i++) {
+    const ringGeo = new THREE.RingGeometry(3.2 + i * 0.8, 3.25 + i * 0.8, 64);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: accent,
+      transparent: true,
+      opacity: 0.08 + i * 0.02,
+      side: THREE.DoubleSide,
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2 + (i - 1) * 0.15;
+    ring.rotation.z = i * 0.3;
+    group.add(ring);
+  }
+
+  // ── Data particle field ──
+  const pCount = 200;
+  const pPos = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 4 + Math.random() * 6;
+    pPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    pPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    pPos[i * 3 + 2] = r * Math.cos(phi);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({
+    color: accent,
+    size: 0.06,
+    transparent: true,
+    opacity: 0.6,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const particleField = new THREE.Points(pGeo, pMat);
+  group.add(particleField);
+
+  // ── Point lights ──
+  const pl = new THREE.PointLight(0x06b6d4, 3, 15);
+  pl.position.set(0, 0, 0);
+  group.add(pl);
+
+  animatedObjects.push({
+    update(t: number) {
+      coreOuter.rotation.x = t * 0.15;
+      coreOuter.rotation.y = t * 0.2;
+      coreInner.rotation.x = -t * 0.3;
+      coreInner.rotation.z = t * 0.25;
+      coreInnerMat.emissiveIntensity = 0.4 + 0.3 * Math.sin(t * 2);
+
+      // Update satellites
+      satellites.forEach((s, i) => {
+        const a = s.angle + t * s.speed;
+        s.mesh.position.set(
+          Math.cos(a) * s.radius,
+          s.yOffset + Math.sin(t * 0.8 + i) * 0.5,
+          Math.sin(a) * s.radius,
+        );
+        s.mesh.rotation.x = t;
+        s.mesh.rotation.y = t * 1.5;
+
+        // Update connecting line
+        const posAttr = lines[i].geometry.attributes.position as THREE.BufferAttribute;
+        posAttr.array[0] = 0;
+        posAttr.array[1] = 0;
+        posAttr.array[2] = 0;
+        posAttr.array[3] = s.mesh.position.x;
+        posAttr.array[4] = s.mesh.position.y;
+        posAttr.array[5] = s.mesh.position.z;
+        posAttr.needsUpdate = true;
+
+        // Pulse line opacity
+        const d = s.mesh.position.length();
+        (lines[i].material as THREE.LineBasicMaterial).opacity = clamp(0.5 - d * 0.05, 0.05, 0.4);
+      });
+
+      particleField.rotation.y = t * 0.03;
+      particleField.rotation.x = t * 0.02;
+    },
+  });
+
+  return { group, animatedObjects };
+}
+
+function buildWorld3(THREE: any) {
+  const group = new THREE.Group();
+  const accent = new THREE.Color(0xa855f7);
+  const animatedObjects: { update: (t: number) => void }[] = [];
+
+  // ── Holographic column matrix ──
+  const cols = 7;
+  const rows = 5;
+  const columns: { mesh: THREE.Mesh; baseH: number; speed: number; phase: number }[] = [];
+
+  for (let x = 0; x < cols; x++) {
+    for (let z = 0; z < rows; z++) {
+      const w = 0.4;
+      const baseH = 0.5 + Math.random() * 2.5;
+      const geo = new THREE.BoxGeometry(w, baseH, w);
+      const mat = new THREE.MeshStandardMaterial({
+        color: accent,
+        emissive: accent,
+        emissiveIntensity: 0.3,
+        transparent: true,
+        opacity: 0.35,
+        roughness: 0.4,
+        metalness: 0.7,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(
+        (x - (cols - 1) / 2) * 1.2,
+        baseH / 2 - 1.5,
+        (z - (rows - 1) / 2) * 1.2 - 3,
+      );
+      group.add(mesh);
+      columns.push({
+        mesh,
+        baseH,
+        speed: 0.5 + Math.random() * 1.5,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  // ── Column wireframe outlines ──
+  columns.forEach((col) => {
+    const edges = new THREE.EdgesGeometry(col.mesh.geometry);
+    const lineMat = new THREE.LineBasicMaterial({
+      color: accent,
+      transparent: true,
+      opacity: 0.5,
+    });
+    const wireframe = new THREE.LineSegments(edges, lineMat);
+    col.mesh.add(wireframe);
+  });
+
+  // ── Floating data particles ──
+  const pCount = 250;
+  const pPos = new Float32Array(pCount * 3);
+  const pVelocities = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount; i++) {
+    pPos[i * 3] = (Math.random() - 0.5) * 14;
+    pPos[i * 3 + 1] = (Math.random() - 0.5) * 8;
+    pPos[i * 3 + 2] = (Math.random() - 0.5) * 14 - 3;
+    pVelocities[i * 3] = (Math.random() - 0.5) * 0.01;
+    pVelocities[i * 3 + 1] = 0.005 + Math.random() * 0.015;
+    pVelocities[i * 3 + 2] = (Math.random() - 0.5) * 0.01;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({
+    color: accent,
+    size: 0.07,
+    transparent: true,
+    opacity: 0.7,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const dataParticles = new THREE.Points(pGeo, pMat);
+  group.add(dataParticles);
+
+  // ── Holographic scan line (a thin plane sweeping upward) ──
+  const scanGeo = new THREE.PlaneGeometry(10, 0.04);
+  const scanMat = new THREE.MeshBasicMaterial({
+    color: accent,
+    transparent: true,
+    opacity: 0.4,
+    side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  const scanLine = new THREE.Mesh(scanGeo, scanMat);
+  scanLine.rotation.x = -Math.PI / 2;
+  group.add(scanLine);
+
+  // ── Point lights ──
+  const pl1 = new THREE.PointLight(0xa855f7, 2, 14);
+  pl1.position.set(0, 3, -3);
+  group.add(pl1);
+
+  animatedObjects.push({
+    update(t: number) {
+      // Animate column heights
+      columns.forEach((col) => {
+        const targetScale = 0.6 + 0.4 * Math.sin(t * col.speed + col.phase);
+        col.mesh.scale.y = THREE.MathUtils.lerp(col.mesh.scale.y, targetScale, 0.1);
+        const mat = col.mesh.material as THREE.MeshStandardMaterial;
+        mat.emissiveIntensity = 0.2 + 0.3 * Math.abs(Math.sin(t * col.speed + col.phase));
+      });
+
+      // Animate data particles rising
+      const posAttr = dataParticles.geometry.attributes.position as THREE.BufferAttribute;
+      for (let i = 0; i < pCount; i++) {
+        posAttr.array[i * 3] += pVelocities[i * 3];
+        posAttr.array[i * 3 + 1] += pVelocities[i * 3 + 1];
+        posAttr.array[i * 3 + 2] += pVelocities[i * 3 + 2];
+        // Reset if too high
+        if (posAttr.array[i * 3 + 1] > 5) {
+          posAttr.array[i * 3 + 1] = -4;
+          posAttr.array[i * 3] = (Math.random() - 0.5) * 14;
+        }
+      }
+      posAttr.needsUpdate = true;
+
+      // Scan line sweeps up
+      scanLine.position.y = ((t * 0.8) % 8) - 4;
+      (scanLine.material as THREE.MeshBasicMaterial).opacity =
+        0.15 + 0.25 * Math.abs(Math.sin(t * 0.8));
+    },
+  });
+
+  return { group, animatedObjects };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * ScrollServicesWorld — Main Component
+ * ═══════════════════════════════════════════════════════════════ */
 
 export default function ScrollServicesWorld() {
   const sectionRef = useRef<HTMLElement>(null);
-  const cameraRef = useRef<HTMLDivElement>(null);
-  const stageRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const floorInnerRef = useRef<HTMLDivElement>(null);
-  const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const glowRef = useRef<HTMLDivElement>(null);
-  const meterRef = useRef<HTMLDivElement>(null);
-
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [showBadges, setShowBadges] = useState<boolean[]>([true, false, false]);
 
-  const smooth = useRef(0);
-  const pointer = useRef({ x: 0, y: 0 });
-  const pointerSmooth = useRef({ x: 0, y: 0 });
-  const activeRef = useRef(-1);
+  const smoothRef = useRef(0);
+  const activeIdxRef = useRef(-1);
+  const pointerRef = useRef({ x: 0, y: 0 });
+  const pointerSmoothRef = useRef({ x: 0, y: 0 });
+  const threeCleanupRef = useRef<(() => void) | null>(null);
 
-  /* rAF camera-flight loop — writes transforms directly to DOM */
+  /* ── Three.js lifecycle ── */
   useEffect(() => {
-    let raf = 0;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let disposed = false;
 
-    const tick = () => {
-      const section = sectionRef.current;
-      if (section) {
-        const rect = section.getBoundingClientRect();
-        const total = rect.height - window.innerHeight;
-        const target = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
+    (async () => {
+      const THREE = await import("three");
+      if (disposed || !canvasContainerRef.current) return;
 
-        smooth.current += (target - smooth.current) * (reduced ? 1 : 0.09);
-        if (Math.abs(target - smooth.current) < 0.0004) smooth.current = target;
+      const container = canvasContainerRef.current;
 
-        pointerSmooth.current.x += (pointer.current.x - pointerSmooth.current.x) * 0.06;
-        pointerSmooth.current.y += (pointer.current.y - pointerSmooth.current.y) * 0.06;
+      // ── Renderer ──
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false,
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x050508, 1);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.2;
+      container.appendChild(renderer.domElement);
 
-        const p = smooth.current;
-        const f = clamp((p - HUD_ZONE) / (1 - HUD_ZONE * 2), 0, 1); // flight progress 0..1
+      // ── Camera ──
+      const camera = new THREE.PerspectiveCamera(
+        55,
+        container.clientWidth / container.clientHeight,
+        0.1,
+        200,
+      );
 
-        /* Camera flight */
-        const camZ = f * DEPTH * (N - 1);
-        const rotX = Math.sin(f * Math.PI * 2) * 2.5 + pointerSmooth.current.y * -3;
-        const rotY = Math.sin(f * Math.PI * 3) * 4 + pointerSmooth.current.x * 5;
-        const camX = Math.sin(f * Math.PI * N) * 36 + pointerSmooth.current.x * 22;
-        const camY = pointerSmooth.current.y * 14;
+      // ── Scene ──
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x050508, 0.018);
 
-        if (cameraRef.current) {
-          cameraRef.current.style.transform = `translate3d(${camX.toFixed(1)}px, ${camY.toFixed(1)}px, ${camZ.toFixed(1)}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
+      // ── Lighting ──
+      scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+      dirLight.position.set(5, 10, 8);
+      scene.add(dirLight);
+
+      // ── Build 3 worlds ──
+      const w1 = buildWorld1(THREE);
+      w1.group.position.set(0, 0, 0);
+      scene.add(w1.group);
+
+      const w2 = buildWorld2(THREE);
+      w2.group.position.set(0, 0, -WORLD_SPACING);
+      scene.add(w2.group);
+
+      const w3 = buildWorld3(THREE);
+      w3.group.position.set(0, 0, -WORLD_SPACING * 2);
+      scene.add(w3.group);
+
+      // ── Background grid floor ──
+      const gridHelper = new THREE.GridHelper(60, 40, 0x10b981, 0x0a1a12);
+      gridHelper.position.y = -3;
+      gridHelper.material.opacity = 0.15;
+      gridHelper.material.transparent = true;
+      scene.add(gridHelper);
+
+      // ── Sizing ──
+      const updateSize = () => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        if (w === 0 || h === 0) return;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      updateSize();
+
+      // ── Animation loop ──
+      let raf = 0;
+      const clock = new THREE.Clock();
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const tick = () => {
+        const elapsed = clock.getElapsedTime();
+        const section = sectionRef.current;
+
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          const total = rect.height - window.innerHeight;
+          const rawProgress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
+
+          // Smooth the progress
+          smoothRef.current +=
+            (rawProgress - smoothRef.current) * (reduced ? 1 : 0.08);
+          if (Math.abs(rawProgress - smoothRef.current) < 0.0003)
+            smoothRef.current = rawProgress;
+
+          const p = smoothRef.current;
+          // Flight progress (0..1 within the world space)
+          const flight = clamp(
+            (p - HUD_ZONE) / (1 - HUD_ZONE * 2),
+            0,
+            1,
+          );
+
+          // Current world index
+          const flt = flight * (N - 1);
+          const currentWorldIdx = Math.min(
+            N - 1,
+            Math.round(flt),
+          );
+
+          if (currentWorldIdx !== activeIdxRef.current) {
+            activeIdxRef.current = currentWorldIdx;
+            setActiveIdx(currentWorldIdx);
+            setShowBadges((prev) => {
+              const next = [...prev];
+              next.forEach((_, i) => { next[i] = i === currentWorldIdx; });
+              return next;
+            });
+          }
+
+          // Camera position along Z axis
+          const totalDepth = WORLD_SPACING * (N - 1);
+          const camZ = CAMERA_OFFSET - flight * totalDepth;
+          const focalZ = -flight * totalDepth;
+
+          // Pointer parallax
+          pointerSmoothRef.current.x +=
+            (pointerRef.current.x - pointerSmoothRef.current.x) * 0.06;
+          pointerSmoothRef.current.y +=
+            (pointerRef.current.y - pointerSmoothRef.current.y) * 0.06;
+
+          // Subtle sine wave on camera for organic feel
+          const sineOffset = Math.sin(flight * Math.PI * 2) * 1.5;
+          const px = pointerSmoothRef.current.x * 2;
+          const py = pointerSmoothRef.current.y * 1.5;
+
+          camera.position.set(
+            px,
+            1 + sineOffset * 0.3 + py,
+            camZ,
+          );
+          camera.lookAt(px * 0.3, 0.5 + py * 0.2, focalZ);
         }
 
-        /* Stage planes — visibility from camera distance */
-        for (let i = 0; i < N; i++) {
-          const el = stageRefs.current[i];
-          if (!el) continue;
-          const dist = Math.abs(camZ - i * DEPTH); // 0 = perfectly framed
-          const opacity = clamp(1.15 - dist / (DEPTH * 0.52), 0, 1);
-          const blur = clamp((dist / DEPTH - 0.18) * 9, 0, 9);
-          el.style.opacity = opacity.toFixed(3);
-          el.style.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : "none";
-          el.style.visibility = opacity <= 0.01 ? "hidden" : "visible";
-          el.style.pointerEvents = dist < DEPTH * 0.35 ? "auto" : "none";
-        }
+        // ── Update world animations ──
+        w1.animatedObjects.forEach((o) => o.update(elapsed));
+        w2.animatedObjects.forEach((o) => o.update(elapsed));
+        w3.animatedObjects.forEach((o) => o.update(elapsed));
 
-        /* Glowing grid floor — scrolls toward viewer with accent crossfade */
-        const flt = f * (N - 1);
-        const idx = Math.round(flt);
-        const frac = flt - Math.floor(flt);
-        const c1 = SERVICE_WORLDS[Math.floor(flt)].accentColor;
-        const c2 = SERVICE_WORLDS[Math.min(N - 1, Math.floor(flt) + 1)].accentColor;
-        const fl = floorInnerRef.current;
-        if (fl) {
-          fl.style.backgroundPositionY = `${(p * 640).toFixed(1)}px`;
-          fl.style.backgroundImage = `linear-gradient(to right, ${c1}30 1px, transparent 1px), linear-gradient(to bottom, ${c1}30 1px, transparent 1px), linear-gradient(to right, ${c2}30 1px, transparent 1px), linear-gradient(to bottom, ${c2}30 1px, transparent 1px)`;
-          fl.style.backgroundSize = "56px 56px, 56px 56px, 56px 56px, 56px 56px";
-          const off = frac * 56;
-          fl.style.backgroundPosition = `0px 0px, 0px 0px, 0px ${off.toFixed(1)}px, 0px ${off.toFixed(1)}px`;
-          fl.style.opacity = String(1 - Math.abs(frac - 0.5) * 0.4);
-        }
-        if (glowRef.current) {
-          glowRef.current.style.backgroundColor = SERVICE_WORLDS[idx].accentColor;
-        }
+        renderer.render(scene, camera);
+        raf = requestAnimationFrame(tick);
+      };
 
-        /* Parallax dust layers */
-        const layers = layerRefs.current;
-        if (layers[0]) layers[0].style.transform = `translateY(${(-p * 90).toFixed(1)}px)`;
-        if (layers[1]) layers[1].style.transform = `translateY(${(-p * 170).toFixed(1)}px)`;
-        if (layers[2]) layers[2].style.transform = `translateY(${(-p * 280).toFixed(1)}px)`;
-
-        /* HUD progress meter */
-        if (meterRef.current) {
-          meterRef.current.style.transform = `scaleX(${p.toFixed(4)})`;
-        }
-
-        /* Active world — React state only on change */
-        const ai = Math.min(N - 1, Math.round(flt));
-        if (ai !== activeRef.current) {
-          activeRef.current = ai;
-          setActiveIdx(ai);
-        }
-      }
       raf = requestAnimationFrame(tick);
-    };
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+      // ── Resize listener ──
+      const resizeObserver = new ResizeObserver(updateSize);
+      resizeObserver.observe(container);
+      window.addEventListener("resize", updateSize);
+
+      // ── Cleanup ──
+      threeCleanupRef.current = () => {
+        cancelAnimationFrame(raf);
+        resizeObserver.disconnect();
+        window.removeEventListener("resize", updateSize);
+        renderer.dispose();
+        if (container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
+        scene.traverse((obj: any) => {
+          if (obj.geometry) obj.geometry.dispose();
+          if (obj.material) {
+            if (Array.isArray(obj.material)) obj.material.forEach((m: any) => m.dispose());
+            else obj.material.dispose();
+          }
+        });
+      };
+    })();
+
+    return () => {
+      disposed = true;
+      threeCleanupRef.current?.();
+      threeCleanupRef.current = null;
+    };
   }, []);
 
-  /* Pointer parallax */
+  /* ── Pointer parallax ── */
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
-      pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1;
+      pointerRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointerRef.current.y = (e.clientY / window.innerHeight) * 2 - 1;
     };
     window.addEventListener("pointermove", onMove, { passive: true });
     return () => window.removeEventListener("pointermove", onMove);
   }, []);
 
+  /* ── Scroll to world ── */
   const scrollToWorld = useCallback((idx: number) => {
     const section = sectionRef.current;
     if (!section) return;
     const rect = section.getBoundingClientRect();
     const total = rect.height - window.innerHeight;
     const target =
-      window.scrollY + rect.top + (HUD_ZONE + (idx / (N - 1)) * (1 - HUD_ZONE * 2)) * total;
+      window.scrollY +
+      rect.top +
+      (HUD_ZONE + (idx / (N - 1)) * (1 - HUD_ZONE * 2)) * total;
     window.scrollTo({ top: target, behavior: "smooth" });
   }, []);
 
@@ -569,98 +780,46 @@ export default function ScrollServicesWorld() {
       aria-label="Interactive 3D services world"
       className="snap-section relative w-full h-[400vh] bg-[#050508]"
     >
-      {/* Sticky 3D viewport — no overflow-hidden ancestors, so this pins */}
+      {/* Sticky viewport */}
       <div className="sticky top-0 h-svh overflow-hidden select-none">
-        {/* Ambient accent glow (color set per-frame) */}
+        {/* Three.js WebGL canvas container */}
         <div
-          ref={glowRef}
-          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[min(80vw,600px)] h-[min(80vw,600px)] rounded-full blur-[140px] pointer-events-none opacity-[0.16] transition-colors duration-500"
-          style={{ backgroundColor: SERVICE_WORLDS[0].accentColor }}
+          ref={canvasContainerRef}
+          className="absolute inset-0"
+          style={{ touchAction: "none" }}
         />
 
-        {/* Parallax dust layers */}
-        <div ref={(el) => { layerRefs.current[0] = el; }} className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.09)_1px,transparent_1.5px)] bg-[size:180px_180px]" />
-        <div ref={(el) => { layerRefs.current[1] = el; }} className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle_at_70%_60%,rgba(255,255,255,0.12)_1px,transparent_1.5px)] bg-[size:260px_260px]" />
-        <div ref={(el) => { layerRefs.current[2] = el; }} className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(circle_at_45%_80%,rgba(255,255,255,0.16)_1.5px,transparent_2px)] bg-[size:380px_380px]" />
-
-        {/* Glowing grid floor */}
-        <div
-          className="absolute left-[-60%] right-[-60%] bottom-[-12%] h-[75%] pointer-events-none"
-          style={{
-            transform: "perspective(900px) rotateX(64deg)",
-            transformOrigin: "50% 100%",
-            WebkitMaskImage:
-              "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.35) 55%, transparent 90%)",
-            maskImage:
-              "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.35) 55%, transparent 90%)",
-          }}
-        >
-          <div ref={floorInnerRef} className="absolute inset-0" />
-        </div>
-
-        {/* 3D perspective viewport */}
-        <div
-          className="absolute inset-0"
-          style={{ perspective: "1100px", perspectiveOrigin: "50% 46%" }}
-        >
-          <div
-            ref={cameraRef}
-            className="absolute inset-0 will-change-transform"
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            {SERVICE_WORLDS.map((world, i) => (
+        {/* HTML annotation badges overlay */}
+        <div className="absolute inset-0 pointer-events-none z-10">
+          {BADGE_DEFS.map((badge, i) => {
+            const isVisible = showBadges[badge.worldIdx] ?? false;
+            return (
               <div
-                key={world.id}
-                ref={(el) => { stageRefs.current[i] = el; }}
-                className="absolute inset-0 flex items-center justify-center will-change-transform"
-                style={{
-                  transform: `translateZ(${-i * DEPTH}px)`,
-                  transformStyle: "preserve-3d",
-                  visibility: i === 0 ? "visible" : "hidden",
-                }}
+                key={i}
+                className={`absolute transition-all duration-700 ease-out ${badge.anchor.x} ${badge.anchor.y} ${
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+                }`}
               >
-                {/* Depth ring behind each stage */}
                 <div
-                  className="absolute w-[min(88vw,42rem)] h-[min(88vw,42rem)] rounded-full border border-dashed opacity-25 animate-[spin_40s_linear_infinite] pointer-events-none"
+                  className="px-4 py-2.5 rounded-xl border backdrop-blur-md font-mono text-[11px] text-left shadow-2xl max-w-[220px]"
                   style={{
-                    borderColor: world.accentColor,
-                    transform: "translateZ(-160px)",
+                    backgroundColor: "rgba(10,10,16,0.85)",
+                    borderColor: `${activeWorld.accentColor}50`,
+                    color: activeWorld.accentColor,
+                    boxShadow: `0 0 24px ${activeWorld.accentColor}25`,
                   }}
-                />
-                <div
-                  className="absolute w-[min(70vw,30rem)] h-[min(70vw,30rem)] rounded-full blur-[90px] opacity-20 pointer-events-none"
-                  style={{
-                    backgroundColor: world.accentColor,
-                    transform: "translateZ(-220px)",
-                  }}
-                />
-
-                {/* Floating interactive telemetry badges (multi-plane Z) */}
-                <div
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                  style={{ transformStyle: "preserve-3d" }}
                 >
-                  <div
-                    className="relative w-full max-w-[min(92vw,36rem)] h-full pointer-events-none"
-                    style={{ transformStyle: "preserve-3d" }}
-                  >
-                    {WORLD_BADGES[i].map((spec) => (
-                      <TelemetryBadge key={spec.label} spec={spec} color={world.accentColor} />
-                    ))}
-                  </div>
+                  <span className="flex items-center gap-1.5 whitespace-nowrap font-semibold text-[12px]">
+                    {badge.label}
+                  </span>
+                  <span className="block text-white/50 mt-1 text-[10px] leading-tight">
+                    {badge.detail}
+                  </span>
                 </div>
-
-                {/* Deep 3D component panel */}
-                {i === 0 && <StorefrontPanel />}
-                {i === 1 && <AgentTerminalPanel />}
-                {i === 2 && <AnalyticsPanel />}
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
-
-        {/* Vignette + scanline flavor */}
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.55)_100%)]" />
 
         {/* ── Top HUD ── */}
         <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between gap-3 max-w-7xl mx-auto w-full px-4 md:px-8 pt-16 md:pt-20">
@@ -696,113 +855,71 @@ export default function ScrollServicesWorld() {
         <div className="absolute bottom-0 left-0 right-0 z-30 max-w-7xl mx-auto w-full px-4 md:px-8 pb-4 md:pb-6">
           {/* Flight progress meter */}
           <div className="flex items-center gap-3 mb-3 md:mb-4">
-            <span className="text-[10px] font-mono text-white/40 tracking-widest shrink-0">
-              FLIGHT PATH
+            <span className="text-[10px] font-mono text-white/40 tracking-widest uppercase shrink-0">
+              Flight Progress
             </span>
-            <div className="relative flex-1 h-px bg-white/10 overflow-visible">
+            <div className="flex-1 h-[2px] bg-white/10 rounded-full overflow-hidden">
               <div
-                ref={meterRef}
-                className="absolute inset-0 origin-left"
+                className="h-full rounded-full transition-all duration-100"
                 style={{
                   backgroundColor: activeWorld.accentColor,
-                  transform: "scaleX(0)",
-                  boxShadow: `0 0 8px ${activeWorld.accentColor}`,
+                  width: `${((activeIdx / (N - 1)) * 100).toFixed(1)}%`,
                 }}
               />
-              {SERVICE_WORLDS.map((w, i) => (
-                <button
-                  key={w.id}
-                  onClick={() => scrollToWorld(i)}
-                  aria-label={`Waypoint ${w.shortName}`}
-                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full border transition-colors duration-300"
-                  style={{
-                    left: `${(i / (N - 1)) * 100}%`,
-                    backgroundColor: i <= activeIdx ? w.accentColor : "#1a1a20",
-                    borderColor: i <= activeIdx ? w.accentColor : "rgba(255,255,255,0.25)",
-                    boxShadow: i === activeIdx ? `0 0 10px ${w.accentColor}` : "none",
-                  }}
-                />
-              ))}
             </div>
-            <span className="text-[10px] font-mono tracking-widest shrink-0" style={{ color: activeWorld.accentColor }}>
-              {String(activeIdx + 1).padStart(2, "0")}/03
-            </span>
           </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeWorld.id}
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 p-4 md:p-5 rounded-2xl bg-[#0F0F14]/90 border border-white/10 backdrop-blur-2xl shadow-2xl"
-            >
-              <div className="lg:col-span-2 space-y-1.5 md:space-y-2 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10px] md:text-xs font-mono text-white/50 tracking-wider truncate">
+          {/* Service intel card */}
+          <div
+            className="rounded-2xl border backdrop-blur-xl p-4 md:p-5 transition-all duration-500"
+            style={{
+              backgroundColor: "rgba(10,10,16,0.7)",
+              borderColor: `${activeWorld.accentColor}30`,
+              boxShadow: `0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 ${activeWorld.accentColor}15`,
+            }}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-[10px] font-mono tracking-wider text-white/40 uppercase">
                     {activeWorld.category}
                   </span>
-                  <span
-                    className="px-2.5 md:px-3 py-0.5 rounded-full text-[10px] md:text-xs font-mono border shrink-0"
-                    style={{
-                      color: activeWorld.accentColor,
-                      borderColor: `${activeWorld.accentColor}50`,
-                      backgroundColor: `${activeWorld.accentColor}15`,
-                    }}
-                  >
-                    {activeWorld.badge}
-                  </span>
                 </div>
-
-                <h3 className="text-base md:text-xl font-bold text-white tracking-tight">
+                <h3 className="text-white text-sm md:text-base font-semibold leading-tight">
                   {activeWorld.title}
                 </h3>
-
-                <p className="text-[11px] md:text-sm text-gray-300 leading-relaxed line-clamp-2 md:line-clamp-none">
+                <p className="text-white/50 text-[11px] md:text-xs mt-1.5 leading-relaxed max-w-xl">
                   {activeWorld.description}
                 </p>
-
-                <div className="hidden sm:flex flex-wrap gap-1.5 md:gap-2 pt-0.5">
-                  {activeWorld.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 md:px-2.5 py-0.5 md:py-1 rounded-md bg-white/5 border border-white/10 text-[10px] md:text-xs font-mono text-white/80"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+              </div>
+              <div className="text-right shrink-0">
+                <div
+                  className="text-2xl md:text-3xl font-bold font-mono"
+                  style={{ color: activeWorld.accentColor }}
+                >
+                  {activeWorld.metric}
+                </div>
+                <div className="text-[10px] text-white/40 mt-0.5 max-w-[140px]">
+                  {activeWorld.metricLabel}
                 </div>
               </div>
-
-              {/* Metric impact panel */}
-              <div className="flex lg:flex-col items-center lg:items-stretch justify-between gap-3 p-3 md:p-4 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="text-[10px] md:text-[11px] font-mono text-white/50 tracking-widest shrink-0">
-                  BENCHMARK
-                </div>
-                <div className="lg:my-1 min-w-0">
-                  <div
-                    className="text-2xl md:text-3xl font-extrabold tracking-tight font-mono"
-                    style={{ color: activeWorld.accentColor }}
-                  >
-                    {activeWorld.metric}
-                  </div>
-                  <div className="text-[10px] md:text-xs text-gray-400 mt-0.5 truncate">
-                    {activeWorld.metricLabel}
-                  </div>
-                </div>
-                <div className="hidden lg:block w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{
-                      width: `${((activeIdx + 1) / N) * 100}%`,
-                      backgroundColor: activeWorld.accentColor,
-                    }}
-                  />
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {activeWorld.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 rounded-md text-[10px] font-mono border"
+                  style={{
+                    borderColor: `${activeWorld.accentColor}30`,
+                    color: `${activeWorld.accentColor}cc`,
+                    backgroundColor: `${activeWorld.accentColor}10`,
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
