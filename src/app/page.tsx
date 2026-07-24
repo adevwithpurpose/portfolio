@@ -6,7 +6,7 @@ import SocialProof from "@/components/SocialProof";
 import Services from "@/components/Services";
 import SystemsShowcase from "@/components/SystemsShowcase";
 import ProcessSection from "@/components/ProcessSection";
-import ScrollServicesWorld from "@/components/ScrollServicesWorld";
+import SafeerOSDesktop from "@/components/SafeerOSDesktop";
 // Webhook kick-deploy comment to restart Vercel builder
 import CaseStudies from "@/components/CaseStudies";
 import LeadSandbox from "@/components/LeadSandbox";
@@ -179,7 +179,7 @@ export default function Home() {
       <Hero onEnter={() => handleSectionEnter(0)} onCTAClick={handleCTAClick} />
       <SocialProof onEnter={() => handleSectionEnter(1)} />
       <Services onEnter={(i) => handleSectionEnter(i + 2)} />
-      <ScrollServicesWorld />
+      <SafeerOSDesktop />
       <SystemsShowcase onEnter={() => handleSectionEnter(5)} />
       <ProcessSection onEnter={() => handleSectionEnter(6)} />
       <CaseStudies onEnter={() => handleSectionEnter(7)} />
